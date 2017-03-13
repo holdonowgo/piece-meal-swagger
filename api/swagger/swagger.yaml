@@ -33,10 +33,41 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+    post:
+      description: add a new ingredient to the list
+      # movie info to be stored
+      parameters:
+        - name: name
+          description: Ingredient properties
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Ingredient"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
+  Ingredient:
+    type: object
+    properties:
+      name:
+        type: string
+        description: ingredient object name
+      id:
+        type: number
+        description: ingredient id
+    required:
+      # - id
+      - name
   GetIngredientsListResponse:
     required:
       - ingredients
@@ -57,3 +88,15 @@ definitions:
     properties:
       message:
         type: string
+  GeneralResponse:
+    type: object
+    properties:
+      success:
+        type: number
+        description: returns 1 if successful
+      description:
+        type: string
+        description: a short comment
+    required:
+      - success
+      - description
