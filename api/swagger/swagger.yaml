@@ -52,6 +52,26 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /ingredients/{id}:
+    # our controller name
+    x-swagger-router-controller: ingredients
+    get:
+      description: get an ingredient
+      # define the type of response for Success "200" and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetIngredientResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
@@ -74,6 +94,25 @@ definitions:
     properties:
       # The array of movies
       ingredients:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: number
+            name:
+              type: string
+  GetIngredientResponse:
+    required:
+      - id
+      - name
+      - alternatives
+    properties:
+      id:
+        type: number
+      name:
+        type: string
+      alternatives:
         type: array
         items:
           type: object
