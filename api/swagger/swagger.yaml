@@ -33,6 +33,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
     post:
       description: add a new user
       operationId: addUser
@@ -74,6 +75,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
     put:
       # define the parameters
       description: update user
@@ -139,6 +141,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
     post:
       description: add a new ingredient to the user's restrictions
       # movie info to be stored
@@ -154,6 +157,33 @@ paths:
           type: number
           in: query
           required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+    patch:
+      description: add a new ingredient to the user's restrictions
+      # movie info to be stored
+      operationId: updateRestrictions
+      # movie info to be stored
+      parameters:
+        - name: user_id
+          type: number
+          in: path
+          description: user's id
+          required: true
+        - name: ingredients
+          in: body
+          description: Json object informations.
+          required: true
+          schema:
+            $ref: '#/definitions/IngredientIds'
       responses:
         "200":
           description: Success
@@ -198,12 +228,13 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
     post:
       description: add a new ingredient to the list
       # movie info to be stored
       parameters:
-        - name: name
-          description: Ingredient name
+        - name: ingredient
+          description: Ingredient
           in: body
           required: true
           schema:
@@ -238,6 +269,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
     put:
       description: update an ingredient
       # define the parameters
@@ -247,17 +279,17 @@ paths:
           type: number
           in: path
           required: true
-        - name: name
-          description: Ingredient name
+        - name: ingredient
+          description: Ingredient
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Ingredient"
+            $ref: "#/definitions/PatchIngredient"
       responses:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/GetIngredientResponse"
         default:
           description: Error
           schema:
@@ -276,7 +308,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/GetIngredientResponse"
         default:
           description: Error
           schema:
@@ -302,7 +334,6 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-            
 
   /search/users:
     # our controller name
@@ -328,10 +359,58 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+
+  /search/ingredients:
+    # our controller name
+    x-swagger-router-controller: ingredients
+    get:
+      description: get results from ingredient search
+      # define the type of response for Success "200" and Error
+      parameters:
+        - name: name
+          type: string
+          in: query
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetIngredientSearchResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /search/recipes:
+    # our controller name
+    x-swagger-router-controller: recipes
+    get:
+      description: get results from recipe search
+      # define the type of response for Success "200" and Error
+      parameters:
+        - name: name
+          type: string
+          in: query
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetRecipeSearchResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
+  IngredientIds:
+    type: array
+    items:
+      type: number
+  
   User:
     type: object
     required:
@@ -357,15 +436,32 @@ definitions:
         type: number
         description: user id
       
-  Ingredient:
+  PatchIngredient:
     type: object
     properties:
       name:
         type: string
         description: ingredient object name
+      tags:
+        type: array
+        items:
+          type: number
+    required:
+      - name
+      
+  Ingredient:
+    type: object
+    properties:
       id:
         type: number
         description: ingredient id
+      name:
+        type: string
+        description: ingredient object name
+      tags:
+        type: array
+        items:
+          type: number
     required:
       - name
       
@@ -421,6 +517,44 @@ definitions:
             last_name:
               type: string
               
+  GetIngredientSearchResponse:
+    required:
+      - ingredients
+    properties:
+      # The array of ingredients
+      ingredients:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: number
+            name:
+              type: string
+            tags:
+              type: array
+              items:
+                type: string
+              
+  GetRecipeSearchResponse:
+    required:
+      - recipes
+    properties:
+      # The array of recipes
+      recipes:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: number
+            name:
+              type: string
+            tags:
+              type: array
+              items:
+                type: string
+              
   GetUserRestrictionsResponse:
     required:
       - ingredients
@@ -456,11 +590,16 @@ definitions:
       - id
       - name
       - alternatives
+      - tags
     properties:
       id:
         type: number
       name:
         type: string
+      tags:
+        type: array
+        items:
+          type: string
       alternatives:
         type: array
         items:
@@ -510,3 +649,17 @@ definitions:
     required:
       - success
       - description
+        
+  # IngredientResponse:
+  #   type: object
+  #   properties:
+  #     success:
+  #       type: number
+  #       description: returns 1 if successful
+  #     description:
+  #       type: object
+  #       properties:
+  #       description: a short comment
+  #   required:
+  #     - success
+  #     - description
