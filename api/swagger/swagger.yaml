@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   version: "0.0.1"
-  title: Hello World App
+  title: Piece Meal API
 # during dev, should point to your local machine
 host: localhost:10010
 # basePath prefixes all resource paths
@@ -23,6 +23,7 @@ paths:
     x-swagger-router-controller: ingredients
     get:
       description: get the ingredients list
+      operationId: getIngredientsList
       # define the type of response for Success "200" and Error
       responses:
         "200":
@@ -60,7 +61,7 @@ paths:
       # define the type of response for Success "200" and Error
       parameters:
         - name: id
-          type: string
+          type: integer
           in: path
           required: true
       responses:
@@ -83,25 +84,21 @@ definitions:
         type: string
         description: ingredient object name
       id:
-        type: number
+        type: integer
         description: ingredient id
     required:
       # - id
       - name
   GetIngredientsListResponse:
+    type: object
     required:
       - ingredients
     properties:
       # The array of movies
       ingredients:
-        type: array
-        items:
-          type: object
-          properties:
-            id:
-              type: number
-            name:
-              type: string
+          type: array
+          items:
+            $ref: "#/definitions/Ingredient"
   GetIngredientResponse:
     required:
       - id
@@ -109,18 +106,14 @@ definitions:
       - alternatives
     properties:
       id:
-        type: number
+        type: integer
       name:
         type: string
       alternatives:
         type: array
+        description: "The ingredients that could be substituted for this one"
         items:
-          type: object
-          properties:
-            id:
-              type: number
-            name:
-              type: string
+          $ref: "#/definitions/Ingredient"
   ErrorResponse:
     required:
       - message
