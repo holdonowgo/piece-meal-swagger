@@ -120,6 +120,54 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
+  /users/{user_id}/recipes:
+    # our controller name
+    x-swagger-router-controller: recipes
+    get:
+      description: get a user's recipes
+      operationId: getUserRecipes
+      # define the type of response for Success "200" and Error
+      parameters:
+        - name: user_id
+          type: number
+          in: path
+          description: user's id
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetRecipesListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+    post:
+      description: add a new recipe to the user's restrictions
+      # movie info to be stored
+      operationId: addUserRecipe
+      # movie info to be stored
+      parameters:
+        - name: user_id
+          type: number
+          in: path
+          description: user's id
+          required: true
+        - name: recipe_id
+          type: number
+          in: query
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 
   /users/{user_id}/restrictions:
     # our controller name
@@ -249,6 +297,42 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
+  /recipes:
+    # our controller name
+    x-swagger-router-controller: recipes
+    get:
+      description: get the recipes list
+      # define the type of response for Success "200" and Error
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetRecipesListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+    post:
+      description: add a new recipes
+      # movie info to be stored
+      parameters:
+        - name: recipe
+          description: Recipe
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Recipe"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /ingredients/{id}:
     # our controller name
     x-swagger-router-controller: ingredients
@@ -296,7 +380,7 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     delete:
-      description: delete a ingredient
+      description: delete an ingredient
       # define the parameters
       parameters:
         - name: id
@@ -465,6 +549,22 @@ definitions:
     required:
       - name
       
+  Recipe:
+    type: object
+    properties:
+      id:
+        type: number
+        description: recipe id
+      name:
+        type: string
+        description: recipe object name
+      tags:
+        type: array
+        items:
+          type: number
+    required:
+      - name
+      
   GetUserResponse:
     required:
       - id
@@ -574,7 +674,7 @@ definitions:
     required:
       - ingredients
     properties:
-      # The array of movies
+      # The array of ingredients
       ingredients:
         type: array
         items:
@@ -584,6 +684,34 @@ definitions:
               type: number
             name:
               type: string
+              
+  GetRecipesListResponse:
+    required:
+      - recipes
+    properties:
+      # The array of movies
+      recipes:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: number
+            name:
+              type: string
+            ingredients:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: number
+                  name:
+                    type: string
+                  tags:
+                    type: array
+                    items:
+                      type: string
               
   GetIngredientResponse:
     required:
