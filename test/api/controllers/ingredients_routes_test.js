@@ -154,4 +154,90 @@ suite('ingredients test', () => {
 
         /* eslint-enable max-len */
     });
+
+    test('GET /ingredients/9000', (done) => {
+        request(server)
+            .get('/ingredients/9000')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /plain/)
+            .expect(404, 'Not Found', done);
+    });
+
+    test('GET /ingredients/-1', (done) => {
+        request(server)
+            .get('/ingredients/-1')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /plain/)
+            .expect(404, 'Not Found', done);
+    });
+
+    test('GET /ingredients/one', (done) => {
+        request(server)
+            .get('/ingredients/one')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /plain/)
+            .expect(404, 'Not Found', done);
+    });
+
+    test('POST /ingredients without name', (done) => {
+        /* eslint-disable max-len */
+        request(server)
+            .post('/ingredients')
+            .set('Accept', 'application/json')
+            .send({
+              tags: ['citrus']
+            })
+            .expect('Content-Type', /plain/)
+            .expect(400, 'Name must not be blank', done);
+
+        /* eslint-enable max-len */
+    });
+
+    test('PATCH /ingredients/9000', (done) => {
+        request(server)
+            .patch('/ingredients/9000')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /plain/)
+            .expect(404, 'Not Found', done);
+    });
+
+    test('PATCH /ingredients/-1', (done) => {
+        request(server)
+            .patch('/ingredients/-1')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /plain/)
+            .expect(404, 'Not Found', done);
+    });
+
+    test('PATCH /ingredients/one', (done) => {
+        request(server)
+            .patch('/ingredients/one')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /plain/)
+            .expect(404, 'Not Found', done);
+    });
+
+    test('DELETE /ingredients/9000', (done) => {
+        request(server)
+            .del('/books/9000')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /plain/)
+            .expect(404, 'Not Found', done);
+    });
+
+    test('DELETE /ingredients/-1', (done) => {
+        request(server)
+            .del('/books/-1')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /plain/)
+            .expect(404, 'Not Found', done);
+    });
+
+    test('DELETE /ingredients/one', (done) => {
+        request(server)
+            .del('/books/one')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /plain/)
+            .expect(404, 'Not Found', done);
+    });
 });
