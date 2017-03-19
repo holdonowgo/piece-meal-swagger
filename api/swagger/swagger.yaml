@@ -1,7 +1,8 @@
 swagger: "2.0"
 info:
   version: "0.0.1"
-  title: Piece-Meal App
+  title: Piece Meal API
+
 # during dev, should point to your local machine
 host: localhost:10010
 # basePath prefixes all resource paths
@@ -266,6 +267,7 @@ paths:
     x-swagger-router-controller: ingredients
     get:
       description: get the ingredients list
+      operationId: getIngredientsList
       # define the type of response for Success "200" and Error
       responses:
         "200":
@@ -384,8 +386,8 @@ paths:
       # define the parameters
       parameters:
         - name: id
-          description: Ingredient id
-          type: number
+          description: Ingredient id    
+          type: integer
           in: path
           required: true
       responses:
@@ -537,7 +539,7 @@ definitions:
     type: object
     properties:
       id:
-        type: number
+        type: integer
         description: ingredient id
       name:
         type: string
@@ -671,6 +673,7 @@ definitions:
               type: string
         
   GetIngredientsListResponse:
+    type: object
     required:
       - ingredients
     properties:
@@ -712,7 +715,7 @@ definitions:
                     type: array
                     items:
                       type: string
-              
+            
   GetIngredientResponse:
     required:
       - id
@@ -745,19 +748,15 @@ definitions:
       - alternatives
     properties:
       id:
-        type: number
+        type: integer
       name:
         type: string
       alternatives:
         type: array
+        description: "The ingredients that could be substituted for this one"
         items:
-          type: object
-          properties:
-            id:
-              type: number
-            name:
-              type: string
-              
+          $ref: "#/definitions/Ingredient"
+          
   ErrorResponse:
     required:
       - message
