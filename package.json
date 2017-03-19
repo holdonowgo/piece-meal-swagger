@@ -8,12 +8,20 @@
   "license": "",
   "main": "app.js",
   "dependencies": {
-    "express": "^4.12.3",
+    "bcrypt-as-promised": "^1.1.0",
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "joi": "^10.2.2",
+    "jsonwebtoken": "^7.3.0",
+    "knex": "^0.12.8",
+    "morgan": "^1.8.1",
+    "nodemon": "^1.11.0",
+    "pg": "^6.1.4",
     "swagger-express-mw": "^0.1.0"
   },
   "devDependencies": {
     "should": "^7.1.0",
-    "supertest": "^1.0.0"
+    "supertest": "^1.2.0"
   },
   "scripts": {
     "start": "node app.js",
