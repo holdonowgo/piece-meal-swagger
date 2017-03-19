@@ -1,13 +1,14 @@
 'use strict';
+const knex = require('../../knex');
 
 module.exports = {
   getIngredientsList: getIngredientsList
 };
 
 function getIngredientsList(req, res) {
-  // fill in the knex stuff to list ingredients
-  // knex("ingredients").then((rows) => {
-  //   res.json({ingredients: [rows]});
-  // })
-  res.json({ingredients:[]});
+  // To list ingredients
+  return knex("ingredients").then((rows) => {
+    var result = {ingredients: rows};
+    return res.json(result);
+  });
 }
