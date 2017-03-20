@@ -1,8 +1,7 @@
 swagger: "2.0"
 info:
   version: "0.0.1"
-  title: Piece Meal API
-
+  title: Piece-Meal App
 # during dev, should point to your local machine
 host: localhost:10010
 # basePath prefixes all resource paths
@@ -264,6 +263,7 @@ paths:
     x-swagger-router-controller: ingredients
     get:
       description: get the ingredients list
+      # define the type of response for Success "200" and Error
       operationId: getIngredientsList
       responses:
         "200":
@@ -371,6 +371,13 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     delete:
+
+      description: delete an ingredien
+      # define the parameters
+      parameters:
+        - name: id
+          description: Ingredient id
+          type: number
       description: delete an ingredient
       parameters:
         - name: id
@@ -467,6 +474,8 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+
+
 
   /users/{user_id}/ingredients/{ingredient_id}/verify:
     x-swagger-router-controller: users
@@ -568,8 +577,6 @@ paths:
             schema:
               $ref: "#/definitions/ErrorResponse"
 
-
-
   /swagger:
     x-swagger-pipe: swagger_raw
 definitions:
@@ -620,7 +627,7 @@ definitions:
     type: object
     properties:
       id:
-        type: integer
+        type: number
         description: ingredient id
       name:
         type: string
@@ -754,7 +761,6 @@ definitions:
               type: string
 
   GetIngredientsListResponse:
-    type: object
     required:
       - ingredients
     properties:
@@ -828,13 +834,20 @@ definitions:
       - alternatives
     properties:
       id:
-        type: integer
+        type: number
       name:
         type: string
       alternatives:
         type: array
-        description: "The ingredients that could be substituted for this one"
         items:
+
+          type: object
+          properties:
+            id:
+              type: number
+            name:
+              type: string
+
           $ref: "#/definitions/Ingredient"
 
   GetIngredientVerifyResponse:

@@ -3,14 +3,20 @@
 
 process.env.NODE_ENV = 'test';
 
-const should = require('should');
+// const should = require('should');
+// const request = require('supertest');
+// const server = require('../../../app');
+// const knex = require('../../../knex');
+// const {
+//     suite,
+//     test
+// } = require('mocha');
+
+const { suite, test } = require('mocha');
 const request = require('supertest');
-const server = require('../../../app');
+const bcrypt = require('bcrypt');
 const knex = require('../../../knex');
-const {
-    suite,
-    test
-} = require('mocha');
+const server = require('../../../app');
 
 console.log(suite);
 
@@ -45,25 +51,25 @@ suite('ingredients test', () => {
                 "ingredients": [{
                         "id": 1,
                         "name": "bacon",
-                        "tags": [],
+                        "tags": ['pork', 'meat'],
                         "active": true
                     },
                     {
                         "id": 2,
                         "name": "egg",
-                        "tags": [],
+                        "tags": ['vegetarian'],
                         "active": true
                     },
                     {
                         "id": 3,
                         "name": "milk",
-                        "tags": [],
+                        "tags": ['dairy', 'vegetarian'],
                         "active": true
                     },
                     {
                         "id": 4,
                         "name": "avocado",
-                        "tags": [],
+                        "tags": ['vegan', 'vegetarian'],
                         "active": true
                     }
                 ]
@@ -118,7 +124,7 @@ suite('ingredients test', () => {
             .set('Accept', 'application/json')
             .send({
                 name: 'BACON',
-                tags: ['pork'],
+                tags: ['pork', 'meat'],
                 active: true
             })
             .expect('Content-Type', /json/)
@@ -129,7 +135,7 @@ suite('ingredients test', () => {
             .expect(200, {
                 id: 1,
                 name: 'BACON',
-                tags: ['pork'],
+                tags: ['pork', 'meat'],
                 active: true
             }, done);
 

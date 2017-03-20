@@ -1,15 +1,19 @@
 const data = [{
   id:1,
-  name: 'bacon'
+  name: 'bacon',
+  tags: ['pork', 'meat']
 }, {
   id:2,
-  name: 'egg'
+  name: 'egg',
+  tags: ['vegetarian']
 }, {
   id: 3,
-  name: 'milk'
+  name: 'milk',
+  tags: ['dairy']
 }, {
   id: 4,
-  name: 'avocado'
+  name: 'avocado',
+  tags: ['vegetarian', 'vegan']
 }];
 
 exports.seed = function(knex, Promise) {
