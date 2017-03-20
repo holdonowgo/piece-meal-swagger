@@ -101,7 +101,10 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     delete:
-      description: delete a user
+
+      description: delete a ingredient
+      # define the parameters
+      operationId: getIngredientsList
       parameters:
         - name: user_id
           description: User id
@@ -166,6 +169,8 @@ paths:
     x-swagger-router-controller: users
     get:
       description: get a user's dietary restrictions
+      # define the type of response for Success "200" and Error
+      operationId: ingredients_get
       parameters:
         - name: user_id
           type: integer
@@ -277,6 +282,8 @@ paths:
 
     post:
       description: add a new ingredient to the list
+      # movie info to be stored
+      operationId: getIngredientsList
       parameters:
         - name: ingredient
           description: Ingredient
@@ -331,6 +338,8 @@ paths:
     x-swagger-router-controller: ingredients
     get:
       description: get an ingredient
+      # define the type of response for Success "200" and Error
+      operationId: getIngredientsList
       parameters:
         - name: id
           type: integer
@@ -348,6 +357,8 @@ paths:
 
     put:
       description: update an ingredient
+      # define the parameters
+      operationId: getIngredientsList
       parameters:
         - name: id
           description: Ingredient id
@@ -371,9 +382,9 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     delete:
-
-      description: delete an ingredien
+      description: delete an ingredient
       # define the parameters
+      operationId: getIngredientsList
       parameters:
         - name: id
           description: Ingredient id
@@ -399,6 +410,8 @@ paths:
     x-swagger-router-controller: ingredients
     get:
       description: get alternatives for an ingredient
+      # define the type of response for Success "200" and Error
+      operationId: getIngredientsList
       parameters:
         - name: id
           type: integer
@@ -619,7 +632,7 @@ definitions:
       tags:
         type: array
         items:
-          type: integer
+          type: string
     required:
       - name
 
@@ -635,7 +648,7 @@ definitions:
       tags:
         type: array
         items:
-          type: integer
+          type: string
     required:
       - name
 
@@ -651,7 +664,7 @@ definitions:
       tags:
         type: array
         items:
-          type: integer
+          type: string
     required:
       - name
 
