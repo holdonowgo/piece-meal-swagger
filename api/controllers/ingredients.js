@@ -8,7 +8,7 @@ module.exports = {
 function getIngredientsList(req, res) {
   // To list ingredients
   return knex("ingredients").then((rows) => {
-    var result = {ingredients: rows};
+    let result = {ingredients: rows};
     return res.json(result);
   });
 }
