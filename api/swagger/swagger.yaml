@@ -1,8 +1,7 @@
 swagger: "2.0"
 info:
   version: "0.0.1"
-  title: Piece Meal API
-
+  title: Piece-Meal App
 # during dev, should point to your local machine
 host: localhost:10010
 # basePath prefixes all resource paths
@@ -34,7 +33,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-            
+
     post:
       description: add a new user
       operationId: addUser
@@ -76,7 +75,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-            
+
     put:
       # define the parameters
       description: update user
@@ -121,7 +120,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-            
+
   /users/{user_id}/recipes:
     # our controller name
     x-swagger-router-controller: recipes
@@ -144,7 +143,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-            
+
     post:
       description: add a new recipe to the user's restrictions
       # movie info to be stored
@@ -190,7 +189,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-            
+
     post:
       description: add a new ingredient to the user's restrictions
       # movie info to be stored
@@ -215,7 +214,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-            
+
     patch:
       description: add a new ingredient to the user's restrictions
       # movie info to be stored
@@ -267,7 +266,6 @@ paths:
     x-swagger-router-controller: ingredients
     get:
       description: get the ingredients list
-      operationId: getIngredientsList
       # define the type of response for Success "200" and Error
       responses:
         "200":
@@ -278,7 +276,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-            
+
     post:
       description: add a new ingredient to the list
       # movie info to be stored
@@ -314,7 +312,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-            
+
     post:
       description: add a new recipes
       # movie info to be stored
@@ -355,7 +353,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-            
+
     put:
       description: update an ingredient
       # define the parameters
@@ -382,12 +380,12 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     delete:
-      description: delete an ingredient
+      description: delete an ingredien
       # define the parameters
       parameters:
         - name: id
-          description: Ingredient id    
-          type: integer
+          description: Ingredient id
+          type: number
           in: path
           required: true
       responses:
@@ -487,7 +485,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-            
+
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
@@ -496,7 +494,7 @@ definitions:
     type: array
     items:
       type: number
-  
+
   User:
     type: object
     required:
@@ -521,7 +519,7 @@ definitions:
       id:
         type: number
         description: user id
-      
+
   PatchIngredient:
     type: object
     properties:
@@ -534,12 +532,12 @@ definitions:
           type: number
     required:
       - name
-      
+
   Ingredient:
     type: object
     properties:
       id:
-        type: integer
+        type: number
         description: ingredient id
       name:
         type: string
@@ -550,7 +548,7 @@ definitions:
           type: number
     required:
       - name
-      
+
   Recipe:
     type: object
     properties:
@@ -566,7 +564,7 @@ definitions:
           type: number
     required:
       - name
-      
+
   GetUserResponse:
     required:
       - id
@@ -582,7 +580,7 @@ definitions:
         type: string
       email:
         type: string
-        
+
   GetUsersResponse:
     required:
       - users
@@ -601,7 +599,7 @@ definitions:
               type: string
             email:
               type: string
-              
+
   GetUsersSearchResponse:
     required:
       - users
@@ -618,7 +616,7 @@ definitions:
               type: string
             last_name:
               type: string
-              
+
   GetIngredientSearchResponse:
     required:
       - ingredients
@@ -637,7 +635,7 @@ definitions:
               type: array
               items:
                 type: string
-              
+
   GetRecipeSearchResponse:
     required:
       - recipes
@@ -656,7 +654,7 @@ definitions:
               type: array
               items:
                 type: string
-              
+
   GetUserRestrictionsResponse:
     required:
       - ingredients
@@ -671,9 +669,8 @@ definitions:
               type: number
             name:
               type: string
-        
+
   GetIngredientsListResponse:
-    type: object
     required:
       - ingredients
     properties:
@@ -687,7 +684,7 @@ definitions:
               type: number
             name:
               type: string
-              
+
   GetRecipesListResponse:
     required:
       - recipes
@@ -715,7 +712,7 @@ definitions:
                     type: array
                     items:
                       type: string
-            
+
   GetIngredientResponse:
     required:
       - id
@@ -740,7 +737,7 @@ definitions:
               type: number
             name:
               type: string
-              
+
   GetIngredientAlternativesResponse:
     required:
       - id
@@ -748,22 +745,26 @@ definitions:
       - alternatives
     properties:
       id:
-        type: integer
+        type: number
       name:
         type: string
       alternatives:
         type: array
-        description: "The ingredients that could be substituted for this one"
         items:
-          $ref: "#/definitions/Ingredient"
-          
+          type: object
+          properties:
+            id:
+              type: number
+            name:
+              type: string
+
   ErrorResponse:
     required:
       - message
     properties:
       message:
         type: string
-        
+
   GeneralResponse:
     type: object
     properties:
@@ -776,7 +777,7 @@ definitions:
     required:
       - success
       - description
-        
+
   # IngredientResponse:
   #   type: object
   #   properties:

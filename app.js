@@ -1,7 +1,30 @@
 'use strict';
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
+
+app.disable('x-powered-by');
+
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser')
+const morgan = require('morgan');
+const ev = require('express-validation');
+
+switch (app.get('env')) {
+  case 'development':
+    app.use(morgan('dev'));
+    break;
+
+  case 'production':
+    app.use(morgan('short'));
+    break;
+
+  default:
+}
 module.exports = app; // for testing
 
 var config = {
