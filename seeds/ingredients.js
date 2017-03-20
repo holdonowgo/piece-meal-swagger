@@ -1,5 +1,5 @@
 const data = [{
-  id:1,
+  id: 1,
   name: 'bacon',
   tags: ['pork', 'meat']
 }, {

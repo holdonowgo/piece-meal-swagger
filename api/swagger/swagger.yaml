@@ -298,6 +298,7 @@ paths:
     x-swagger-router-controller: recipes
     get:
       description: get the recipes list
+      operationId: getRecipesList
       responses:
         "200":
           description: Success
@@ -566,7 +567,7 @@ paths:
               rating:
                 description: rating to post/update
                 type: number
-          
+
       responses:
         "200":
           description: Success
