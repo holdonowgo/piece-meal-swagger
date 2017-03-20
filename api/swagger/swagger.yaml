@@ -22,7 +22,7 @@ paths:
     # our controller name
     x-swagger-router-controller: users
     get:
-      description: get all users
+      description: This endpoint returns all users available in the database
       # define the type of response for Success "200" and Error
       responses:
         "200":
@@ -35,7 +35,7 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     post:
-      description: add a new user
+      description: Add a new user
       operationId: addUser
       # movie info to be stored
       parameters:
@@ -59,11 +59,11 @@ paths:
     # our controller name
     x-swagger-router-controller: users
     get:
-      description: get a user
+      description: Retrieve a single user by id
       # define the type of response for Success "200" and Error
       parameters:
         - name: user_id
-          type: number
+          type: integer
           in: path
           required: true
       responses:
@@ -77,13 +77,11 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     put:
-      # define the parameters
-      description: update user
+      description: Update a user by id
       operationId: updateUser
-      # movie info to be stored
       parameters:
         - name: user_id
-          type: number
+          type: integer
           in: path
           required: true
         - name: user
@@ -103,12 +101,11 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     delete:
-      description: delete a ingredient
-      # define the parameters
+      description: delete a user
       parameters:
         - name: user_id
-          description: Ingredient id
-          type: number
+          description: User id
+          type: integer
           in: path
           required: true
       responses:
@@ -122,15 +119,13 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
   /users/{user_id}/recipes:
-    # our controller name
     x-swagger-router-controller: recipes
     get:
       description: get a user's recipes
       operationId: getUserRecipes
-      # define the type of response for Success "200" and Error
       parameters:
         - name: user_id
-          type: number
+          type: integer
           in: path
           description: user's id
           required: true
@@ -146,17 +141,15 @@ paths:
 
     post:
       description: add a new recipe to the user's restrictions
-      # movie info to be stored
       operationId: addUserRecipe
-      # movie info to be stored
       parameters:
         - name: user_id
-          type: number
+          type: integer
           in: path
           description: user's id
           required: true
         - name: recipe_id
-          type: number
+          type: integer
           in: query
           required: true
       responses:
@@ -170,14 +163,12 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
   /users/{user_id}/restrictions:
-    # our controller name
     x-swagger-router-controller: users
     get:
       description: get a user's dietary restrictions
-      # define the type of response for Success "200" and Error
       parameters:
         - name: user_id
-          type: number
+          type: integer
           in: path
           required: true
       responses:
@@ -192,17 +183,15 @@ paths:
 
     post:
       description: add a new ingredient to the user's restrictions
-      # movie info to be stored
       operationId: addRestriction
-      # movie info to be stored
       parameters:
         - name: user_id
-          type: number
+          type: integer
           in: path
           description: user's id
           required: true
         - name: ingredient_id
-          type: number
+          type: integer
           in: query
           required: true
       responses:
@@ -217,12 +206,10 @@ paths:
 
     patch:
       description: add a new ingredient to the user's restrictions
-      # movie info to be stored
       operationId: updateRestrictions
-      # movie info to be stored
       parameters:
         - name: user_id
-          type: number
+          type: integer
           in: path
           description: user's id
           required: true
@@ -243,14 +230,25 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     delete:
-      description: delete a ingredient
-      # define the parameters
+      description: delete an ingredient
       parameters:
         - name: user_id
-          description: Ingredient id
-          type: number
+          description: User Id
+          type: integer
           in: path
           required: true
+        - name: request
+          description: Request body
+          in: body
+          required: true
+          schema:
+            type: object
+            required:
+              - ingredient_id
+            properties:
+              ingredient_id:
+                description: the ingredient to delete
+                type: integer
       responses:
         "200":
           description: Success
@@ -262,11 +260,11 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
   /ingredients:
-    # our controller name
     x-swagger-router-controller: ingredients
     get:
       description: get the ingredients list
       # define the type of response for Success "200" and Error
+      operationId: getIngredientsList
       responses:
         "200":
           description: Success
@@ -279,7 +277,6 @@ paths:
 
     post:
       description: add a new ingredient to the list
-      # movie info to be stored
       parameters:
         - name: ingredient
           description: Ingredient
@@ -298,11 +295,9 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
   /recipes:
-    # our controller name
     x-swagger-router-controller: recipes
     get:
       description: get the recipes list
-      # define the type of response for Success "200" and Error
       responses:
         "200":
           description: Success
@@ -315,7 +310,6 @@ paths:
 
     post:
       description: add a new recipes
-      # movie info to be stored
       parameters:
         - name: recipe
           description: Recipe
@@ -334,14 +328,12 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
   /ingredients/{id}:
-    # our controller name
     x-swagger-router-controller: ingredients
     get:
       description: get an ingredient
-      # define the type of response for Success "200" and Error
       parameters:
         - name: id
-          type: number
+          type: integer
           in: path
           required: true
       responses:
@@ -356,11 +348,10 @@ paths:
 
     put:
       description: update an ingredient
-      # define the parameters
       parameters:
         - name: id
           description: Ingredient id
-          type: number
+          type: integer
           in: path
           required: true
         - name: ingredient
@@ -380,12 +371,18 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     delete:
+
       description: delete an ingredien
       # define the parameters
       parameters:
         - name: id
           description: Ingredient id
           type: number
+      description: delete an ingredient
+      parameters:
+        - name: id
+          description: Ingredient id
+          type: integer
           in: path
           required: true
       responses:
@@ -399,14 +396,12 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
   /ingredients/{id}/alternatives:
-    # our controller name
     x-swagger-router-controller: ingredients
     get:
       description: get alternatives for an ingredient
-      # define the type of response for Success "200" and Error
       parameters:
         - name: id
-          type: number
+          type: integer
           in: path
           required: true
       responses:
@@ -420,11 +415,9 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
   /search/users:
-    # our controller name
     x-swagger-router-controller: users
     get:
       description: get results from user search
-      # define the type of response for Success "200" and Error
       parameters:
         - name: first_name
           type: string
@@ -445,11 +438,9 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
   /search/ingredients:
-    # our controller name
     x-swagger-router-controller: ingredients
     get:
       description: get results from ingredient search
-      # define the type of response for Success "200" and Error
       parameters:
         - name: name
           type: string
@@ -466,11 +457,9 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
   /search/recipes:
-    # our controller name
     x-swagger-router-controller: recipes
     get:
       description: get results from recipe search
-      # define the type of response for Success "200" and Error
       parameters:
         - name: name
           type: string
@@ -486,14 +475,115 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
+
+
+  /users/{user_id}/ingredients/{ingredient_id}/verify:
+    x-swagger-router-controller: users
+    get:
+      description: to check if an ingredient is safe for user
+      parameters:
+        - name: user_id
+          type: integer
+          in: path
+          required: true
+        - name: ingredient_id
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetIngredientVerifyResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /users/{user_id}/recipes/{recipe_id}/crosscheck:
+    x-swagger-router-controller: users
+    get:
+      description: to find out what ingredients are safe and non-safe in an existing recipe
+      parameters:
+        - name: user_id
+          type: integer
+          in: path
+          required: true
+        - name: recipe_id
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetRecipeIngredientSafetyResponse"
+        default:
+            description: Error
+            schema:
+              $ref: "#/definitions/ErrorResponse"
+
+  /users/{user_id}/recipes/{recipe_id}/rating:
+    x-swagger-router-controller: users
+    get:
+      description: to get user's rating for a recipe
+      parameters:
+        - name: user_id
+          type: integer
+          in: path
+          required: true
+        - name: recipe_id
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetUserRecipeRatingResponse"
+        default:
+            description: Error
+            schema:
+              $ref: "#/definitions/ErrorResponse"
+    post:
+      description: to post/update user's rating
+      parameters:
+        - name: user_id
+          type: integer
+          in: path
+          required: true
+        - name: recipe_id
+          in: path
+          type: integer
+          required: true
+        - name: rating
+          in: body
+          schema:
+            type: object
+            required:
+              - rating
+            properties:
+              rating:
+                description: rating to post/update
+                type: number
+          
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        default:
+            description: Error
+            schema:
+              $ref: "#/definitions/ErrorResponse"
+
   /swagger:
     x-swagger-pipe: swagger_raw
-# complex objects have schema definitions
 definitions:
   IngredientIds:
     type: array
     items:
-      type: number
+      type: integer
 
   User:
     type: object
@@ -517,7 +607,7 @@ definitions:
         type: string
         description: user password
       id:
-        type: number
+        type: integer
         description: user id
 
   PatchIngredient:
@@ -529,7 +619,7 @@ definitions:
       tags:
         type: array
         items:
-          type: number
+          type: integer
     required:
       - name
 
@@ -545,7 +635,7 @@ definitions:
       tags:
         type: array
         items:
-          type: number
+          type: integer
     required:
       - name
 
@@ -553,7 +643,7 @@ definitions:
     type: object
     properties:
       id:
-        type: number
+        type: integer
         description: recipe id
       name:
         type: string
@@ -561,7 +651,7 @@ definitions:
       tags:
         type: array
         items:
-          type: number
+          type: integer
     required:
       - name
 
@@ -573,7 +663,7 @@ definitions:
       - email
     properties:
       id:
-        type: number
+        type: integer
       first_name:
         type: string
       last_name:
@@ -592,7 +682,7 @@ definitions:
           type: object
           properties:
             id:
-              type: number
+              type: integer
             first_name:
               type: string
             last_name:
@@ -611,7 +701,7 @@ definitions:
           type: object
           properties:
             id:
-              type: number
+              type: integer
             first_name:
               type: string
             last_name:
@@ -628,7 +718,7 @@ definitions:
           type: object
           properties:
             id:
-              type: number
+              type: integer
             name:
               type: string
             tags:
@@ -647,7 +737,7 @@ definitions:
           type: object
           properties:
             id:
-              type: number
+              type: integer
             name:
               type: string
             tags:
@@ -666,7 +756,7 @@ definitions:
           type: object
           properties:
             id:
-              type: number
+              type: integer
             name:
               type: string
 
@@ -681,7 +771,7 @@ definitions:
           type: object
           properties:
             id:
-              type: number
+              type: integer
             name:
               type: string
 
@@ -689,14 +779,13 @@ definitions:
     required:
       - recipes
     properties:
-      # The array of movies
       recipes:
         type: array
         items:
           type: object
           properties:
             id:
-              type: number
+              type: integer
             name:
               type: string
             ingredients:
@@ -705,7 +794,7 @@ definitions:
                 type: object
                 properties:
                   id:
-                    type: number
+                    type: integer
                   name:
                     type: string
                   tags:
@@ -721,7 +810,7 @@ definitions:
       - tags
     properties:
       id:
-        type: number
+        type: integer
       name:
         type: string
       tags:
@@ -734,7 +823,7 @@ definitions:
           type: object
           properties:
             id:
-              type: number
+              type: integer
             name:
               type: string
 
@@ -751,12 +840,52 @@ definitions:
       alternatives:
         type: array
         items:
+
           type: object
           properties:
             id:
               type: number
             name:
               type: string
+
+          $ref: "#/definitions/Ingredient"
+
+  GetIngredientVerifyResponse:
+    type: object
+    required:
+      - safe
+    properties:
+      safe:
+        type: boolean
+        description: "Check whether the ingredient is safe or not"
+      alternatives:
+        type: array
+        description: "the alternatives for the ingredient, if it's not safe."
+        items:
+          $ref: "#/definitions/Ingredient"
+
+  GetRecipeIngredientSafetyResponse:
+    type: array
+    items:
+      type: object
+      required:
+        - safe
+      properties:
+        ingredient_id:
+          type: integer
+        name:
+          type: string
+        safe:
+          type: boolean
+          description: "returns TRUE if it's safe, False if it's not"
+
+  GetUserRecipeRatingResponse:
+    required:
+      - rating
+    properties:
+      rating:
+        type: number
+        description: "User's rating for a recipe"
 
   ErrorResponse:
     required:
@@ -769,7 +898,7 @@ definitions:
     type: object
     properties:
       success:
-        type: number
+        type: integer
         description: returns 1 if successful
       description:
         type: string
@@ -782,7 +911,7 @@ definitions:
   #   type: object
   #   properties:
   #     success:
-  #       type: number
+  #       type: integer
   #       description: returns 1 if successful
   #     description:
   #       type: object
