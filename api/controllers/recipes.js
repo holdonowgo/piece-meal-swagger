@@ -26,18 +26,17 @@ function getRecipe(req, res) {
 }
 
 function postRecipe(req, res) {
-  //insert into recipes table
+  //to insert into recipes table
   let name = req.swagger.params.recipe.value.name;
   let instruction = req.swagger.params.recipe.value.instruction;
 
-  //insert into recipe_ingredients table
-  let ingredient = req.swagger.params.recipe.value.ingredient;
-  let id;
+  //to insert into recipe_ingredients table
+  let ingredients = req.swagger.params.recipe.value.ingredients;
   knex("recipes")
     .first().where("name", name)
     .then((result) => {
       if (result) {
-        res.status(400).json("Ingredient already exists!")
+        res.status(400).json("Ingredient already exists!");
       } else {
         return knex("recipes").insert({
           "name":name,
@@ -45,9 +44,17 @@ function postRecipe(req, res) {
         }).returning("*");
      }
     })
+    .then((recipe) => {
+      //insert all ingredients into recipe_ingredients
+        //recipe = *
 
+       return knex('recipe_ingredients').insert({
+         "ingredients": ingredients
+       })
+       return ingredient;
+    })
 
-};
+}
 
 
 
