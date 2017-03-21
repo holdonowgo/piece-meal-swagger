@@ -37,6 +37,6 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "mocha test/*/*"
+    "test": "node_modules/mocha/bin/mocha"
   }
 }
