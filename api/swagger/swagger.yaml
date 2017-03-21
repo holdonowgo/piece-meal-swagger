@@ -101,10 +101,9 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     delete:
-
-      description: delete a ingredient
+      description: delete a user
       # define the parameters
-      operationId: getIngredientsList
+      operationId: deleteUser
       parameters:
         - name: user_id
           description: User id
@@ -359,7 +358,7 @@ paths:
     put:
       description: update an ingredient
       # define the parameters
-      operationId: getIngredientsList
+      operationId: updateIngredient
       parameters:
         - name: id
           description: Ingredient id
@@ -385,12 +384,7 @@ paths:
     delete:
       description: delete an ingredient
       # define the parameters
-      operationId: getIngredientsList
-      parameters:
-        - name: id
-          description: Ingredient id
-          type: number
-      description: delete an ingredient
+      operationId: deleteIngredient
       parameters:
         - name: id
           description: Ingredient id
@@ -412,7 +406,7 @@ paths:
     get:
       description: get alternatives for an ingredient
       # define the type of response for Success "200" and Error
-      operationId: getIngredientsList
+      operationId: getIngredientAlternatives
       parameters:
         - name: id
           type: integer
@@ -840,7 +834,7 @@ definitions:
               type: integer
             name:
               type: string
-              
+
   GetIngredientAlternativesResponse:
     required:
       - id
@@ -854,13 +848,6 @@ definitions:
       alternatives:
         type: array
         items:
-
-          type: object
-          properties:
-            id:
-              type: number
-            name:
-              type: string
           $ref: "#/definitions/Ingredient"
 
   GetIngredientVerifyResponse:
