@@ -37,7 +37,9 @@ module.exports = {
 // }
 
 function getIngredientsList(req, res) {
+
     // To list ingredients
+
     let promises = [];
     promises.push(knex("ingredients").select("id", "name"));
     promises.push(knex("ingredient_tags").select("ingredient_id", "tag_text"));
@@ -62,6 +64,13 @@ function getIngredientsList(req, res) {
 
             return res.json(payload);
         })
+
+    return knex("ingredients").then((rows) => {
+        let result = {
+            ingredients: rows
+        };
+        return res.json(result);
+    });
 }
 
 function getIngredient(req, res) {
