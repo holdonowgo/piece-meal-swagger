@@ -294,7 +294,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/GetIngredientResponse"
         default:
           description: Error
           schema:

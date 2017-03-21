@@ -96,31 +96,31 @@ suite('ingredients test', () => {
         /* eslint-enable max-len */
     });
 
-    // test('POST /ingredients', (done) => {
-    //     /* eslint-disable max-len */
-    //     request(server)
-    //         .post('/ingredients')
-    //         .set('Accept', 'application/json')
-    //         .send({
-    //             name: 'salmon',
-    //             tags: ['seafood', 'fish'],
-    //             active: true
-    //         })
-    //         .expect('Content-Type', /json/)
-    //         .expect((res) => {
-    //             delete res.body.createdAt;
-    //             delete res.body.updatedAt;
-    //         })
-    //         .expect(200, {
-    //             id: 5,
-    //             name: 'salmon',
-    //             tags: ['seafood', 'fish'],
-    //             active: true
-    //         }, done);
-    //
-    //     /* eslint-enable max-len */
-    // });
-    //
+    test('POST /ingredients', (done) => {
+        /* eslint-disable max-len */
+        request(server)
+            .post('/ingredients')
+            .set('Accept', 'application/json')
+            .send({
+                name: 'salmon',
+                tags: ['seafood', 'fish'],
+                active: true
+            })
+            .expect('Content-Type', /json/)
+            .expect((res) => {
+                delete res.body.createdAt;
+                delete res.body.updatedAt;
+            })
+            .expect(200, {
+                id: 5,
+                name: 'salmon',
+                tags: ['seafood', 'fish'],
+                active: true
+            }, done);
+
+        /* eslint-enable max-len */
+    });
+
     // test('PATCH /ingredients/:id', (done) => {
     //     /* eslint-disable max-len */
     //     request(server)
