@@ -56,6 +56,8 @@ function getIngredientsList(req, res) {
                 }).sort();
 
                 ingredient.tags = t;
+
+                console.log(ingredient);
             };
 
             let payload = {
@@ -63,14 +65,7 @@ function getIngredientsList(req, res) {
             };
 
             return res.json(payload);
-        })
-
-    return knex("ingredients").then((rows) => {
-        let result = {
-            ingredients: rows
-        };
-        return res.json(result);
-    });
+        });
 }
 
 function getIngredient(req, res) {
@@ -94,6 +89,8 @@ function getIngredient(req, res) {
 
             ingredient.tags = t;
             ingredient.alternatives = [];
+
+            delete ingredient.created_at;
 
             return res.json(ingredient);
         })
