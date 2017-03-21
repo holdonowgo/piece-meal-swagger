@@ -79,15 +79,10 @@ function getIngredient(req, res) {
             withRelated: ['tags']
         })
         .then((ingredient) => {
-          console.log("BEFORE:", ingredient, "\n");
-          console.log("AFTER:", JSON.stringify(ingredient));
-          // let ingredientObj = JSON.parse(JSON.stringify(ingredient));
           let ingredientObj = ingredient.serialize();
           ingredientObj.tags = ingredientObj.tags.map((value) => {
             return value.tag_text;
           }).sort();
-          // console.log(tags);
-          // ingredientObj.tags = tags;
           ingredientObj.alternatives = [];
           delete ingredientObj.created_at;
           delete ingredientObj.updated_at;
