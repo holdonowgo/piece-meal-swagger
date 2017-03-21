@@ -12,7 +12,10 @@ process.env.NODE_ENV = 'test';
 //     test
 // } = require('mocha');
 
-const { suite, test } = require('mocha');
+const {
+    suite,
+    test
+} = require('mocha');
 const request = require('supertest');
 const bcrypt = require('bcrypt');
 const knex = require('../../../knex');
@@ -51,26 +54,26 @@ suite('ingredients test', () => {
                 "ingredients": [{
                         "id": 1,
                         "name": "bacon",
-                        "tags": ['pork', 'meat'],
-                        "active": true
+                        "tags": ['meat', 'pork'],
+                        // "active": true
                     },
                     {
                         "id": 2,
                         "name": "egg",
                         "tags": ['vegetarian'],
-                        "active": true
+                        // "active": true
                     },
                     {
                         "id": 3,
                         "name": "milk",
                         "tags": ['dairy', 'vegetarian'],
-                        "active": true
+                        // "active": true
                     },
                     {
                         "id": 4,
                         "name": "avocado",
                         "tags": ['vegan', 'vegetarian'],
-                        "active": true
+                        // "active": true
                     }
                 ]
             }, done);
@@ -191,7 +194,7 @@ suite('ingredients test', () => {
             .post('/ingredients')
             .set('Accept', 'application/json')
             .send({
-              tags: ['citrus']
+                tags: ['citrus']
             })
             .expect('Content-Type', /plain/)
             .expect(400, 'Name must not be blank', done);

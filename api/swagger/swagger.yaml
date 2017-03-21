@@ -283,7 +283,7 @@ paths:
     post:
       description: add a new ingredient to the list
       # movie info to be stored
-      operationId: getIngredientsList
+      operationId: addIngredient
       parameters:
         - name: ingredient
           description: Ingredient

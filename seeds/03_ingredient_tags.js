@@ -16,10 +16,14 @@ const data = [{
     tag_text: 'dairy'
 }, {
     id: 5,
+    ingredient_id: 3,
+    tag_text: 'vegetarian'
+},{
+    id: 6,
     ingredient_id: 4,
     tag_text: 'vegetarian'
 }, {
-    id: 6,
+    id: 7,
     ingredient_id: 4,
     tag_text: 'vegan'
 }]
