@@ -317,7 +317,8 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     post:
-      description: add a new recipes
+      description: add a new recipe
+      operationId: postRecipe
       parameters:
         - name: recipe
           description: Recipe

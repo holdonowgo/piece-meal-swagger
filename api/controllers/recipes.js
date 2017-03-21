@@ -3,7 +3,8 @@ const knex = require('../../knex');
 
 module.exports = {
   getRecipesList: getRecipesList,
-  getRecipe: getRecipe
+  getRecipe: getRecipe,
+  postRecipe: postRecipe
 };
 
 function getRecipesList(req, res) {
@@ -19,4 +20,8 @@ function getRecipe(req, res) {
     .then((result) => {
       return res.json(result);
     })
+}
+
+function postRecipe(req, res) {
+  
 }
