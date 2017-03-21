@@ -855,7 +855,7 @@ definitions:
               type: array
               items:
                 type: string
-      instruction:
+      instructions:
         type: string
 
   GetRecipesListResponse:
