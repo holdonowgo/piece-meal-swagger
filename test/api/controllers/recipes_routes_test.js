@@ -2,7 +2,7 @@
 
 process.env.NODE_ENV = 'test';
 const {
-  suit,
+  suite,
   test
 } = require('mocha');
 const request = require('supertest');
@@ -44,16 +44,20 @@ suite('recipes test', () => {
         }, {
           id: 2,
           name: 'simple oatmeal',
-          instruction: '1.Place 3/4 cup of the rolled oats into a blender and process until a flour.\
-                      \n2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.'
+          instruction: "1.Place 3/4 cup of the rolled oats into a blender and process " +
+            "until a flour.              \n2.Add all rolled oats, water, cinnamon and " +
+            "vanilla to pan and bring to a boil."
         }, {
           id: 3,
           name: 'cheese omelette',
-          instruction: '1.Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.\
-                      \n2.Place a small non-stick frying pan on a low heat to warm up.'
+          instruction: "1.Crack the eggs into a mixing bowl, season with a pinch" +
+          " of sea salt and black pepper, then beat well with a fork until fully" +
+          " combined.              \n2.Place a small non-stick frying pan on a low " +
+          "heat to warm up."
         }]
       }, done);
   });
+
 
   test('GET /recipes/:id', (done) => {
     request(server)
@@ -126,13 +130,20 @@ suite('recipes test', () => {
       }, done);
   });
 
+  test('GET /recipes/-1', (done) => {
+    request(server)
+      .get('/recipes/-1')
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /plain/)
+      .expect(404, 'Not Found', done);
+  });
 
-
-
-
-
-
-
-
+  test('GET /recipes/one', (done) => {
+    request(server)
+      .get('/recipes/one')
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /plain/)
+      .expect(404, 'Not Found', done);
+  })
   // ------------------------------------------
 });
