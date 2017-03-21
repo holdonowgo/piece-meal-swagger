@@ -335,6 +335,73 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
+  /recipes/{id}:
+    x-swagger-router-controller: recipes
+    get:
+      description: get a recipe
+      # define the type of response for Success "200" and Error
+      operationId: getRecipe
+      parameters:
+        - name: id
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Recipe"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+    put:
+      description: update a recipe
+      # define the parameters
+      operationId: updateRecipe
+      parameters:
+        - name: id
+          description: recipe id
+          type: integer
+          in: path
+          required: true
+        - name: recipe
+          description: recipe
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Recipe"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Recipe"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+    delete:
+      description: delete a recipe
+      # define the parameters
+      operationId: deleteRecipe
+      parameters:
+        - name: id
+          description: recipe id
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Recipe"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /ingredients/{id}:
     x-swagger-router-controller: ingredients
     get:
@@ -648,22 +715,6 @@ definitions:
     required:
       - name
 
-  Recipe:
-    type: object
-    properties:
-      id:
-        type: integer
-        description: recipe id
-      name:
-        type: string
-        description: recipe object name
-      tags:
-        type: array
-        items:
-          type: string
-    required:
-      - name
-
   GetUserResponse:
     required:
       - id
@@ -784,11 +835,14 @@ definitions:
             name:
               type: string
 
-  GetRecipesListResponse:
-    required:
-      - recipes
+  Recipe:
+    type: object
     properties:
-      recipes:
+      id:
+        type: integer
+      name:
+        type: string
+      ingredients:
         type: array
         items:
           type: object
@@ -797,19 +851,21 @@ definitions:
               type: integer
             name:
               type: string
-            ingredients:
+            tags:
               type: array
               items:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  tags:
-                    type: array
-                    items:
-                      type: string
+                type: string
+      instruction:
+        type: string
+
+  GetRecipesListResponse:
+    required:
+      - recipes
+    properties:
+      recipes:
+        type: array
+        items:
+          $ref: "#/definitions/Recipe"
 
   GetIngredientResponse:
     required:
@@ -849,13 +905,6 @@ definitions:
       alternatives:
         type: array
         items:
-
-          type: object
-          properties:
-            id:
-              type: number
-            name:
-              type: string
           $ref: "#/definitions/Ingredient"
 
   GetIngredientVerifyResponse:
