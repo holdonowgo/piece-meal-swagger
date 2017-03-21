@@ -16,7 +16,7 @@ function getIngredientsList(req, res) {
     // To list ingredients
 
     let promises = [];
-    promises.push(knex("ingredients").select("id", "name"));
+    promises.push(knex("ingredients").select("id", "name", "active"));
     promises.push(knex("ingredient_tags").select("ingredient_id", "tag_text"));
     Promise.all(promises)
         .then((results) => {

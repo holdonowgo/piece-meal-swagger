@@ -55,25 +55,25 @@ suite('ingredients test', () => {
                         "id": 1,
                         "name": "bacon",
                         "tags": ['meat', 'pork'],
-                        // "active": true
+                        "active": true
                     },
                     {
                         "id": 2,
                         "name": "egg",
                         "tags": ['vegetarian'],
-                        // "active": true
+                        "active": true
                     },
                     {
                         "id": 3,
                         "name": "milk",
                         "tags": ['dairy', 'vegetarian'],
-                        // "active": true
+                        "active": true
                     },
                     {
                         "id": 4,
                         "name": "avocado",
                         "tags": ['vegan', 'vegetarian'],
-                        // "active": true
+                        "active": true
                     }
                 ]
             }, done);
@@ -89,8 +89,8 @@ suite('ingredients test', () => {
                 "id": 1,
                 "name": "bacon",
                 "tags": ['meat', 'pork'],
-                "alternatives": []
-                // "active": true
+                "alternatives": [],
+                "active": true
             }, done);
 
         /* eslint-enable max-len */
