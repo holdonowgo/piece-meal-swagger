@@ -2,6 +2,8 @@
 const knex = require('../../knex');
 
 module.exports = {
+    getIngredient: getIngredient,
+    addIngredient: addIngredient,
     getIngredientsList: getIngredientsList
 };
 
@@ -60,4 +62,34 @@ function getIngredientsList(req, res) {
 
             return res.json(payload);
         })
+}
+
+function getIngredient(req, res) {
+    let promises = [];
+    promises.push(
+        knex("ingredients").select("id", "name")
+        .first().where("id", req.swagger.params.id.value)
+    );
+    promises.push(
+        knex("ingredient_tags").select("ingredient_id", "tag_text")
+        .where("ingredient_id", req.swagger.params.id.value)
+    );
+    Promise.all(promises)
+        .then((results) => {
+            let ingredient = results[0];
+            let tags = results[1];
+
+            let t = tags.map((tag) => {
+                return tag.tag_text;
+            }).sort();
+
+            ingredient.tags = t;
+            ingredient.alternatives = [];
+
+            return res.json(ingredient);
+        })
+}
+
+function addIngredient(req, res) {
+    return res.json({});
 }

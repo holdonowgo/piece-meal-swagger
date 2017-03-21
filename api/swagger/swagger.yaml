@@ -343,7 +343,7 @@ paths:
     get:
       description: get an ingredient
       # define the type of response for Success "200" and Error
-      operationId: getIngredientsList
+      operationId: getIngredient
       parameters:
         - name: id
           type: number
@@ -725,8 +725,8 @@ definitions:
     required:
       - id
       - name
-      - alternatives
-      - tags
+      # - alternatives
+      # - tags
     properties:
       id:
         type: number
@@ -736,15 +736,15 @@ definitions:
         type: array
         items:
           type: string
-      alternatives:
-        type: array
-        items:
-          type: object
-          properties:
-            id:
-              type: number
-            name:
-              type: string
+      # alternatives:
+      #   type: array
+      #   items:
+      #     type: object
+      #     properties:
+      #       id:
+      #         type: number
+      #       name:
+      #         type: string
 
   GetIngredientAlternativesResponse:
     required:
