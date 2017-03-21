@@ -22,7 +22,7 @@ const data = [{
     id: 6,
     ingredient_id: 4,
     tag_text: 'vegan'
-}]
+}];
 
 exports.seed = function(knex, Promise) {
     // Deletes ALL existing entries

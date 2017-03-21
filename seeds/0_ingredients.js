@@ -1,12 +1,7 @@
 const data = [{
-<<<<<<< HEAD
   id: 1,
   name: 'bacon',
   tags: ['pork', 'meat']
-=======
-  id:1,
-  name: 'bacon'
->>>>>>> 422d42f3d5a9cea96be520e0211c720408a17713
 }, {
   id:2,
   name: 'egg'
