@@ -389,11 +389,6 @@ paths:
       parameters:
         - name: id
           description: Ingredient id
-          type: number
-      description: delete an ingredient
-      parameters:
-        - name: id
-          description: Ingredient id
           type: integer
           in: path
           required: true
@@ -840,7 +835,7 @@ definitions:
               type: integer
             name:
               type: string
-              
+
   GetIngredientAlternativesResponse:
     required:
       - id
