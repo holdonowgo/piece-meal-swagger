@@ -6,7 +6,8 @@ const bookshelf = require('../../bookshelf');
 module.exports = {
     getClient: getClient,
     getClients: getClients,
-    addClient: addClient
+    addClient: addClient,
+    getRestrictions: getRestrictions
 };
 
 function addClient(req, res) {
@@ -49,4 +50,8 @@ function getClients(req, res) {
 
             return res.json({clients: clients});
         });
+}
+
+function getRestrictions() {
+
 }
