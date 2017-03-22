@@ -171,7 +171,7 @@ paths:
     get:
       description: get a client's dietary restrictions
       # define the type of response for Success "200" and Error
-      operationId: ingredients_get
+      operationId: getRestrictions
       parameters:
         - name: user_id
           type: integer
@@ -237,6 +237,7 @@ paths:
 
     delete:
       description: delete a client's restriction
+      operationId: deleteRestriction
       parameters:
         - name: user_id
           description: Client Id
@@ -553,8 +554,6 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-
-
   /clients/{user_id}/ingredients/{ingredient_id}/verify:
     x-swagger-router-controller: clients
     get:
@@ -718,11 +717,7 @@ definitions:
       - name
 
   GetUserResponse:
-    required:
-      - id
-      - first_name
-      - last_name
-      - email
+    type: object
     properties:
       id:
         type: integer
@@ -732,6 +727,17 @@ definitions:
         type: string
       email:
         type: string
+      recipes:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            instructions:
+              type: string
 
   GetUsersResponse:
     required:
@@ -847,7 +853,7 @@ definitions:
         type: integer
       name:
         type: string
-      instruction:
+      instructions:
         type: string
       ingredients:
         type: array
@@ -870,7 +876,7 @@ definitions:
         type: integer
       name:
         type: string
-      instruction:
+      instructions:
         type: string
       ingredients:
         type: array
