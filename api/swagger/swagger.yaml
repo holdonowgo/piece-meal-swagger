@@ -846,7 +846,7 @@ definitions:
         type: integer
       name:
         type: string
-      instruction:
+      instructions:
         type: string
       ingredients:
         type: array
@@ -869,7 +869,7 @@ definitions:
         type: integer
       name:
         type: string
-      instruction:
+      instructions:
         type: string
       ingredients:
         type: array
