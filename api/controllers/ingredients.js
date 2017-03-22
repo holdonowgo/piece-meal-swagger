@@ -56,13 +56,7 @@ function getIngredientsList(req, res) {
                 ingredient.tags = t;
             };
 
-            let payload = {
-                ingredients: ingredients
-            };
-
-            console.log(payload);
-
-            return res.json(payload);
+            return res.json({ingredients: ingredients});
         });
 }
 
