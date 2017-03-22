@@ -145,26 +145,28 @@ suite('ingredients test', () => {
     //
     //     /* eslint-enable max-len */
     // });
-    //
-    // test('DELETE /ingredients/:id', (done) => {
-    //     /* eslint-disable max-len */
-    //     request(server)
-    //         .del('/ingredients/1')
-    //         .set('Accept', 'application/json')
-    //         .expect('Content-Type', /json/)
-    //         .expect((res) => {
-    //             delete res.body.createdAt;
-    //             delete res.body.updatedAt;
-    //         })
-    //         .expect(200, {
-    //             name: 'salmon',
-    //             tags: ['seafood', 'fish'],
-    //             active: false
-    //         }, done);
-    //
-    //     /* eslint-enable max-len */
-    // });
-    //
+    
+    test('DELETE /ingredients/:id', (done) => {
+        /* eslint-disable max-len */
+        request(server)
+            .del('/ingredients/1')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect((res) => {
+                delete res.body.createdAt;
+                delete res.body.updatedAt;
+            })
+            .expect(200, {
+                id: 1,
+                name: 'bacon',
+                // tags: ['meat', 'pork'],
+                // alternatives: [],
+                active: false
+            }, done);
+
+        /* eslint-enable max-len */
+    });
+
     // test('GET /ingredients/9000', (done) => {
     //     request(server)
     //         .get('/ingredients/9000')
