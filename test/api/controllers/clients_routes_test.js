@@ -22,6 +22,7 @@ const request = require('supertest');
 const bcrypt = require('bcrypt');
 const knex = require('../../../knex');
 const server = require('../../../app');
+const assert = require('chai').assert;
 
 suite('clients tests', () => {
     before((done) => {
@@ -110,77 +111,78 @@ suite('clients tests', () => {
         /* eslint-enable max-len */
     });
 
-    //
-    // test('POST /clients', (done) => {
-    //     const password = 'ilikebigcats';
-    //
-    //     request(server)
-    //         .post('/clients')
-    //         .set('Accept', 'application/json')
-    //         .set('Content-Type', 'application/json')
-    //         .send({
-    //             firstName: 'John',
-    //             lastName: 'Siracusa',
-    //             email: 'john.siracusa@gmail.com',
-    //             password
-    //         })
-    //         .expect((res) => {
-    //             delete res.body.createdAt;
-    //             delete res.body.updatedAt;
-    //         })
-    //         .expect(200, {
-    //             id: 3,
-    //             firstName: 'John',
-    //             lastName: 'Siracusa',
-    //             email: 'john.siracusa@gmail.com'
-    //         })
-    //         .expect('Content-Type', /json/)
-    //         .end((httpErr, _res) => {
-    //             if (httpErr) {
-    //                 return done(httpErr);
-    //             }
-    //
-    //             knex('clients')
-    //                 .where('id', 3)
-    //                 .first()
-    //                 .then((client) => {
-    //                     const hashedPassword = client.hashed_password;
-    //
-    //                     delete client.hashed_password;
-    //                     delete client.created_at;
-    //                     delete client.updated_at;
-    //
-    //                     assert.deepEqual(client, {
-    //                         id: 2,
-    //                         firstName: 'John',
-    //                         firstName: 'Siracusa',
-    //                         email: 'john.siracusa@gmail.com'
-    //                     });
-    //
-    //                     // eslint-disable-next-line no-sync
-    //                     const isMatch = bcrypt.compareSync(password, hashedPassword);
-    //
-    //                     assert.isTrue(isMatch, "passwords don't match");
-    //                     done();
-    //                 })
-    //                 .catch((dbErr) => {
-    //                     done(dbErr);
-    //                 });
-    //         });
-    // });
 
-    test('GET /clients/:id/restrictions', (done) => {
-      request(server)
-        .get('/clients/2/restrictions')
-        .set('Accept', 'application/json')
-        .expect(200, {
-          ingredients: [{
-            id:1,
-            name: 'bacon'
-          }, {
-            id: 3,
-            name: 'milk'
-          }]
-        }, done);
+    test('POST /clients', (done) => {
+        const password = 'ilikebigcats';
+
+        request(server)
+            .post('/clients')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .send({
+                first_name: 'John',
+                last_name: 'Siracusa',
+                email: 'john.siracusa@gmail.com',
+                password
+            })
+            .expect((res) => {
+                console.log(res.body);
+                delete res.body.created_at;
+                delete res.body.updated_at;
+            })
+            .expect(200, {
+                id: 3,
+                first_name: 'John',
+                last_name: 'Siracusa',
+                email: 'john.siracusa@gmail.com'
+            })
+            .expect('Content-Type', /json/)
+            .end((httpErr, _res) => {
+                if (httpErr) {
+                    return done(httpErr);
+                }
+
+                knex('clients')
+                    .where('id', 3)
+                    .first()
+                    .then((client) => {
+                        const hashedPassword = client.hashed_password;
+
+                        delete client.hashed_password;
+                        delete client.created_at;
+                        delete client.updated_at;
+
+                        assert.deepEqual(client, {
+                            id: 3,
+                            first_name: 'John',
+                            last_name: 'Siracusa',
+                            email: 'john.siracusa@gmail.com'
+                        });
+
+                        // eslint-disable-next-line no-sync
+                        const isMatch = bcrypt.compareSync(password, hashedPassword);
+
+                        assert.isTrue(isMatch, "passwords don't match");
+                        done();
+                    })
+                    .catch((dbErr) => {
+                        done(dbErr);
+                    });
+            });
     });
+
+    // test('GET /clients/:id/restrictions', (done) => {
+    //   request(server)
+    //     .get('/clients/2/restrictions')
+    //     .set('Accept', 'application/json')
+    //     .expect(200, {
+    //       ingredients: [{
+    //         id:1,
+    //         name: 'bacon'
+    //       }, {
+    //         id: 3,
+    //         name: 'milk'
+    //       }]
+    //     }, done);
+    // });
 });

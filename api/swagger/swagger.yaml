@@ -45,12 +45,12 @@ paths:
           description: client object
           required: true
           schema:
-            $ref: "#/definitions/Client"
+            $ref: "#/definitions/NewClient"
       responses:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/Client"
         default:
           description: Error
           schema:
@@ -661,6 +661,27 @@ definitions:
     type: array
     items:
       type: integer
+
+  NewClient:
+    type: object
+    required:
+      - first_name
+      - last_name
+      - password
+      - email
+    properties:
+      first_name:
+        type: string
+        description: client object first name
+      last_name:
+        type: string
+        description: client object last name
+      email:
+        type: string
+        description: client object email
+      password:
+        type: string
+        description: client password
 
   Client:
     type: object
