@@ -11,10 +11,9 @@ module.exports = {
 
 
 const bcrypt = require('bcrypt-as-promised');
-const knex = require('../knex.js');
 const humps = require('humps');
 const ev = require('express-validation');
-const validations = require("../validations/users");
+// const validations = require("../validations/users");
 
 // YOUR CODE HERE
 function addClient(req, res, next) {
