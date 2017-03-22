@@ -145,7 +145,7 @@ suite('ingredients test', () => {
     //
     //     /* eslint-enable max-len */
     // });
-    
+
     test('DELETE /ingredients/:id', (done) => {
         /* eslint-disable max-len */
         request(server)

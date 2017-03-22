@@ -18,12 +18,13 @@ consumes:
 produces:
   - application/json
 paths:
-  /users:
+  /clients:
     # our controller name
-    x-swagger-router-controller: users
+    x-swagger-router-controller: clients
     get:
-      description: This endpoint returns all users available in the database
+      description: This endpoint returns all clients available in the database
       # define the type of response for Success "200" and Error
+      operationId: getClients
       responses:
         "200":
           description: Success
@@ -35,16 +36,16 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     post:
-      description: Add a new user
-      operationId: addUser
+      description: Add a new client
+      operationId: addClient
       # movie info to be stored
       parameters:
-        - name: user
+        - name: client
           in: body
-          description: user object
+          description: client object
           required: true
           schema:
-            $ref: "#/definitions/User"
+            $ref: "#/definitions/Client"
       responses:
         "200":
           description: Success
@@ -55,11 +56,12 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-  /users/{user_id}:
+  /clients/{user_id}:
     # our controller name
-    x-swagger-router-controller: users
+    x-swagger-router-controller: clients
     get:
-      description: Retrieve a single user by id
+      description: Retrieve a single client by id
+      operationId: getClient
       # define the type of response for Success "200" and Error
       parameters:
         - name: user_id
@@ -77,19 +79,19 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     put:
-      description: Update a user by id
-      operationId: updateUser
+      description: Update a client by id
+      operationId: updateClient
       parameters:
         - name: user_id
           type: integer
           in: path
           required: true
-        - name: user
+        - name: client
           in: body
-          description: user object
+          description: client object
           required: true
           schema:
-            $ref: "#/definitions/User"
+            $ref: "#/definitions/Client"
       responses:
         "200":
           description: Success
@@ -101,12 +103,12 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     delete:
-      description: delete a user
+      description: delete a client
       # define the parameters
-      operationId: deleteUser
+      operationId: deleteClient
       parameters:
         - name: user_id
-          description: User id
+          description: Client id
           type: integer
           in: path
           required: true
@@ -120,11 +122,11 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-  /users/{user_id}/recipes:
+  /clients/{user_id}/recipes:
     x-swagger-router-controller: recipes
     get:
-      description: get a user's recipes
-      operationId: getUserRecipes
+      description: get a client's recipes
+      operationId: getClientRecipes
       parameters:
         - name: user_id
           type: integer
@@ -142,13 +144,13 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     post:
-      description: add a new recipe to the user's restrictions
-      operationId: addUserRecipe
+      description: add a new recipe to the client's restrictions
+      operationId: addClientRecipe
       parameters:
         - name: user_id
           type: integer
           in: path
-          description: user's id
+          description: client's id
           required: true
         - name: recipe_id
           type: integer
@@ -164,10 +166,10 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-  /users/{user_id}/restrictions:
-    x-swagger-router-controller: users
+  /clients/{user_id}/restrictions:
+    x-swagger-router-controller: clients
     get:
-      description: get a user's dietary restrictions
+      description: get a client's dietary restrictions
       # define the type of response for Success "200" and Error
       operationId: ingredients_get
       parameters:
@@ -186,13 +188,13 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     post:
-      description: add a new ingredient to the user's restrictions
+      description: add a new ingredient to the client's restrictions
       operationId: addRestriction
       parameters:
         - name: user_id
           type: integer
           in: path
-          description: user's id
+          description: client's id
           required: true
         - name: ingredient_id
           type: integer
@@ -209,13 +211,13 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     patch:
-      description: add a new ingredient to the user's restrictions
+      description: add a new ingredient to the client's restrictions
       operationId: updateRestrictions
       parameters:
         - name: user_id
           type: integer
           in: path
-          description: user's id
+          description: client's id
           required: true
         - name: ingredients
           in: body
@@ -234,10 +236,10 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     delete:
-      description: delete an ingredient
+      description: delete a client's restriction
       parameters:
         - name: user_id
-          description: User Id
+          description: Client Id
           type: integer
           in: path
           required: true
@@ -490,10 +492,10 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-  /search/users:
-    x-swagger-router-controller: users
+  /search/clients:
+    x-swagger-router-controller: clients
     get:
-      description: get results from user search
+      description: get results from client search
       parameters:
         - name: first_name
           type: string
@@ -553,10 +555,10 @@ paths:
 
 
 
-  /users/{user_id}/ingredients/{ingredient_id}/verify:
-    x-swagger-router-controller: users
+  /clients/{user_id}/ingredients/{ingredient_id}/verify:
+    x-swagger-router-controller: clients
     get:
-      description: to check if an ingredient is safe for user
+      description: to check if an ingredient is safe for client
       parameters:
         - name: user_id
           type: integer
@@ -576,8 +578,8 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-  /users/{user_id}/recipes/{recipe_id}/crosscheck:
-    x-swagger-router-controller: users
+  /clients/{user_id}/recipes/{recipe_id}/crosscheck:
+    x-swagger-router-controller: clients
     get:
       description: to find out what ingredients are safe and non-safe in an existing recipe
       parameters:
@@ -599,10 +601,10 @@ paths:
             schema:
               $ref: "#/definitions/ErrorResponse"
 
-  /users/{user_id}/recipes/{recipe_id}/rating:
-    x-swagger-router-controller: users
+  /clients/{user_id}/recipes/{recipe_id}/rating:
+    x-swagger-router-controller: clients
     get:
-      description: to get user's rating for a recipe
+      description: to get client's rating for a recipe
       parameters:
         - name: user_id
           type: integer
@@ -622,7 +624,7 @@ paths:
             schema:
               $ref: "#/definitions/ErrorResponse"
     post:
-      description: to post/update user's rating
+      description: to post/update client's rating
       parameters:
         - name: user_id
           type: integer
@@ -661,30 +663,30 @@ definitions:
     items:
       type: integer
 
-  User:
+  Client:
     type: object
     required:
       - id
       - first_name
       - last_name
-      - password
+      # - password
       - email
     properties:
       first_name:
         type: string
-        description: user object first name
+        description: client object first name
       last_name:
         type: string
-        description: user object last name
+        description: client object last name
       email:
         type: string
-        description: user object email
-      password:
-        type: string
-        description: user password
+        description: client object email
+      # password:
+      #   type: string
+      #   description: client password
       id:
         type: integer
-        description: user id
+        description: client id
 
   PatchIngredient:
     type: object
@@ -733,29 +735,32 @@ definitions:
 
   GetUsersResponse:
     required:
-      - users
+      - clients
     properties:
-      # The array of users
-      users:
+      # The array of clients
+      clients:
         type: array
         items:
-          type: object
-          properties:
-            id:
-              type: integer
-            first_name:
-              type: string
-            last_name:
-              type: string
-            email:
-              type: string
+          $ref: "#/definitions/Client"
+        # type: array
+        # items:
+        #   type: object
+        #   properties:
+        #     id:
+        #       type: integer
+        #     first_name:
+        #       type: string
+        #     last_name:
+        #       type: string
+        #     email:
+        #       type: string
 
   GetUsersSearchResponse:
     required:
-      - users
+      - clients
     properties:
-      # The array of users
-      users:
+      # The array of clients
+      clients:
         type: array
         items:
           type: object
