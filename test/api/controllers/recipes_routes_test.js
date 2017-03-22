@@ -96,13 +96,13 @@ suite("recipes test", () => {
       .set("Accept", "application/json")
       .send({
         name: "seaweed salad",
-        instruction: "xyz"
+        instructions: "xyz"
       })
       .expect("Content-Type", /json/)
       .expect(200, {
         id: 1,
         name: "seaweed salad",
-        instruction: "xyz"
+        instructions: "xyz"
       }, done);
   });
 
@@ -113,7 +113,7 @@ suite("recipes test", () => {
       .expect("Content-Type", /json/)
       .expect(200, {
         name: "cauliflower buffalo bites",
-        instruction: "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
+        instructions: "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
       }, done);
   });
 
