@@ -6,14 +6,42 @@ const bookshelf = require('../../bookshelf');
 module.exports = {
     getClient: getClient,
     getClients: getClients,
-    addClient: addClient,
-    getRestrictions: getRestrictions
+    addClient: addClient
 };
 
-function addClient(req, res) {
-    res.set('Content-Type', 'application/json');
-    res.json({});
-}
+
+const bcrypt = require('bcrypt-as-promised');
+const knex = require('../knex.js');
+const humps = require('humps');
+const ev = require('express-validation');
+const validations = require("../validations/users");
+
+// YOUR CODE HERE
+function addClient(req, res, next) {
+    bcrypt.hash(req.body.password, 12)
+        .then((hashed_password) => {
+            var client = {
+                first_name: req.body.firstName,
+                last_name: req.body.lastName,
+                email: req.body.email,
+                hashed_password: hashed_password // youreawizard
+            };
+
+            knex('clients')
+                .insert(client, '*')
+                .then((insertedClient) => {
+                    delete insertedClient[0]['hashed_password'];
+                    // res.status(200).json(humps.camelizeKeys(insertedUser[0]));
+                    res.status(200).json(insertedClient[0])
+                })
+                .catch((err) => {
+                    res.sendStatus(500);
+                });
+        })
+        .catch((err) => {
+            next(err);
+        });
+};
 
 function getClient(req, res) {
     res.set('Content-Type', 'application/json');
@@ -58,7 +86,6 @@ function getClient(req, res) {
     // To list clients
 
     let promises = [];
-    // promises.push(knex("clients").select("id"));
     promises.push(
         knex("clients")
         .select("id", "first_name", "last_name", "email")
@@ -87,8 +114,4 @@ function getClient(req, res) {
 
             return res.json(client);
         });
-}
-
-function getRestrictions() {
-
 }
