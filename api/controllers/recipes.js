@@ -30,7 +30,7 @@ function getRecipe(req, res) {
 function postRecipe(req, res) {
   //to insert into recipes table
   let name = req.swagger.params.recipe.value.name;
-  let instruction = req.swagger.params.recipe.value.instruction;
+  let instructions = req.swagger.params.recipe.value.instructions;
 
   //to insert into recipe_ingredients table
   let ingredients = req.swagger.params.recipe.value.ingredients;
@@ -42,7 +42,7 @@ function postRecipe(req, res) {
       } else {
         return knex("recipes").insert({
           "name": name,
-          "instruction": instruction
+          "instructions": instructions
         }).returning("*");
       }
     })
