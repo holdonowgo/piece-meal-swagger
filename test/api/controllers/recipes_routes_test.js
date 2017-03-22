@@ -90,6 +90,32 @@ suite("recipes test", () => {
       }, done);
   });
 
+  test("PUT /recipes:id", (done) => {
+    request(server)
+      .put("/recipes/1")
+      .set("Accept", "application/json")
+      .send({
+        name: "seaweed salad",
+        instructions: "xyz"
+      })
+      .expect("Content-Type", /json/)
+      .expect(200, {
+        id: 1,
+        name: "seaweed salad",
+        instructions: "xyz"
+      }, done);
+  });
+
+  test("DELETE /recipes/:id", (done) => {
+    request(server)
+      .del("/recipes/1")
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(200, {
+        name: "cauliflower buffalo bites",
+        instructions: "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
+      }, done);
+  });
 
 
   // test("PATCH /recipes:id", (done) => {
@@ -131,6 +157,7 @@ suite("recipes test", () => {
   //     }, done);
   // });
   //
+
   // test("GET /recipes/-1", (done) => {
   //   request(server)
   //     .get("/recipes/-1")

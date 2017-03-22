@@ -171,7 +171,7 @@ paths:
     get:
       description: get a client's dietary restrictions
       # define the type of response for Success "200" and Error
-      operationId: ingredients_get
+      operationId: getRestrictions
       parameters:
         - name: user_id
           type: integer
@@ -237,6 +237,7 @@ paths:
 
     delete:
       description: delete a client's restriction
+      operationId: deleteRestriction
       parameters:
         - name: user_id
           description: Client Id
@@ -552,8 +553,6 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-
-
 
   /clients/{user_id}/ingredients/{ingredient_id}/verify:
     x-swagger-router-controller: clients
