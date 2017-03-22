@@ -20,6 +20,6 @@ exports.seed = function(knex, Promise) {
       return knex("recipes").insert(data);
     })
     .then(function() {
-      return knex.raw("SELECT setval('ingredients_id_seq', (SELECT MAX(id) from ingredients));");
+      return knex.raw("SELECT setval('recipes_id_seq', (SELECT MAX(id) from recipes));");
     });
 };

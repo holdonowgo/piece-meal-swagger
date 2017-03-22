@@ -3,14 +3,16 @@ const knex = require('../../knex');
 
 module.exports = {
   getRecipesList: getRecipesList,
-  getRecipe: getRecipe
-  // postRecipe: postRecipe
+  getRecipe: getRecipe,
+  postRecipe: postRecipe
 };
 
 // /recipes
 function getRecipesList(req, res) {
   return knex("recipes").then((rows) => {
-    let result = { recipes: rows };
+    let result = {
+      recipes: rows
+    };
     return res.json(result);
   });
 }
@@ -36,24 +38,32 @@ function postRecipe(req, res) {
     .first().where("name", name)
     .then((result) => {
       if (result) {
-        res.status(400).json("Ingredient already exists!");
+        res.status(400).json("Recipe already exists!");
       } else {
         return knex("recipes").insert({
-          "name":name,
+          "name": name,
           "instruction": instruction
         }).returning("*");
-     }
+      }
     })
-    .then((recipe) => {
+    .then((recipes) => {
+      const recipe = recipes[0];
       //insert all ingredients into recipe_ingredients
-        //recipe = *
-
-       return knex('recipe_ingredients').insert({
-         "ingredients": ingredients
-       })
-       return ingredient;
-    })
-
+      //recipe = *
+      // let ingredients = recipe.ingredients.id;
+      console.log(recipe);
+      let data = ingredients.map((value) => {
+        return {
+          recipe_id: recipe.id,
+          ingredient_id: value
+        };
+      });
+      return knex('recipe_ingredients').insert(data)
+      .then(() => {
+        console.log("hgjggjgjygyjjgyjy");
+        return res.json({id: recipe.id});
+      });
+    });
 }
 
 

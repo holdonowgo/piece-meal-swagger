@@ -53,27 +53,31 @@ suite("recipes test", () => {
       }, done);
   });
 
-  test("POST /recipes", (done) => {
-    request(server)
+  test("POST /recipes", () => {
+    return request(server)
       .post("/recipes")
       .set("Accept", "application/json")
       .send({
         name: "seaweed salad",
         instruction: "1.Soak seaweed in warm water to cover, 5 minutes. Drain, rinse then squeeze out excess water. If wakame is uncut, cut into 1/2-inch-wide strips.2.Stir together vinegar, soy sauce, sesame oil, sugar, pepper flakes, ginger, and garlic in a bowl until sugar is dissolved. Add the seaweed, scallions, carrots, and cilantro, tossing to combine well. Sprinkle salad with sesame seeds.",
-        ingredients: ""
+        ingredients: []
       })
       .expect("Content-Type", /json/)
-      .expect((res) => {
-        delete res.body.createdAt;
-        delete res.body.createdAt;
-      })
       .expect(200, {
-        id: 4,
-        name: "seaweed salad",
-        instruction: "1.Soak seaweed in warm water to cover, 5 minutes. Drain, rinse then squeeze out excess water. If wakame is uncut, cut into 1/2-inch-wide strips.2.Stir together vinegar, soy sauce, sesame oil, sugar, pepper flakes, ginger, and garlic in a bowl until sugar is dissolved. Add the seaweed, scallions, carrots, and cilantro, tossing to combine well. Sprinkle salad with sesame seeds.",
-        ingredients: ""
-      }, done);
+        id: 4
+      }).then(() => {
+      return request(server)
+          .get("/recipes/4")
+          .set("Accept", "application/json")
+          .expect(200, {
+            id: 4,
+            name: "seaweed salad",
+            instruction: "1.Soak seaweed in warm water to cover, 5 minutes. Drain, rinse then squeeze out excess water. If wakame is uncut, cut into 1/2-inch-wide strips.2.Stir together vinegar, soy sauce, sesame oil, sugar, pepper flakes, ginger, and garlic in a bowl until sugar is dissolved. Add the seaweed, scallions, carrots, and cilantro, tossing to combine well. Sprinkle salad with sesame seeds.",
+            // TODO: add ingredients to response ingredients: []
+          });
+        });
   });
+
 
   test("GET /recipes/:id", (done) => {
     request(server)
