@@ -90,47 +90,33 @@ suite("recipes test", () => {
       }, done);
   });
 
+  test("PUT /recipes:id", (done) => {
+    request(server)
+      .put("/recipes/1")
+      .set("Accept", "application/json")
+      .send({
+        name: "seaweed salad",
+        instruction: "xyz"
+      })
+      .expect("Content-Type", /json/)
+      .expect(200, {
+        id: 1,
+        name: "seaweed salad",
+        instruction: "xyz"
+      }, done);
+  });
 
+  test("DELETE /recipes/:id", (done) => {
+    request(server)
+      .del("/recipes/1")
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(200, {
+        name: "cauliflower buffalo bites",
+        instruction: "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."      
+      }, done);
+  });
 
-  // test("PATCH /recipes:id", (done) => {
-  //   request(server)
-  //     .patch("/recipes/1")
-  //     .set("Accept", "application/json")
-  //     .send({
-  //       name: "seaweed salad",
-  //       instruction: "1.Soak seaweed in warm water to cover, 5 minutes. Drain, rinse then squeeze out excess water. If wakame is uncut, cut into 1/2-inch-wide strips." +
-  //       "\n2.Stir together vinegar, soy sauce, sesame oil, sugar, pepper flakes, ginger, and garlic in a bowl until sugar is dissolved. Add the seaweed, scallions," +
-  //       "carrots, and cilantro, tossing to combine well. Sprinkle salad with sesame seeds."
-  //     })
-  //     .expect("Content-Type", /json/)
-  //     .expect((res) => {
-  //       delete res.body.createdAt;
-  //       delete res.body.updatedAt;
-  //     })
-  //     .expect(200, {
-  //       id: 4,
-  //       name: "seaweed salad",
-  //       instruction: "1.Soak seaweed in warm water to cover, 5 minutes. Drain, rinse then squeeze out excess water. If wakame is uncut, cut into 1/2-inch-wide strips.\
-  //       \n2.Stir together vinegar, soy sauce, sesame oil, sugar, pepper flakes, ginger, and garlic in a bowl until sugar is dissolved. Add the seaweed, scallions, carrots, and cilantro, tossing to combine well. Sprinkle salad with sesame seeds."
-  //     }, done);
-  // });
-  //
-  // test("DELETE /recipes/:id", (done) => {
-  //   request(server)
-  //     .del("/recipes/1")
-  //     .set("Accept", "application/json")
-  //     .expect("Content-Type", /json/)
-  //     .expect((res) => {
-  //       delete res.body.createdAt;
-  //       delete res.body.createdAt;
-  //     })
-  //     .expect(200, {
-  //       name: "seaweed salad",
-  //       instruction: "1.Soak seaweed in warm water to cover, 5 minutes. Drain, rinse then squeeze out excess water. If wakame is uncut, cut into 1/2-inch-wide strips.\
-  //       \n2.Stir together vinegar, soy sauce, sesame oil, sugar, pepper flakes, ginger, and garlic in a bowl until sugar is dissolved. Add the seaweed, scallions, carrots, and cilantro, tossing to combine well. Sprinkle salad with sesame seeds."
-  //     }, done);
-  // });
-  //
   // test("GET /recipes/-1", (done) => {
   //   request(server)
   //     .get("/recipes/-1")

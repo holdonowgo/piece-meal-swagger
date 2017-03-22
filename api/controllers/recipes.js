@@ -4,7 +4,9 @@ const knex = require('../../knex');
 module.exports = {
   getRecipesList: getRecipesList,
   getRecipe: getRecipe,
-  postRecipe: postRecipe
+  postRecipe: postRecipe,
+  updateRecipe: updateRecipe,
+  deleteRecipe: deleteRecipe
 };
 
 // /recipes
@@ -48,10 +50,6 @@ function postRecipe(req, res) {
     })
     .then((recipes) => {
       const recipe = recipes[0];
-      //insert all ingredients into recipe_ingredients
-      //recipe = *
-      // let ingredients = recipe.ingredients.id;
-      console.log(recipe);
       let data = ingredients.map((value) => {
         return {
           recipe_id: recipe.id,
@@ -60,28 +58,33 @@ function postRecipe(req, res) {
       });
       return knex('recipe_ingredients').insert(data)
       .then(() => {
-        console.log("hgjggjgjygyjjgyjy");
         return res.json({id: recipe.id});
       });
     });
 }
 
+function updateRecipe(req, res) {
+  let id = req.swagger.params.id.value;
+  return knex('recipes')
+    .update(req.swagger.params.recipe.value)
+    .then(() => {
+      return knex('recipes').where('id', id);
+    })
+    .then((recipes) => {
+      let recipe = recipes[0];
+      res.json(recipe);
+    });
+}
 
-
-// function deleteRecipe(req, res) {
-//   let id = Number(req.swagger.params.id.value);
-//   return knex('recipes').where('id', id)
-//     .then((result) => {
-//       let recipe = result[0];
-//       delete recipe.id;
-//       res.json(recipe);
-//     })
-//     .then(() => {
-//       knex('recipes').where('id', id).del();
-//     })
-//
-// }
-//
-// function updateRecipe(req, res) {
-//
-// }
+function deleteRecipe(req, res) {
+  let id = Number(req.swagger.params.id.value);
+  return knex('recipes').where('id', id)
+    .then((result) => {
+      let recipe = result[0];
+      delete recipe.id;
+      res.json(recipe);
+    })
+    .then(() => {
+      knex('recipes').where('id', id).del();
+    });
+}
