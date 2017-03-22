@@ -19,8 +19,6 @@ function getRecipesList(req, res) {
   });
 }
 
-// /recipes:id
-
 function getRecipe(req, res) {
   return knex("recipes")
     .first().where("id", req.swagger.params.id.value)
