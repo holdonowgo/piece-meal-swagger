@@ -8,8 +8,31 @@ const IngredientTags = require('../models/ingredient.js').IngredientTags;
 module.exports = {
     getIngredient: getIngredient,
     addIngredient: addIngredient,
-    getIngredientsList: getIngredientsList
+    getIngredientsList: getIngredientsList,
+    deleteIngredient: deleteIngredient
 };
+
+function deleteIngredient(req, res) {
+    // knex('ingredients').update('active', false)
+    //     .returning('*')
+    //     .then((result) => {
+    //         return res.json(result);
+    //     });
+
+    knex('ingredients')
+        .where('id', req.swagger.params.id.value)
+        .update({
+            active: false
+        })
+        .returning('*')
+        .then((result) => {
+          let ingredient = result[0];
+            // ingredient.alternatives = [];
+            delete ingredient.created_at;
+            delete ingredient.updated_at;
+            return res.json(ingredient);
+        })
+}
 
 function getIngredientsList(req, res) {
 
@@ -36,6 +59,8 @@ function getIngredientsList(req, res) {
             let payload = {
                 ingredients: ingredients
             };
+
+            console.log(payload);
 
             return res.json(payload);
         });
@@ -79,14 +104,14 @@ function getIngredient(req, res) {
             withRelated: ['tags']
         })
         .then((ingredient) => {
-          let ingredientObj = ingredient.serialize();
-          ingredientObj.tags = ingredientObj.tags.map((value) => {
-            return value.tag_text;
-          }).sort();
-          ingredientObj.alternatives = [];
-          delete ingredientObj.created_at;
-          delete ingredientObj.updated_at;
-          return res.json(ingredientObj);
+            let ingredientObj = ingredient.serialize();
+            ingredientObj.tags = ingredientObj.tags.map((value) => {
+                return value.tag_text;
+            }).sort();
+            ingredientObj.alternatives = [];
+            delete ingredientObj.created_at;
+            delete ingredientObj.updated_at;
+            return res.json(ingredientObj);
         })
 
 }
