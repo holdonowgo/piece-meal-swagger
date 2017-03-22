@@ -155,4 +155,19 @@ suite('clients tests', () => {
     //                 });
     //         });
     // });
+
+    test('GET /clients/:id/restrictions', (done) => {
+      request(server)
+        .get('/clients/2/restrictions')
+        .set('Accept', 'application/json')
+        .expect(200, {
+          ingredients: [{
+            id:1,
+            name: 'bacon'
+          }, {
+            id: 3,
+            name: 'milk'
+          }]
+        }, done);
+    });
 });

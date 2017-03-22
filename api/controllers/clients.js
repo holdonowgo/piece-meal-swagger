@@ -52,6 +52,11 @@ function getClients(req, res) {
         });
 }
 
-function getRestrictions() {
-
+function getRestrictions(req, res) {
+  knex('client_restriction')
+    .where('client_id', req.swagger.params.id.value)
+    .join('ingredients', 'ingredient_id', req.swagger.params.id.value)
+    .then((result) => {
+      console.log(result);
+    });
 }
