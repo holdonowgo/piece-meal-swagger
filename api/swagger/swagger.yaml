@@ -717,11 +717,7 @@ definitions:
       - name
 
   GetUserResponse:
-    required:
-      - id
-      - first_name
-      - last_name
-      - email
+    type: object
     properties:
       id:
         type: integer
@@ -731,6 +727,17 @@ definitions:
         type: string
       email:
         type: string
+      recipes:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            instructions:
+              type: string
 
   GetUsersResponse:
     required:

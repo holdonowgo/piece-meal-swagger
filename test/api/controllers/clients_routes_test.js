@@ -81,22 +81,35 @@ suite('clients tests', () => {
             }, done);
     });
 
-    // test('GET /clients/:id', (done) => {
-    //     /* eslint-disable max-len */
-    //     request(server)
-    //         .get('/clients/1')
-    //         .set('Accept', 'application/json')
-    //         .expect('Content-Type', /json/)
-    //         .expect(200, {
-    //             "id": 2,
-    //             "first_name": 'Marvin',
-    //             "last_name": 'Gaye',
-    //             "email": 'marvin.gaye@gmail.com'
-    //         }, done);
-    //
-    //     /* eslint-enable max-len */
-    // });
-    //
+    test('GET /clients/:id', (done) => {
+        /* eslint-disable max-len */
+        request(server)
+            .get('/clients/1')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200, {
+                "id": 1,
+                "first_name": 'Marvin',
+                "last_name": 'Gaye',
+                "email": 'marvin.gaye@gmail.com',
+                "recipes": [{
+                    id: 1,
+                    name: "cauliflower buffalo bites",
+                    instructions: "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
+                }, {
+                    id: 2,
+                    name: "simple oatmeal",
+                    instructions: "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil."
+                }, {
+                    id: 3,
+                    name: "cheese omelette",
+                    instructions: "1.Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.2.Place a small non-stick frying pan on a low heat to warm up."
+                }]
+            }, done);
+
+        /* eslint-enable max-len */
+    });
+
     //
     // test('POST /clients', (done) => {
     //     const password = 'ilikebigcats';
