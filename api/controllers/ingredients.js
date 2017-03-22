@@ -60,6 +60,8 @@ function getIngredientsList(req, res) {
                 ingredients: ingredients
             };
 
+            console.log(payload);
+
             return res.json(payload);
         });
 }
