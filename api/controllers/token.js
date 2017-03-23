@@ -29,11 +29,11 @@ module.exports = {
 
 function postToken(req, res) {
     knex('clients')
-        .where('email', req.swagger.params.request.value.email)
+        .where('email', req.swagger.params.credentials.value.email)
         .first()
         .then((client) => {
             return bcrypt.compare(
-                req.swagger.params.request.value.password,
+                req.swagger.params.credentials.value.password,
                 client.hashed_password
             );
         })
@@ -43,7 +43,7 @@ function postToken(req, res) {
         })
         .then((result) => {
             return knex('clients')
-                .where('email', req.swagger.params.request.value.email)
+                .where('email', req.swagger.params.credentials.value.email)
                 .first();
         })
         .then((client) => {
@@ -63,7 +63,11 @@ function postToken(req, res) {
             //     secure: process.env.NODE_ENV === 'production'
             // });
             client.token = token;
+            delete client.first_name;
+            delete client.last_name;
             delete client.hashed_password;
+            delete client.created_at;
+            delete client.updated_at;
             console.log(client);
             res.set('Content-Type', 'application/json');
             res.status(200).json(client);
