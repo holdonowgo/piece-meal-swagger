@@ -171,43 +171,39 @@ suite('clients tests', () => {
     });
 
 
-    test('POST clients/:id/restrictions', (done) => {
+    test('POST /clients/:id/restrictions', (done) => {
       request(server)
-        .post('clients/2/restrictions')
+        .post('/clients/2/restrictions')
         .set('Accept', 'application/json')
         .send({
-          name: 'avocado'
+          ingredient_id: 4
         })
         .expect('Content-Type', /json/)
-        .expect((res) => {
-          delete res.body.created_at;
-          delete res.body.updated_at;
-        })
-        .expect(200, {
-          client: {
-            id: 3,
-            first_name: 'Al',
-            last_name: 'Green',
-            restrictions: [ { id: 1, name: 'bacon' },
-                            { id: 3, name: 'milk' },
-                            { id: 4, name: 'avocado' } ]
-          }
-        }, done)
+        .expect(200, { success: 1, description: 'Restriction has been added' }, done)
       });
 
-    // test('GET /clients/:id/restrictions', (done) => {
-    //   request(server)
-    //     .get('/clients/2/restrictions')
-    //     .set('Accept', 'application/json')
-    //     .expect(200, {
-    //       ingredients: [{
-    //         id:1,
-    //         name: 'bacon'
-    //       }, {
-    //         id: 3,
-    //         name: 'milk'
-    //       }]
-    //     }, done);
-    // });
+    test('GET /clients/:id/restrictions', (done) => {
+      request(server)
+        .get('/clients/2/restrictions')
+        .set('Accept', 'application/json')
+        .expect(200, {
+          ingredients: [{
+            id:1,
+            name: 'bacon'
+          }, {
+            id: 3,
+            name: 'milk'
+          }]
+        }, done);
+    });
 
+    test('DELETE /clients/:id/restrictions', (done) => {
+      request(server)
+        .del('/clients/2/restrictions')
+        .set('Accept', 'application/json')
+        .send({ ingredient_id: 2 })
+        .expect('Content-Type', /json/)
+        .expect(200, { success: 1, description: 'Restriction has been deleted' }, done);
+    });
+//
 });

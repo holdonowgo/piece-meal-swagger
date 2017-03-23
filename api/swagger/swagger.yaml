@@ -230,15 +230,23 @@ paths:
           in: path
           description: client's id
           required: true
-        - name: ingredient_id
-          type: integer
-          in: query
+        - name: ingredient
+          description: Request body
+          in: body
           required: true
+          schema:
+            type: object
+            required:
+              - ingredient_id
+            properties:
+              ingredient_id:
+                description: the ingredient to add
+                type: integer
       responses:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PostUserRestrictionResponse"
+            $ref: "#/definitions/GeneralResponse"
         default:
           description: Error
           schema:
@@ -278,7 +286,7 @@ paths:
           type: integer
           in: path
           required: true
-        - name: request
+        - name: ingredient
           description: Request body
           in: body
           required: true

@@ -7,7 +7,9 @@ module.exports = {
   getClient: getClient,
   getClients: getClients,
   addClient: addClient,
-  getRestrictions: getRestrictions
+  getRestrictions: getRestrictions,
+  addRestriction: addRestriction,
+  deleteRestriction: deleteRestriction
 };
 
 const bcrypt = require('bcrypt-as-promised');
@@ -160,15 +162,22 @@ function getClient(req, res) {
       });
   }
 
+  function addRestriction(req, res) {
+    let user_id = req.swagger.params.user_id.value;
+    let ingredient_id = req.swagger.params.ingredient.value.ingredient_id;
+    return knex.insert({ 'client_id': user_id, 'ingredient_id': ingredient_id })
+        .into('client_restriction')
+        .then(() => {
+          return res.json({ success: 1, description: 'Restriction has been added' });
+        });
+  }
 
-//   function addRestriction(req, res) {
-//     let user_id = req.swagger.params.user_id.value;
-//     let ingredient_id = req.swagger.params.ingredient_id.value;
-//     knex('ingredients')
-//       .join('client_restriction', 'ingredients.id', 'ingredient_id')
-//       .first().where('user_id', user_id)
-//       .then((result) => {
-//
-//       })
-//   }
-// }
+  function deleteRestriction(req, res) {
+    let user_id = req.swagger.params.user_id.value;
+    let ingredient_id = req.swagger.params.ingredient.value.ingredient_id;
+    knex('client_restriction').where('client_id', user_id)
+      .where('ingredient_id', ingredient_id).del()
+      .then(() => {
+        return res.json({ success: 1, description: 'Restriction has been deleted' });
+      });
+  }
