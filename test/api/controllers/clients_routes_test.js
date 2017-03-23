@@ -170,18 +170,40 @@ suite('clients tests', () => {
             });
     });
 
-    // test('GET /clients/:id/restrictions', (done) => {
-    //   request(server)
-    //     .get('/clients/2/restrictions')
-    //     .set('Accept', 'application/json')
-    //     .expect(200, {
-    //       ingredients: [{
-    //         id:1,
-    //         name: 'bacon'
-    //       }, {
-    //         id: 3,
-    //         name: 'milk'
-    //       }]
-    //     }, done);
-    // });
+
+    test('POST /clients/:id/restrictions', (done) => {
+      request(server)
+        .post('/clients/2/restrictions')
+        .set('Accept', 'application/json')
+        .send({
+          ingredient_id: 4
+        })
+        .expect('Content-Type', /json/)
+        .expect(200, { success: 1, description: 'Restriction has been added' }, done)
+      });
+
+    test('GET /clients/:id/restrictions', (done) => {
+      request(server)
+        .get('/clients/2/restrictions')
+        .set('Accept', 'application/json')
+        .expect(200, {
+          ingredients: [{
+            id:1,
+            name: 'bacon'
+          }, {
+            id: 3,
+            name: 'milk'
+          }]
+        }, done);
+    });
+
+    test('DELETE /clients/:id/restrictions', (done) => {
+      request(server)
+        .del('/clients/2/restrictions')
+        .set('Accept', 'application/json')
+        .send({ ingredient_id: 2 })
+        .expect('Content-Type', /json/)
+        .expect(200, { success: 1, description: 'Restriction has been deleted' }, done);
+    });
+//
 });
