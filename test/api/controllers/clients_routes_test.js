@@ -132,7 +132,24 @@ suite('clients tests', () => {
         /* eslint-enable max-len */
     });
 
-    xdescribe('GET /clients/88', (done) => {
+    test('GET /search/clients/?email=aom', (done) => {
+        request(server)
+            .get('/search/clients/?last_name=ant')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200, {
+                clients: [{
+                    "id": 4,
+                    "first_name": 'Aom',
+                    "last_name": 'Sithanant',
+                    "email": 'aom.sithanant@gmail.com',
+                    "is_super_user": true,
+                    "recipes": []
+                }]
+            }, done);
+    });
+
+    test('GET /clients/88', (done) => {
         request(server)
             .get('/clients/88')
             .set('Accept', 'text/plain')

@@ -505,15 +505,20 @@ paths:
     x-swagger-router-controller: clients
     get:
       description: get results from client search
+      operationId: getUsersSearchResponse
       parameters:
         - name: first_name
           type: string
           in: query
-          required: true
+          required: false
         - name: last_name
           type: string
           in: query
-          required: true
+          required: false
+        - name: email
+          type: string
+          in: query
+          required: false
       responses:
         "200":
           description: Success
@@ -662,7 +667,7 @@ paths:
             description: Error
             schema:
               $ref: "#/definitions/ErrorResponse"
-              
+
   /token:
     x-swagger-router-controller: token
     post:
@@ -708,7 +713,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  
+
 
   /swagger:
     x-swagger-pipe: swagger_raw

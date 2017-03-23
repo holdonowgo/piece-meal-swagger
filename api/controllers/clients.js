@@ -10,7 +10,8 @@ module.exports = {
     getRestrictions: getRestrictions,
     addRestriction: addRestriction,
     deleteRestriction: deleteRestriction,
-    crossCheckRecipe: crossCheckRecipe
+    crossCheckRecipe: crossCheckRecipe,
+    getUsersSearchResponse: getUsersSearchResponse
 }
 
 const bcrypt = require('bcrypt-as-promised');
@@ -232,6 +233,47 @@ function deleteRestriction(req, res) {
             return res.json({
                 success: 1,
                 description: 'Restriction has been deleted'
+            });
+        });
+}
+
+function getUsersSearchResponse(req, res) {
+    // To list clients
+    let email = req.swagger.params.email.value;
+    let first_name = req.swagger.params.first_name.value;
+    let last_name = req.swagger.params.last_name.value;
+    let promises = [];
+    // promises.push(knex("clients").select("id"));
+    promises.push(knex("clients")
+        .select("id", "first_name", "last_name", "email", "is_super_user")
+        .where(`clients.first_name`, `like`, `%${first_name}%`)
+        .orWhere(`clients.last_name`, `like`, `%${last_name}%`)
+        .orWhere(`clients.email`, `like`, `%${email}%`)
+    );
+    promises.push(knex("client_recipes")
+        .join('recipes', 'recipes.id', '=', 'client_recipes.recipe_id')
+        .select("client_recipes.client_id", "recipes.*"));
+    Promise.all(promises)
+        .then((results) => {
+            let clients = results[0];
+            let recipes = results[1];
+
+            for (let client of clients) {
+                let r = recipes.filter((recipe) => {
+                    return recipe.client_id === client.id;
+                }).map((recipe) => {
+                    return {
+                        id: recipe.id,
+                        instructions: recipe.instructions,
+                        name: recipe.name
+                    };
+                }).sort();
+
+                client.recipes = r;
+            }
+
+            return res.json({
+                clients: clients
             });
         });
 }
