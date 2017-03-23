@@ -506,15 +506,20 @@ paths:
     x-swagger-router-controller: clients
     get:
       description: get results from client search
+      operationId: getUsersSearchResponse
       parameters:
         - name: first_name
           type: string
           in: query
-          required: true
+          required: false
         - name: last_name
           type: string
           in: query
-          required: true
+          required: false
+        - name: email
+          type: string
+          in: query
+          required: false
       responses:
         "200":
           description: Success
@@ -746,9 +751,12 @@ definitions:
       - id
       - first_name
       - last_name
-      # - password
       - email
+      - is_super_user
     properties:
+      id:
+        type: integer
+        description: client id
       first_name:
         type: string
         description: client object first name
@@ -758,12 +766,9 @@ definitions:
       email:
         type: string
         description: client object email
-      # password:
-      #   type: string
-      #   description: client password
-      id:
-        type: integer
-        description: client id
+      is_super_user:
+        type: boolean
+        description: does client have super user authorization
 
   PatchIngredient:
     type: object

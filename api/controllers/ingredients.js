@@ -37,7 +37,6 @@ function deleteIngredient(req, res) {
 }
 
 function getIngredientsList(req, res) {
-
     // To list ingredients
 
     let promises = [];
