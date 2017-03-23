@@ -990,6 +990,8 @@ definitions:
         type: array
         items:
           type: string
+      calories:
+        type: integer
       alternatives:
         type: array
         items:

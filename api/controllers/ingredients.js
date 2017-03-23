@@ -4,6 +4,8 @@ const bookshelf = require('../../bookshelf');
 const Ingredient = require('../models/ingredient.js').Ingredient;
 const IngredientTag = require('../models/ingredient.js').IngredientTag;
 const IngredientTags = require('../models/ingredient.js').IngredientTags;
+const fetch = require('node-fetch');
+const url = require('url');
 
 module.exports = {
     getIngredient: getIngredient,
@@ -90,7 +92,6 @@ function getIngredient(req, res) {
     //             return res.json(ingredient);
     //         }
     //     });
-
     Ingredient.forge({
             id: req.swagger.params.id.value
         })
@@ -98,16 +99,13 @@ function getIngredient(req, res) {
             withRelated: ['tags']
         })
         .then((ingredient) => {
-            let ingredientObj = ingredient.serialize();
+            ingredientObj = ingredient.serialize();
             ingredientObj.tags = ingredientObj.tags.map((value) => {
                 return value.tag_text;
             }).sort();
             ingredientObj.alternatives = [];
             delete ingredientObj.created_at;
             delete ingredientObj.updated_at;
-            return res.json(ingredientObj);
-        })
-
 }
 
 // function queryIngredient(id) {
