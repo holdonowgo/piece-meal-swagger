@@ -6,7 +6,8 @@ const bookshelf = require('../../bookshelf');
 module.exports = {
     getClient: getClient,
     getClients: getClients,
-    addClient: addClient
+    addClient: addClient,
+    crossCheckRecipe: crossCheckRecipe
 };
 
 
@@ -74,6 +75,43 @@ function addClient(req, res, next) {
     //         next(err);
     //     });
 };
+
+function crossCheckRecipe(req, res) {
+    let promises = [];
+    // promises.push(knex("clients").select("id"));
+    promises.push(knex("clients")
+        .join('client_restriction', 'clients.id', 'client_restriction.client_id')
+        .where("clients.id", req.swagger.params.user_id.value)
+    );
+    promises.push(knex("recipe_ingredients")
+        .where("recipe_id", req.swagger.params.recipe_id.value)
+    );
+    Promise.all(promises)
+        .then((results) => {
+            let restrictions = results[0];
+            let recipe_ingredient = results[1];
+
+            console.log(recipe_ingredient);
+            console.log(restrictions);
+
+            let result = {
+              is_safe: true,
+              forbidden: []
+            };
+
+            for (let restriction of restrictions) {
+                let found = recipe_ingredient.some(function(ingredient) {
+                    return ingredient.id === restriction.id;
+                });
+                if(found) {
+                  result.forbidden.push(restriction.ingredient_id);
+                  result.is_safe = false;
+                }
+            }
+
+            return res.json(result);
+        });
+}
 
 function getClients(req, res) {
     // To list clients
