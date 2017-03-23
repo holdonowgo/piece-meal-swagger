@@ -4,13 +4,14 @@ const bookshelf = require('../../bookshelf');
 // const Client = require('../models/client.js').Client;
 
 module.exports = {
-  getClient: getClient,
-  getClients: getClients,
-  addClient: addClient,
-  getRestrictions: getRestrictions,
-  addRestriction: addRestriction,
-  deleteRestriction: deleteRestriction
-};
+    getClient: getClient,
+    getClients: getClients,
+    addClient: addClient,
+    getRestrictions: getRestrictions,
+    addRestriction: addRestriction,
+    deleteRestriction: deleteRestriction,
+    crossCheckRecipe: crossCheckRecipe
+}
 
 const bcrypt = require('bcrypt-as-promised');
 const humps = require('humps');
@@ -77,6 +78,43 @@ function addClient(req, res, next) {
     //     });
 }
 
+function crossCheckRecipe(req, res) {
+    let promises = [];
+    // promises.push(knex("clients").select("id"));
+    promises.push(knex("clients")
+        .join('client_restriction', 'clients.id', 'client_restriction.client_id')
+        .where("clients.id", req.swagger.params.user_id.value)
+    );
+    promises.push(knex("recipe_ingredients")
+        .where("recipe_id", req.swagger.params.recipe_id.value)
+    );
+    Promise.all(promises)
+        .then((results) => {
+            let restrictions = results[0];
+            let recipe_ingredient = results[1];
+
+            console.log(recipe_ingredient);
+            console.log(restrictions);
+
+            let result = {
+                is_safe: true,
+                forbidden: []
+            };
+
+            for (let restriction of restrictions) {
+                let found = recipe_ingredient.some(function(ingredient) {
+                    return ingredient.id === restriction.id;
+                });
+                if (found) {
+                    result.forbidden.push(restriction.ingredient_id);
+                    result.is_safe = false;
+                }
+            }
+
+            return res.json(result);
+        });
+}
+
 function getClients(req, res) {
     // To list clients
 
@@ -131,53 +169,66 @@ function getClient(req, res) {
 
     Promise.all(promises)
 
-      .then((results) => {
-        let client = results[0];
-        let recipes = results[1];
+        .then((results) => {
+            let client = results[0];
+            let recipes = results[1];
 
-        client["recipes"] = recipes.map((recipe) => {
-          return {
-            id: recipe.id,
-            name: recipe.name,
-            instructions: recipe.instructions
-          };
-        }).sort();
+            client["recipes"] = recipes.map((recipe) => {
+                return {
+                    id: recipe.id,
+                    name: recipe.name,
+                    instructions: recipe.instructions
+                };
+            }).sort();
 
-        return res.json(client);
-      });
+            return res.json(client);
+        });
 
-  }
+}
 
-  function getRestrictions(req, res) {
+function getRestrictions(req, res) {
     knex('ingredients')
-      .join('client_restriction', 'ingredients.id', 'ingredient_id')
-      .where('client_id', req.swagger.params.user_id.value)
-      .then((results) => {
-        let result = [];
-        for (let i = 0; i < results.length; i++) {
-          result.push({ id: results[i].ingredient_id,
-                        name: results[i].name });
-        }
-        return res.json({ingredients: result});
-      });
-  }
+        .join('client_restriction', 'ingredients.id', 'ingredient_id')
+        .where('client_id', req.swagger.params.user_id.value)
+        .then((results) => {
+            let result = [];
+            for (let i = 0; i < results.length; i++) {
+                result.push({
+                    id: results[i].ingredient_id,
+                    name: results[i].name
+                });
+            }
+            return res.json({
+                ingredients: result
+            });
+        });
+}
 
-  function addRestriction(req, res) {
+function addRestriction(req, res) {
     let user_id = req.swagger.params.user_id.value;
     let ingredient_id = req.swagger.params.ingredient.value.ingredient_id;
-    return knex.insert({ 'client_id': user_id, 'ingredient_id': ingredient_id })
+    return knex.insert({
+            'client_id': user_id,
+            'ingredient_id': ingredient_id
+        })
         .into('client_restriction')
         .then(() => {
-          return res.json({ success: 1, description: 'Restriction has been added' });
+            return res.json({
+                success: 1,
+                description: 'Restriction has been added'
+            });
         });
-  }
+}
 
-  function deleteRestriction(req, res) {
+function deleteRestriction(req, res) {
     let user_id = req.swagger.params.user_id.value;
     let ingredient_id = req.swagger.params.ingredient.value.ingredient_id;
     knex('client_restriction').where('client_id', user_id)
-      .where('ingredient_id', ingredient_id).del()
-      .then(() => {
-        return res.json({ success: 1, description: 'Restriction has been deleted' });
-      });
-  }
+        .where('ingredient_id', ingredient_id).del()
+        .then(() => {
+            return res.json({
+                success: 1,
+                description: 'Restriction has been deleted'
+            });
+        });
+}
