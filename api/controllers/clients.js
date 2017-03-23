@@ -4,11 +4,11 @@ const bookshelf = require('../../bookshelf');
 // const Client = require('../models/client.js').Client;
 
 module.exports = {
-    getClient: getClient,
-    getClients: getClients,
-    addClient: addClient
+  getClient: getClient,
+  getClients: getClients,
+  addClient: addClient,
+  getRestrictions: getRestrictions
 };
-
 
 const bcrypt = require('bcrypt-as-promised');
 const humps = require('humps');
@@ -23,7 +23,7 @@ function addClient(req, res, next) {
             if (result) {
                 res.status(400).json('Client already exists!');
             } else {
-                return bcrypt.hash(req.swagger.params.client.value.password, 12)
+                return bcrypt.hash(req.swagger.params.client.value.password, 12);
             }
         })
         .then((hashed_password) => {
@@ -41,7 +41,7 @@ function addClient(req, res, next) {
                     delete insertedClient[0].updated_at;
                     delete insertedClient[0]['hashed_password'];
 
-                    res.status(200).json(insertedClient[0])
+                    res.status(200).json(insertedClient[0]);
                 })
                 .catch((err) => {
                     res.sendStatus(500);
@@ -73,7 +73,7 @@ function addClient(req, res, next) {
     //     .catch((err) => {
     //         next(err);
     //     });
-};
+}
 
 function getClients(req, res) {
     // To list clients
@@ -101,7 +101,7 @@ function getClients(req, res) {
                 }).sort();
 
                 client.recipes = r;
-            };
+            }
 
             return res.json({
                 clients: clients
@@ -109,17 +109,8 @@ function getClients(req, res) {
         });
 }
 
-
-function getRestrictions(req, res) {
-    knex('client_restriction')
-        .where('client_id', req.swagger.params.id.value)
-        .join('ingredients', 'ingredient_id', req.swagger.params.id.value)
-        .then((result) => {
-            console.log(result);
-        });
-}
-
 function getClient(req, res) {
+
     // To list clients
 
     let promises = [];
@@ -137,19 +128,47 @@ function getClient(req, res) {
     );
 
     Promise.all(promises)
-        .then((results) => {
-            let client = results[0];
-            let recipes = results[1];
 
-            client["recipes"] = recipes.map((recipe) => {
-                return {
-                    id: recipe.id,
-                    name: recipe.name,
-                    instructions: recipe.instructions
-                };
-            }).sort();
+      .then((results) => {
+        let client = results[0];
+        let recipes = results[1];
 
-            return res.json(client);
-        });
+        client["recipes"] = recipes.map((recipe) => {
+          return {
+            id: recipe.id,
+            name: recipe.name,
+            instructions: recipe.instructions
+          };
+        }).sort();
 
-}
+        return res.json(client);
+      });
+
+  }
+
+  function getRestrictions(req, res) {
+    knex('ingredients')
+      .join('client_restriction', 'ingredients.id', 'ingredient_id')
+      .where('client_id', req.swagger.params.user_id.value)
+      .then((results) => {
+        let result = [];
+        for (let i = 0; i < results.length; i++) {
+          result.push({ id: results[i].ingredient_id,
+                        name: results[i].name });
+        }
+        return res.json({ingredients: result});
+      });
+  }
+
+
+//   function addRestriction(req, res) {
+//     let user_id = req.swagger.params.user_id.value;
+//     let ingredient_id = req.swagger.params.ingredient_id.value;
+//     knex('ingredients')
+//       .join('client_restriction', 'ingredients.id', 'ingredient_id')
+//       .first().where('user_id', user_id)
+//       .then((result) => {
+//
+//       })
+//   }
+// }
