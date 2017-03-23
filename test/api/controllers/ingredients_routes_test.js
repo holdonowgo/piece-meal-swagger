@@ -47,6 +47,7 @@ suite('ingredients test', () => {
         request(server)
             .get('/ingredients')
             .set('Accept', 'application/json')
+            .set('Token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5MDI5NDE0MSwiZXhwIjoxNDkwODk4OTQxfQ.gm9LVr8P57ZDSgUZGFiyTSA8qpYsUgaFlRTa_NvlYfA')
             .expect('Content-Type', /json/)
             .expect(200, {
                 "ingredients": [{
@@ -164,6 +165,30 @@ suite('ingredients test', () => {
             }, done);
 
         /* eslint-enable max-len */
+    });
+
+    test('GET /search/ingredients/?text=mi', (done) => {
+        request(server)
+            .get('/search/ingredients?text=mi')
+            .set('Accept', 'application/json')
+            .set('Token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5MDI5NDE0MSwiZXhwIjoxNDkwODk4OTQxfQ.gm9LVr8P57ZDSgUZGFiyTSA8qpYsUgaFlRTa_NvlYfA')
+            .expect('Content-Type', /json/)
+            .expect(200, {
+                "ingredients": [
+                    // {
+                    //     "id": 2,
+                    //     "name": "egg",
+                    //     "tags": ['vegetarian'],
+                    //     "active": true
+                    // },
+                    {
+                        "id": 3,
+                        "name": "milk",
+                        "tags": ['dairy', 'vegetarian'],
+                        "active": true
+                    }
+                ]
+            }, done);
     });
 
     // test('GET /ingredients/9000', (done) => {
