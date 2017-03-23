@@ -6,7 +6,8 @@ const bookshelf = require('../../bookshelf');
 module.exports = {
   getClient: getClient,
   getClients: getClients,
-  addClient: addClient
+  addClient: addClient,
+  getRestrictions: getRestrictions
 };
 
 
@@ -81,16 +82,6 @@ function getClients(req, res) {
     });
 }
 
-
-function getRestrictions(req, res) {
-  knex('client_restriction')
-    .where('client_id', req.swagger.params.id.value)
-    .join('ingredients', 'ingredient_id', req.swagger.params.id.value)
-    .then((result) => {
-      console.log(result);
-    });
-}
-
   function getClient(req, res) {
     // To list clients
 
@@ -124,4 +115,29 @@ function getRestrictions(req, res) {
         return res.json(client);
       });
 
+  }
+
+  function getRestrictions(req, res) {
+    knex('ingredients')
+      .join('client_restriction', 'ingredients.id', 'ingredient_id')
+      .where('client_id', req.swagger.params.user_id.value)
+      .then((results) => {
+        let result = []
+        for (let i = 0; i < results.length; i++) {
+          result.push({ id: results[i].ingredient_id,
+                        name: results[i].name })
+        }
+        return res.json({ingredients: result});
+      });
+  }
+
+  function addRestriction(req, res) {
+    let user_id = req.swagger.params.user_id.value;
+    let ingredient_id = req.swagger.params.ingredient_id.value;
+    knex('ingredients')
+      .join('client_restriction', 'ingredients.id', 'ingredient_id')
+      .first().where('user_id', user_id)
+      .then((result) => {
+
+      })
   }

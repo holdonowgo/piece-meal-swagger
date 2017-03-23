@@ -183,4 +183,28 @@ suite('clients tests', () => {
           }]
         }, done);
     });
+
+    test('POST clients/:id/restrictions', (done) => {
+      request(server)
+        .post('clients/2/restrictions')
+        .set('Accept', 'application/json')
+        .send({
+          name: 'avocado'
+        })
+        .expect('Content-Type', /json/)
+        .expect((res) => {
+          delete res.body.created_at;
+          delete res.body.updated_at;
+        })
+        .expect(200, {
+          client: {
+            id: 3,
+            first_name: 'Al',
+            last_name: 'Green',
+            restrictions: [ { id: 1, name: 'bacon' },
+                            { id: 3, name: 'milk' },
+                            { id: 4, name: 'avocado' } ]
+          }
+        }, done)
+      });
 });

@@ -160,7 +160,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/PostUserRestrictionResponse"
         default:
           description: Error
           schema:
@@ -204,7 +204,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/PostUserRestrictionResponse"
         default:
           description: Error
           schema:
@@ -830,6 +830,26 @@ definitions:
               type: integer
             name:
               type: string
+
+  PostUserRestrictionResponse:
+    type: object
+    properties:
+      client:
+        type: object
+        properties:
+            id:
+              type: integer
+            name:
+              type: string
+            restrictions:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
 
   GetIngredientsListResponse:
     required:
