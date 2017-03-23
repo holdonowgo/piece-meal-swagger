@@ -126,7 +126,6 @@ suite('clients tests', () => {
                 password
             })
             .expect((res) => {
-                console.log(res.body);
                 delete res.body.created_at;
                 delete res.body.updated_at;
             })

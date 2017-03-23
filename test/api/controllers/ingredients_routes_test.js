@@ -21,8 +21,6 @@ const bcrypt = require('bcrypt');
 const knex = require('../../../knex');
 const server = require('../../../app');
 
-console.log(suite);
-
 suite('ingredients test', () => {
     before((done) => {
         knex.migrate.latest()
