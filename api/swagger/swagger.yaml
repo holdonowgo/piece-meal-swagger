@@ -335,7 +335,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Recipe"
+            $ref: "#/definitions/PostRecipe"
       responses:
         "200":
           description: Success
@@ -392,6 +392,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+
 
     delete:
       description: delete a recipe
@@ -662,7 +663,7 @@ paths:
             description: Error
             schema:
               $ref: "#/definitions/ErrorResponse"
-              
+
   /token:
     x-swagger-router-controller: token
     post:
@@ -708,7 +709,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  
+
 
   /swagger:
     x-swagger-pipe: swagger_raw
@@ -952,21 +953,18 @@ definitions:
         type: string
       instructions:
         type: string
-      ingredients:
-        type: array
-        items:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-            tags:
-              type: array
-              items:
-                type: string
 
   PostRecipeResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      instructions:
+        type: string
+
+  PostRecipe:
     type: object
     properties:
       id:
@@ -1004,6 +1002,8 @@ definitions:
         type: array
         items:
           type: string
+      calories:
+        type: integer
       alternatives:
         type: array
         items:
