@@ -18,6 +18,40 @@ consumes:
 produces:
   - application/json
 paths:
+  /token:
+    # our controller name
+    x-swagger-router-controller: token
+    post:
+      description: This endpoint returns an auth token
+      # define the type of response for Success "200" and Error
+      operationId: postToken
+      parameters:
+        - name: request
+          description: Request body
+          in: body
+          required: true
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                description: client email
+                type: string
+              password:
+                description: client password
+                type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/PostTokenResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /clients:
     # our controller name
     x-swagger-router-controller: clients
@@ -989,6 +1023,22 @@ definitions:
       rating:
         type: number
         description: "User's rating for a recipe"
+
+  PostTokenResponse:
+    required:
+      - id
+      - email
+      - token
+      # - admin
+    properties:
+      id:
+        type: integer
+      email:
+        type: string
+      token:
+        type: string
+      # id:
+      #   type: integer
 
   ErrorResponse:
     required:

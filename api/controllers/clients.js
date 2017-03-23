@@ -17,12 +17,10 @@ const ev = require('express-validation');
 
 // YOUR CODE HERE
 function addClient(req, res, next) {
-    console.log('ADD CLIENT');
     knex("clients")
         .first().where("email", req.swagger.params.client.value.email)
         .then((result) => {
             if (result) {
-                console.log('Client already exists!');
                 res.status(400).json('Client already exists!');
             } else {
                 return bcrypt.hash(req.swagger.params.client.value.password, 12)
@@ -42,7 +40,7 @@ function addClient(req, res, next) {
                     delete insertedClient[0].created_at;
                     delete insertedClient[0].updated_at;
                     delete insertedClient[0]['hashed_password'];
-                    console.log(insertedClient[0]);
+
                     res.status(200).json(insertedClient[0])
                 })
                 .catch((err) => {
@@ -76,11 +74,6 @@ function addClient(req, res, next) {
     //         next(err);
     //     });
 };
-
-function getClient(req, res) {
-    res.set('Content-Type', 'application/json');
-    res.json({});
-}
 
 function getClients(req, res) {
     // To list clients
