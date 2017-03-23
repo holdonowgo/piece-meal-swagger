@@ -340,7 +340,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PostRecipeResponse"
+            $ref: "#/definitions/Recipe"
         default:
           description: Error
           schema:
@@ -953,16 +953,13 @@ definitions:
         type: string
       instructions:
         type: string
-
-  PostRecipeResponse:
-    type: object
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-      instructions:
-        type: string
+      ingredients:
+        type: object
+        properties:
+          id:
+            type: integer
+          name:
+            type: string
 
   PostRecipe:
     type: object

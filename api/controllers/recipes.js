@@ -20,11 +20,29 @@ function getRecipesList(req, res) {
 }
 
 function getRecipe(req, res) {
-  return knex("recipes")
-    .first().where("id", req.swagger.params.id.value)
-    .then((result) => {
-      return res.json(result);
-    });
+  let promises = [];
+  promises.push(
+    knex("recipes")
+    .select("id", "name", "instructions")
+    .first()
+    .where("id", req.swagger.params.id.value)
+  );
+  promises.push(
+    knex("recipe_ingredients")
+    .join("ingredients", "ingredients.id", "recipe_ingredients.ingredient_id")
+    .select("recipe_ingredients.recipe_id", "ingredients.*")
+    .where("recipe_ingredients.recipe_id", req.swagger.params.id.value)
+  );
+  Promise.all(promises)
+    .then((results) => {
+      console.log(results);
+    })
+  // return knex("recipes")
+  //   .first().where("id", req.swagger.params.id.value)
+  //   .then((result) => {
+  //     console.log(result);
+  //     return res.json(result);
+  //   });
 }
 
 function postRecipe(req, res) {
