@@ -187,7 +187,6 @@ function getClient(req, res) {
         .catch((err) => {
             res.sendStatus(500);
         });
-
 }
 
 function getRestrictions(req, res) {

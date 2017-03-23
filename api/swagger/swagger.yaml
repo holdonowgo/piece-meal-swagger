@@ -534,8 +534,9 @@ paths:
     x-swagger-router-controller: ingredients
     get:
       description: get results from ingredient search
+      operationId: searchIngredients
       parameters:
-        - name: name
+        - name: text
           type: string
           in: query
           required: true
@@ -543,7 +544,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GetIngredientSearchResponse"
+            $ref: "#/definitions/GetIngredientsListResponse"
         default:
           description: Error
           schema:
