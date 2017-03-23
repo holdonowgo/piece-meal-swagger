@@ -43,7 +43,6 @@ suite('part4 routes token', () => {
     // });
 
     test('POST /token', (done) => {
-      console.log('HELLOO NEOEN');
         request(server)
             .post('/token')
             .set('Accept', 'application/json')
@@ -102,7 +101,7 @@ suite('part4 routes token', () => {
     //         .expect(200, 'true', done);
     //     });
     // });
-    //
+
     // test('DELETE /token', (done) => {
     //   request(server)
     //     .del('/token')
@@ -111,7 +110,7 @@ suite('part4 routes token', () => {
     //     .expect(200)
     //     .end(done);
     // });
-    //
+
     // test('POST /token with bad email', (done) => {
     //   request(server)
     //     .post('/token')
@@ -124,7 +123,7 @@ suite('part4 routes token', () => {
     //     .expect('Content-Type', /plain/)
     //     .expect(400, 'Bad email or password', done);
     // });
-    //
+
     // test('POST /token with bad password', (done) => {
     //   request(server)
     //     .post('/token')

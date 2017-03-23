@@ -3,17 +3,6 @@
 
 process.env.NODE_ENV = 'test';
 
-// const assert = require('chai').assert;
-// const should = require('should');
-// const request = require('supertest');
-// const bcrypt = require('bcrypt');
-// const server = require('../../../app');
-// const knex = require('../../../knex');
-// const {
-//     suite,
-//     test
-// } = require('mocha');
-
 const {
     suite,
     test
@@ -57,6 +46,7 @@ suite('clients tests', () => {
                         "first_name": 'Marvin',
                         "last_name": 'Gaye',
                         "email": 'marvin.gaye@gmail.com',
+                        "is_super_user": false,
                         "recipes": [{
                             id: 1,
                             name: "cauliflower buffalo bites",
@@ -76,6 +66,23 @@ suite('clients tests', () => {
                         "first_name": 'Al',
                         "last_name": 'Green',
                         "email": 'al.green@gmail.com',
+                        "is_super_user": false,
+                        "recipes": []
+                    },
+                    {
+                        "id": 3,
+                        "first_name": 'Randall',
+                        "last_name": 'Spencer',
+                        "email": 'randy.spence@gmail.com',
+                        "is_super_user": true,
+                        "recipes": []
+                    },
+                    {
+                        "id": 4,
+                        "first_name": 'Aom',
+                        "last_name": 'Sithanant',
+                        "email": 'aom.sithanant@gmail.com',
+                        "is_super_user": true,
                         "recipes": []
                     }
                 ]
@@ -93,6 +100,7 @@ suite('clients tests', () => {
                 "first_name": 'Marvin',
                 "last_name": 'Gaye',
                 "email": 'marvin.gaye@gmail.com',
+                "is_super_user": false,
                 "recipes": [{
                     id: 1,
                     name: "cauliflower buffalo bites",
@@ -106,7 +114,30 @@ suite('clients tests', () => {
                     name: "cheese omelette",
                     instructions: "1.Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.2.Place a small non-stick frying pan on a low heat to warm up."
                 }]
+            });
+
+        request(server)
+            .get('/clients/4')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200, {
+                "id": 4,
+                "first_name": 'Aom',
+                "last_name": 'Sithanant',
+                "email": 'aom.sithanant@gmail.com',
+                "is_super_user": true,
+                "recipes": []
             }, done);
+
+        /* eslint-enable max-len */
+    });
+
+    xdescribe('GET /clients/88', (done) => {
+        request(server)
+            .get('/clients/88')
+            .set('Accept', 'text/plain')
+            .expect('Content-Type', 'application/json')
+            .expect(404, 'Not Found', done);
 
         /* eslint-enable max-len */
     });
@@ -130,10 +161,11 @@ suite('clients tests', () => {
                 delete res.body.updated_at;
             })
             .expect(200, {
-                id: 3,
+                id: 5,
                 first_name: 'John',
                 last_name: 'Siracusa',
-                email: 'john.siracusa@gmail.com'
+                email: 'john.siracusa@gmail.com',
+                is_super_user: false
             })
             .expect('Content-Type', /json/)
             .end((httpErr, _res) => {
@@ -142,7 +174,7 @@ suite('clients tests', () => {
                 }
 
                 knex('clients')
-                    .where('id', 3)
+                    .where('id', 5)
                     .first()
                     .then((client) => {
                         const hashedPassword = client.hashed_password;
@@ -152,10 +184,11 @@ suite('clients tests', () => {
                         delete client.updated_at;
 
                         assert.deepEqual(client, {
-                            id: 3,
+                            id: 5,
                             first_name: 'John',
                             last_name: 'Siracusa',
-                            email: 'john.siracusa@gmail.com'
+                            email: 'john.siracusa@gmail.com',
+                            is_super_user: false
                         });
 
                         // eslint-disable-next-line no-sync
@@ -172,38 +205,46 @@ suite('clients tests', () => {
 
 
     test('POST /clients/:id/restrictions', (done) => {
-      request(server)
-        .post('/clients/2/restrictions')
-        .set('Accept', 'application/json')
-        .send({
-          ingredient_id: 4
-        })
-        .expect('Content-Type', /json/)
-        .expect(200, { success: 1, description: 'Restriction has been added' }, done)
-      });
+        request(server)
+            .post('/clients/2/restrictions')
+            .set('Accept', 'application/json')
+            .send({
+                ingredient_id: 4
+            })
+            .expect('Content-Type', /json/)
+            .expect(200, {
+                success: 1,
+                description: 'Restriction has been added'
+            }, done)
+    });
 
     test('GET /clients/:id/restrictions', (done) => {
-      request(server)
-        .get('/clients/2/restrictions')
-        .set('Accept', 'application/json')
-        .expect(200, {
-          ingredients: [{
-            id:1,
-            name: 'bacon'
-          }, {
-            id: 3,
-            name: 'milk'
-          }]
-        }, done);
+        request(server)
+            .get('/clients/2/restrictions')
+            .set('Accept', 'application/json')
+            .expect(200, {
+                ingredients: [{
+                    id: 1,
+                    name: 'bacon'
+                }, {
+                    id: 3,
+                    name: 'milk'
+                }]
+            }, done);
     });
 
     test('DELETE /clients/:id/restrictions', (done) => {
-      request(server)
-        .del('/clients/2/restrictions')
-        .set('Accept', 'application/json')
-        .send({ ingredient_id: 2 })
-        .expect('Content-Type', /json/)
-        .expect(200, { success: 1, description: 'Restriction has been deleted' }, done);
+        request(server)
+            .del('/clients/2/restrictions')
+            .set('Accept', 'application/json')
+            .send({
+                ingredient_id: 2
+            })
+            .expect('Content-Type', /json/)
+            .expect(200, {
+                success: 1,
+                description: 'Restriction has been deleted'
+            }, done);
     });
-//
+    //
 });

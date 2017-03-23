@@ -93,9 +93,6 @@ function crossCheckRecipe(req, res) {
             let restrictions = results[0];
             let recipe_ingredient = results[1];
 
-            console.log(recipe_ingredient);
-            console.log(restrictions);
-
             let result = {
                 is_safe: true,
                 forbidden: []
@@ -120,7 +117,7 @@ function getClients(req, res) {
 
     let promises = [];
     // promises.push(knex("clients").select("id"));
-    promises.push(knex("clients").select("id", "first_name", "last_name", "email"));
+    promises.push(knex("clients").select("id", "first_name", "last_name", "email", "is_super_user"));
     promises.push(knex("client_recipes")
         .join('recipes', 'recipes.id', '=', 'client_recipes.recipe_id')
         .select("client_recipes.client_id", "recipes.*"));
@@ -150,13 +147,12 @@ function getClients(req, res) {
 }
 
 function getClient(req, res) {
-
     // To list clients
 
     let promises = [];
     promises.push(
         knex("clients")
-        .select("id", "first_name", "last_name", "email")
+        .select("id", "first_name", "last_name", "email", "is_super_user")
         .first()
         .where("id", req.swagger.params.user_id.value)
     );
@@ -168,10 +164,14 @@ function getClient(req, res) {
     );
 
     Promise.all(promises)
-
         .then((results) => {
             let client = results[0];
             let recipes = results[1];
+
+            if (!client) {
+                res.set('Content-Type', 'application/json')
+                res.sendStatus(404);
+            }
 
             client["recipes"] = recipes.map((recipe) => {
                 return {
@@ -182,6 +182,9 @@ function getClient(req, res) {
             }).sort();
 
             return res.json(client);
+        })
+        .catch((err) => {
+            res.sendStatus(500);
         });
 
 }
