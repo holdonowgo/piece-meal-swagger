@@ -4,6 +4,8 @@ const bookshelf = require('../../bookshelf');
 const Ingredient = require('../models/ingredient.js').Ingredient;
 const IngredientTag = require('../models/ingredient.js').IngredientTag;
 const IngredientTags = require('../models/ingredient.js').IngredientTags;
+const fetch = require('node-fetch');
+const url = require('url');
 
 module.exports = {
     getIngredient: getIngredient,
@@ -31,7 +33,7 @@ function deleteIngredient(req, res) {
             delete ingredient.created_at;
             delete ingredient.updated_at;
             return res.json(ingredient);
-        })
+        });
 }
 
 function getIngredientsList(req, res) {
@@ -53,7 +55,7 @@ function getIngredientsList(req, res) {
                 }).sort();
 
                 ingredient.tags = t;
-            };
+            }
 
             return res.json({ingredients: ingredients});
         });
@@ -89,7 +91,7 @@ function getIngredient(req, res) {
     //             return res.json(ingredient);
     //         }
     //     });
-
+    let ingredientObj;
     Ingredient.forge({
             id: req.swagger.params.id.value
         })
@@ -97,16 +99,31 @@ function getIngredient(req, res) {
             withRelated: ['tags']
         })
         .then((ingredient) => {
-            let ingredientObj = ingredient.serialize();
+            ingredientObj = ingredient.serialize();
             ingredientObj.tags = ingredientObj.tags.map((value) => {
                 return value.tag_text;
             }).sort();
             ingredientObj.alternatives = [];
             delete ingredientObj.created_at;
             delete ingredientObj.updated_at;
-            return res.json(ingredientObj);
-        })
 
+            let qstring = url.format({
+              query: {
+                app_id: 28647724,
+                app_key: '18bfd98d4fa0153e80aeb1bff05d6355',
+                ingr: "one " + ingredientObj.name
+              }
+            });
+            return fetch('https://api.edamam.com/api/nutrition-data' + qstring)
+              .then((fetchResponse) => {
+                return fetchResponse.json();
+              })
+              .then((fetchResponse) => {
+                ingredientObj.calories = fetchResponse.calories;
+                return res.json(ingredientObj);
+              });
+
+});
 }
 
 // function queryIngredient(id) {

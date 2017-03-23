@@ -34,6 +34,7 @@ function postRecipe(req, res) {
 
   //to insert into recipe_ingredients table
   let ingredients = req.swagger.params.recipe.value.ingredients;
+  console.log(ingredients);
   knex("recipes")
     .first().where("name", name)
     .then((result) => {
@@ -54,10 +55,11 @@ function postRecipe(req, res) {
           ingredient_id: value
         };
       });
-      return knex('recipe_ingredients').insert(data)
-      .then(() => {
-        return res.json({id: recipe.id});
-      });
+      console.log(data);
+      return knex('recipe_ingredients').insert(data).returning("*");
+    })
+    .then((recipe) => {
+      return res.json({id: recipe[0].recipe_id});
     });
 }
 

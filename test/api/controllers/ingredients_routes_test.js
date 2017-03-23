@@ -89,7 +89,8 @@ suite('ingredients test', () => {
                 "name": "bacon",
                 "tags": ['meat', 'pork'],
                 "alternatives": [],
-                "active": true
+                "active": true,
+                "calories": 120
             }, done);
 
         /* eslint-enable max-len */
