@@ -144,7 +144,7 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     post:
-      description: add a new recipe to the client's restrictions
+      description: add a new recipe to the client's list of recipes
       operationId: addClientRecipe
       parameters:
         - name: user_id
@@ -152,15 +152,20 @@ paths:
           in: path
           description: client's id
           required: true
-        - name: recipe_id
-          type: integer
-          in: query
+        - name: request
+          in: body
           required: true
+          schema:
+            properties:
+              recipe_id:
+                type: integer
+            required:
+              - recipe_id
       responses:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PostUserRestrictionResponse"
+            $ref: "#/definitions/GeneralResponse"
         default:
           description: Error
           schema:
