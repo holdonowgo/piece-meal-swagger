@@ -65,68 +65,109 @@ function getIngredientsList(req, res) {
 }
 
 function getIngredient(req, res) {
-    // let promises = [];
-    // promises.push(
-    //     knex("ingredients").select("id", "name")
-    //     .first().where("id", req.swagger.params.id.value)
-    // );
-    // promises.push(
-    //     knex("ingredient_tags").select("ingredient_id", "tag_text")
-    //     .where("ingredient_id", req.swagger.params.id.value)
-    // );
-    // Promise.all(promises)
-    //     .then((results) => {
-    //         let ingredient = results[0];
-    //         let tags = results[1];
-    //
-    //         if (ingredient === undefined) {
-    //             res.status(400).json('Ingredient not found');
-    //         } else {
-    //             let t = tags.map((tag) => {
-    //                 return tag.tag_text;
-    //             }).sort();
-    //
-    //             ingredient.tags = t;
-    //             ingredient.alternatives = [];
-    //
-    //             delete ingredient.created_at;
-    //
-    //             return res.json(ingredient);
-    //         }
-    //     });
-    let ingredientObj;
-    Ingredient.forge({
-            id: req.swagger.params.id.value
-        })
-        .fetch({
-            withRelated: ['tags']
-        })
-        .then((ingredient) => {
-            ingredientObj = ingredient.serialize();
-            ingredientObj.tags = ingredientObj.tags.map((value) => {
-                return value.tag_text;
-            }).sort();
-            ingredientObj.alternatives = [];
-            delete ingredientObj.created_at;
-            delete ingredientObj.updated_at;
+    // let query = knex("ingredients")
+    // .join('ingredient_alternatives', 'ingredient_alternatives.ingredient_id', 'ingredients.id')
+    // .select("ingredients.id", "name")
+    // .where("ingredient_alternatives.ingredient_id", req.swagger.params.id.value).toString();
+    // console.log(query);
+    let promises = [];
+    promises.push(
+        knex("ingredients").select("id", "name", "active")
+        .first().where("id", req.swagger.params.id.value)
+    );
+    promises.push(
+        knex("ingredient_tags").select("ingredient_id", "tag_text")
+        .where("ingredient_id", req.swagger.params.id.value)
+    );
+    promises.push(
+        knex("ingredients")
+        .join('ingredient_alternatives', 'ingredient_alternatives.alt_ingredient_id', 'ingredients.id')
+        .select("ingredients.id", "name")
+        .where("ingredient_alternatives.ingredient_id", req.swagger.params.id.value)
+    );
+    Promise.all(promises)
+        .then((results) => {
+            let ingredient = results[0];
+            let tags = results[1];
+            let alts = results[2];
 
-            let qstring = url.format({
-                query: {
-                    app_id: 28647724,
-                    app_key: '18bfd98d4fa0153e80aeb1bff05d6355',
-                    ingr: "one " + ingredientObj.name
-                }
-            });
-            return fetch('https://api.edamam.com/api/nutrition-data' + qstring)
-                .then((fetchResponse) => {
-                    return fetchResponse.json();
-                })
-                .then((fetchResponse) => {
-                    ingredientObj.calories = fetchResponse.calories;
-                    return res.json(ingredientObj);
+            if (ingredient === undefined) {
+                res.status(400).json('Ingredient not found');
+            } else {
+                let t = tags.map((tag) => {
+                    return tag.tag_text;
+                }).sort();
+
+                let a = alts.map((alt) => {
+                    return {
+                        id: alt.id,
+                        name: alt.name
+                    };
+                }).sort();
+
+                ingredient.tags = t;
+                ingredient.alternatives = a;
+
+                delete ingredient.created_at;
+                delete ingredient.updated_at;
+
+                let qstring = url.format({
+                    query: {
+                        app_id: 28647724,
+                        app_key: '18bfd98d4fa0153e80aeb1bff05d6355',
+                        ingr: "one " + ingredient.name
+                    }
                 });
+                return fetch('https://api.edamam.com/api/nutrition-data' + qstring)
+                    .then((fetchResponse) => {
+                        return fetchResponse.json();
+                    })
+                    .then((fetchResponse) => {
+                        ingredient.calories = fetchResponse.calories;
+                        return res.json(ingredient);
+                    });
 
+                // return res.json(ingredient);
+            }
         });
+
+    // let ingredientObj;
+    // Ingredient.forge({
+    //         id: req.swagger.params.id.value
+    //     })
+    //     .fetch({
+    //         withRelated: ['tags', 'alternatives']
+    //     })
+    //     .then((ingredient) => {
+    //         ingredientObj = ingredient.serialize();
+    //         ingredientObj.tags = ingredientObj.tags.map((value) => {
+    //             return value.tag_text;
+    //         }).sort();
+    //         ingredientObj.alternatives = ingredientObj.alternatives.map((value) => {
+    //             return value.alt_ingredient_id;
+    //         }).sort();
+    //         console.log(ingredientObj);
+    //         // ingredientObj.alternatives = [];
+    //         delete ingredientObj.created_at;
+    //         delete ingredientObj.updated_at;
+    //
+    //         let qstring = url.format({
+    //             query: {
+    //                 app_id: 28647724,
+    //                 app_key: '18bfd98d4fa0153e80aeb1bff05d6355',
+    //                 ingr: "one " + ingredientObj.name
+    //             }
+    //         });
+    //         return fetch('https://api.edamam.com/api/nutrition-data' + qstring)
+    //             .then((fetchResponse) => {
+    //                 return fetchResponse.json();
+    //             })
+    //             .then((fetchResponse) => {
+    //                 ingredientObj.calories = fetchResponse.calories;
+    //                 return res.json(ingredientObj);
+    //             });
+    //
+    //     });
 }
 
 // function queryIngredient(id) {

@@ -55,13 +55,8 @@ function postToken(req, res) {
                 expiresIn: '7 days'
             });
 
-            // res.cookie('token', token, {
-            //     httpOnly: true,
-            //     expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
-            //     secure: process.env.NODE_ENV === 'production'
-            // });
             client.token = token;
-            
+
             delete client.first_name;
             delete client.last_name;
             delete client.hashed_password;

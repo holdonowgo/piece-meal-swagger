@@ -49,34 +49,91 @@ suite('ingredients test', () => {
             .set('Accept', 'application/json')
             .set('Token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5MDI5NDE0MSwiZXhwIjoxNDkwODk4OTQxfQ.gm9LVr8P57ZDSgUZGFiyTSA8qpYsUgaFlRTa_NvlYfA')
             .expect('Content-Type', /json/)
+            // .expect(200, {
+            //     "ingredients": [{
+            //             "id": 1,
+            //             "name": "bacon",
+            //             "tags": ['meat', 'pork'],
+            //             "active": true
+            //         },
+            //         {
+            //             "id": 2,
+            //             "name": "egg",
+            //             "tags": ['vegetarian'],
+            //             "active": true
+            //         },
+            //         {
+            //             "id": 3,
+            //             "name": "milk",
+            //             "tags": ['dairy', 'vegetarian'],
+            //             "active": true
+            //         },
+            //         {
+            //             "id": 4,
+            //             "name": "avocado",
+            //             "tags": ['vegan', 'vegetarian'],
+            //             "active": true
+            //         }
+            //     ]
+            // }, done);
             .expect(200, {
                 "ingredients": [{
                         "id": 1,
                         "name": "bacon",
-                        "tags": ['meat', 'pork'],
-                        "active": true
+                        "active": true,
+                        "tags": ['meat', 'pork']
                     },
                     {
                         "id": 2,
                         "name": "egg",
-                        "tags": ['vegetarian'],
-                        "active": true
+                        "active": true,
+                        "tags": ['vegetarian']
                     },
                     {
                         "id": 3,
                         "name": "milk",
-                        "tags": ['dairy', 'vegetarian'],
-                        "active": true
+                        "active": true,
+                        "tags": ['dairy', 'vegetarian']
                     },
                     {
                         "id": 4,
                         "name": "avocado",
-                        "tags": ['vegan', 'vegetarian'],
-                        "active": true
+                        "active": true,
+                        "tags": ['vegan', 'vegetarian']
+                    },
+                    {
+                        "id": 5,
+                        "name": "almond milk",
+                        "active": true,
+                        "tags": []
+                    },
+                    {
+                        "id": 6,
+                        "name": "coconut milk",
+                        "active": true,
+                        "tags": []
                     }
                 ]
             }, done);
     });
+
+    // test('GET /ingredients/:id', (done) => {
+    //     /* eslint-disable max-len */
+    //     request(server)
+    //         .get('/ingredients/1')
+    //         .set('Accept', 'application/json')
+    //         .expect('Content-Type', /json/)
+    //         .expect(200, {
+    //             "id": 1,
+    //             "name": "bacon",
+    //             "tags": ['meat', 'pork'],
+    //             "alternatives": [],
+    //             "active": true,
+    //             "calories": 120
+    //         }, done);
+    //
+    //     /* eslint-enable max-len */
+    // });
 
     test('GET /ingredients/:id', (done) => {
         /* eslint-disable max-len */
@@ -87,9 +144,15 @@ suite('ingredients test', () => {
             .expect(200, {
                 "id": 1,
                 "name": "bacon",
-                "tags": ['meat', 'pork'],
-                "alternatives": [],
                 "active": true,
+                "tags": ['meat', 'pork'],
+                "alternatives": [{
+                    id: 2,
+                    name: 'egg'
+                }, {
+                    id: 3,
+                    name: 'milk'
+                }],
                 "calories": 120
             }, done);
 
@@ -112,7 +175,7 @@ suite('ingredients test', () => {
                 delete res.body.updatedAt;
             })
             .expect(200, {
-                id: 5,
+                id: 7,
                 name: 'salmon',
                 tags: ['seafood', 'fish'],
                 active: true
@@ -174,17 +237,22 @@ suite('ingredients test', () => {
             .set('Token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5MDI5NDE0MSwiZXhwIjoxNDkwODk4OTQxfQ.gm9LVr8P57ZDSgUZGFiyTSA8qpYsUgaFlRTa_NvlYfA')
             .expect('Content-Type', /json/)
             .expect(200, {
-                "ingredients": [
-                    // {
-                    //     "id": 2,
-                    //     "name": "egg",
-                    //     "tags": ['vegetarian'],
-                    //     "active": true
-                    // },
-                    {
+                "ingredients": [{
                         "id": 3,
                         "name": "milk",
                         "tags": ['dairy', 'vegetarian'],
+                        "active": true
+                    },
+                    {
+                        "id": 5,
+                        "name": "almond milk",
+                        "tags": [],
+                        "active": true
+                    },
+                    {
+                        "id": 6,
+                        "name": "coconut milk",
+                        "tags": [],
                         "active": true
                     }
                 ]

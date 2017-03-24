@@ -1019,6 +1019,7 @@ definitions:
               type: integer
             name:
               type: string
+          # type: integer
 
   GetIngredientAlternativesResponse:
     required:
