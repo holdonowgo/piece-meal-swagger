@@ -90,33 +90,32 @@ suite('clients tests', () => {
     });
 
     test('GET /clients/:id/ingredients/:ingredient_id/verify (safe case)', (done) => {
-      request(server)
-        .get('/clients/1/ingredients/1/verify')
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-        .expect(200, {
-          safe: true
-        }, done);
+        request(server)
+            .get('/clients/1/ingredients/1/verify')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200, {
+                safe: true
+            }, done);
     });
 
     test('GET /clients/:id/ingredients/:ingredient_id/verify (non-safe case)', (done) => {
-      request(server)
-        .get('/clients/2/ingredients/1/verify')
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-        .expect(200, {
-          "safe": false,
-          "alternatives": [
-            {
-              "id": 2,
-              "name": "egg"
-            },
-            {
-              "id": 3,
-              "name": "milk"
-            }
-          ]
-        }, done);
+        request(server)
+            .get('/clients/2/ingredients/1/verify')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200, {
+                "safe": false,
+                "alternatives": [{
+                        "id": 2,
+                        "name": "egg"
+                    },
+                    {
+                        "id": 3,
+                        "name": "milk"
+                    }
+                ]
+            }, done);
     });
 
     test('GET /clients/:id', (done) => {
