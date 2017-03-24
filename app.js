@@ -13,6 +13,11 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
 const morgan = require('morgan');
 const ev = require('express-validation');
+const cors = require('cors');
+
+const path = require('path');
+app.use(express.static(path.join('public')));
+app.user(cors());
 
 switch (app.get('env')) {
   case 'development':
