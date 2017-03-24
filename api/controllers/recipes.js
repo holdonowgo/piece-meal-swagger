@@ -11,38 +11,53 @@ module.exports = {
 
 // /recipes
 function getRecipesList(req, res) {
+  let recipes;
   return knex("recipes").then((rows) => {
-    let result = {
-      recipes: rows
-    };
-    return res.json(result);
+    recipes = rows;
+    let promises = rows.map((recipe) => getIngredientsQuery(recipe.id));
+    return Promise.all(promises);
+  }).then((promiseResults) => {
+    // 'recipes' is an array of the recipes
+    // 'promiseResults' is an array of arrays of ingredients
+    for (var i = 0; i < recipes.length; i++) {
+      recipes[i].ingredients = promiseResults[i];
+    }
+    return res.json({ recipes: recipes });
   });
 }
 
+function getIngredientsQuery(recipeId) {
+  return knex("recipe_ingredients")
+    .join("ingredients", "ingredients.id", "recipe_ingredients.ingredient_id")
+    .select("ingredients.*")
+    .where("recipe_ingredients.recipe_id", recipeId);
+}
+
 function getRecipe(req, res) {
+  return doGetRecipe(req.swagger.params.id.value, res);
+}
+
+function doGetRecipe(recipeId, res) {
   let promises = [];
   promises.push(
     knex("recipes")
     .select("id", "name", "instructions")
     .first()
-    .where("id", req.swagger.params.id.value)
+    .where("id", recipeId)
   );
-  promises.push(
-    knex("recipe_ingredients")
-    .join("ingredients", "ingredients.id", "recipe_ingredients.ingredient_id")
-    .select("recipe_ingredients.recipe_id", "ingredients.*")
-    .where("recipe_ingredients.recipe_id", req.swagger.params.id.value)
-  );
+  promises.push(getIngredientsQuery(recipeId));
   Promise.all(promises)
     .then((results) => {
       let recipe = results[0];
-      let ingredients = results[1]
+      let ingredients = results[1];
       // console.log(results[1]); --> recipe_id, id(ingredient)
       if (!recipe) {
-        res.set('Content-Type', 'application/json')
+        res.set('Content-Type', 'application/json');
         res.sendStatus(404);
+        return;
       }
-      recipe["ingredients"] = ingredients.map((ingredient) => {
+      console.log(ingredients);
+      recipe.ingredients = ingredients.map((ingredient) => {
         return {
           id: ingredient.id,
           name: ingredient.name,
@@ -51,13 +66,8 @@ function getRecipe(req, res) {
       return res.json(recipe);
     })
     .catch((err) => {
-      res.sendStatus(500);
-    });
-
-  return knex("recipes")
-    .first().where("id", req.swagger.params.id.value)
-    .then((result) => {
-      return res.json(result);
+      console.log(err);
+      res.status(500).json({message: err});
     });
 }
 
@@ -68,6 +78,7 @@ function postRecipe(req, res) {
 
   //to insert into recipe_ingredients table
   let ingredients = req.swagger.params.recipe.value.ingredients;
+  let recipe;
   knex("recipes")
     .first().where("name", name)
     .then((result) => {
@@ -81,7 +92,7 @@ function postRecipe(req, res) {
       }
     })
     .then((recipes) => {
-      const recipe = recipes[0];
+      recipe = recipes[0];
       let data = ingredients.map((value) => {
         return {
           recipe_id: recipe.id,
@@ -90,10 +101,8 @@ function postRecipe(req, res) {
       });
       return knex('recipe_ingredients').insert(data).returning("*");
     })
-    .then((recipe) => {
-      return res.json({
-        id: recipe[0].recipe_id
-      });
+    .then(() => {
+      return doGetRecipe(recipe.id, res);
     });
 }
   //to insert into recipe_ingredients table
