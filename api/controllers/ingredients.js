@@ -12,7 +12,8 @@ module.exports = {
     addIngredient: addIngredient,
     getIngredientsList: getIngredientsList,
     deleteIngredient: deleteIngredient,
-    searchIngredients: searchIngredients
+    searchIngredients: searchIngredients,
+    getIngredientAlternatives: getIngredientAlternatives
 };
 
 function deleteIngredient(req, res) {
@@ -61,6 +62,33 @@ function getIngredientsList(req, res) {
             return res.json({
                 ingredients: ingredients
             });
+        });
+}
+
+function getIngredientAlternatives(req, res) {
+    knex("ingredients")
+        .join('ingredient_alternatives', 'ingredient_alternatives.alt_ingredient_id', 'ingredients.id')
+        .select("ingredients.id", "name")
+        .where("ingredient_alternatives.ingredient_id", req.swagger.params.id.value)
+        .then((alternatives) => {
+            for (let alternative of alternatives) {
+                let qstring = url.format({
+                    query: {
+                        app_id: 28647724,
+                        app_key: '18bfd98d4fa0153e80aeb1bff05d6355',
+                        ingr: "one " + alternative.name
+                    }
+                });
+                return fetch('https://api.edamam.com/api/nutrition-data' + qstring);
+
+            }
+        })
+        .then((fetchResponse) => {
+            return fetchResponse.json();
+        })
+        .then((fetchResponse) => {
+            alternative.calories = fetchResponse.calories;
+            return res.json(alternative);
         });
 }
 

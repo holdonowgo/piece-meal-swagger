@@ -102,25 +102,25 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-    delete:
-      description: delete a client
-      # define the parameters
-      operationId: deleteClient
-      parameters:
-        - name: user_id
-          description: Client id
-          type: integer
-          in: path
-          required: true
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/GeneralResponse"
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
+    # delete:
+    #   description: delete a client
+    #   # define the parameters
+    #   operationId: deleteClient
+    #   parameters:
+    #     - name: user_id
+    #       description: Client id
+    #       type: integer
+    #       in: path
+    #       required: true
+    #   responses:
+    #     "200":
+    #       description: Success
+    #       schema:
+    #         $ref: "#/definitions/GeneralResponse"
+    #     default:
+    #       description: Error
+    #       schema:
+    #         $ref: "#/definitions/ErrorResponse"
 
   /clients/{user_id}/recipes:
     x-swagger-router-controller: recipes
@@ -372,31 +372,32 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-    put:
-      description: update a recipe
-      # define the parameters
-      operationId: updateRecipe
-      parameters:
-        - name: id
-          description: recipe id
-          type: integer
-          in: path
-          required: true
-        - name: recipe
-          description: recipe
-          in: body
-          required: true
-          schema:
-            $ref: "#/definitions/Recipe"
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/Recipe"
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
+    # put:
+    #   description: update a recipe
+    #   # define the parameters
+    #   operationId: updateRecipe
+    #   parameters:
+    #     - name: id
+    #       description: recipe id
+    #       type: integer
+    #       in: path
+    #       required: true
+    #     - name: recipe
+    #       description: recipe
+    #       in: body
+    #       required: true
+    #       schema:
+    #         # $ref: "#/definitions/Recipe"
+    #         $ref: "#/definitions/PostRecipe"
+    #   responses:
+    #     "200":
+    #       description: Success
+    #       schema:
+    #         $ref: "#/definitions/Recipe"
+    #     default:
+    #       description: Error
+    #       schema:
+    #         $ref: "#/definitions/ErrorResponse"
 
 
     delete:
@@ -440,31 +441,31 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-    put:
-      description: update an ingredient
-      # define the parameters
-      operationId: updateIngredient
-      parameters:
-        - name: id
-          description: Ingredient id
-          type: integer
-          in: path
-          required: true
-        - name: ingredient
-          description: Ingredient
-          in: body
-          required: true
-          schema:
-            $ref: "#/definitions/PatchIngredient"
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/GetIngredientResponse"
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
+    # put:
+    #   description: update an ingredient
+    #   # define the parameters
+    #   operationId: updateIngredient
+    #   parameters:
+    #     - name: id
+    #       description: Ingredient id
+    #       type: integer
+    #       in: path
+    #       required: true
+    #     - name: ingredient
+    #       description: Ingredient
+    #       in: body
+    #       required: true
+    #       schema:
+    #         $ref: "#/definitions/PatchIngredient"
+    #   responses:
+    #     "200":
+    #       description: Success
+    #       schema:
+    #         $ref: "#/definitions/GetIngredientResponse"
+    #     default:
+    #       description: Error
+    #       schema:
+    #         $ref: "#/definitions/ErrorResponse"
 
     delete:
       description: delete an ingredient
@@ -486,26 +487,26 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-  /ingredients/{id}/alternatives:
-    x-swagger-router-controller: ingredients
-    get:
-      description: get alternatives for an ingredient
-      # define the type of response for Success "200" and Error
-      operationId: getIngredientAlternatives
-      parameters:
-        - name: id
-          type: integer
-          in: path
-          required: true
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/GetIngredientAlternativesResponse"
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
+  # /ingredients/{id}/alternatives:
+  #   x-swagger-router-controller: ingredients
+  #   get:
+  #     description: get alternatives for an ingredient
+  #     # define the type of response for Success "200" and Error
+  #     operationId: getIngredientAlternatives
+  #     parameters:
+  #       - name: id
+  #         type: integer
+  #         in: path
+  #         required: true
+  #     responses:
+  #       "200":
+  #         description: Success
+  #         schema:
+  #           $ref: "#/definitions/GetIngredientAlternativesResponse"
+  #       default:
+  #         description: Error
+  #         schema:
+  #           $ref: "#/definitions/ErrorResponse"
 
   /search/clients:
     x-swagger-router-controller: clients
@@ -559,8 +560,9 @@ paths:
     x-swagger-router-controller: recipes
     get:
       description: get results from recipe search
+      operationId: searchRecipes
       parameters:
-        - name: name
+        - name: text
           type: string
           in: query
           required: true
@@ -568,7 +570,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GetRecipeSearchResponse"
+            $ref: "#/definitions/GetRecipesListResponse"
         default:
           description: Error
           schema:
@@ -777,18 +779,18 @@ definitions:
         type: boolean
         description: does client have super user authorization
 
-  PatchIngredient:
-    type: object
-    properties:
-      name:
-        type: string
-        description: ingredient object name
-      tags:
-        type: array
-        items:
-          type: string
-    required:
-      - name
+  # PatchIngredient:
+  #   type: object
+  #   properties:
+  #     name:
+  #       type: string
+  #       description: ingredient object name
+  #     tags:
+  #       type: array
+  #       items:
+  #         type: string
+  #   required:
+  #     - name
 
   Ingredient:
     type: object
@@ -868,24 +870,24 @@ definitions:
             last_name:
               type: string
 
-  GetIngredientSearchResponse:
-    required:
-      - ingredients
-    properties:
-      # The array of ingredients
-      ingredients:
-        type: array
-        items:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-            tags:
-              type: array
-              items:
-                type: string
+  # GetIngredientSearchResponse:
+  #   required:
+  #     - ingredients
+  #   properties:
+  #     # The array of ingredients
+  #     ingredients:
+  #       type: array
+  #       items:
+  #         type: object
+  #         properties:
+  #           id:
+  #             type: integer
+  #           name:
+  #             type: string
+  #           tags:
+  #             type: array
+  #             items:
+  #               type: string
 
   GetRecipeSearchResponse:
     required:
@@ -921,25 +923,25 @@ definitions:
             name:
               type: string
 
-  PostUserRestrictionResponse:
-    type: object
-    properties:
-      client:
-        type: object
-        properties:
-            id:
-              type: integer
-            name:
-              type: string
-            restrictions:
-              type: array
-              items:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
+  # PostUserRestrictionResponse:
+  #   type: object
+  #   properties:
+  #     client:
+  #       type: object
+  #       properties:
+  #           id:
+  #             type: integer
+  #           name:
+  #             type: string
+  #           restrictions:
+  #             type: array
+  #             items:
+  #               type: object
+  #               properties:
+  #                 id:
+  #                   type: integer
+  #                 name:
+  #                   type: string
 
   GetIngredientsListResponse:
     required:
@@ -1026,20 +1028,20 @@ definitions:
               type: string
           # type: integer
 
-  GetIngredientAlternativesResponse:
-    required:
-      - id
-      - name
-      - alternatives
-    properties:
-      id:
-        type: number
-      name:
-        type: string
-      alternatives:
-        type: array
-        items:
-          $ref: "#/definitions/Ingredient"
+  # GetIngredientAlternativesResponse:
+  #   required:
+  #     - id
+  #     - name
+  #     - alternatives
+  #   properties:
+  #     id:
+  #       type: number
+  #     name:
+  #       type: string
+  #     alternatives:
+  #       type: array
+  #       items:
+  #         $ref: "#/definitions/Ingredient"
 
   GetIngredientVerifyResponse:
     type: object

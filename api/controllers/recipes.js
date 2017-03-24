@@ -8,7 +8,8 @@ module.exports = {
     getRecipe: getRecipe,
     postRecipe: postRecipe,
     updateRecipe: updateRecipe,
-    deleteRecipe: deleteRecipe
+    deleteRecipe: deleteRecipe,
+    searchRecipes: searchRecipes
 };
 
 function doGetRecipes(query, res) {
@@ -38,7 +39,7 @@ function getClientRecipes(req, res) {
     const query = knex("recipes")
         .join('client_recipes', 'client_recipes.recipe_id', 'recipes.id')
         .select("recipes.*")
-        .where('client_recipes.client_id', req.swagger.params.user_id.value);
+        .where('client_recipes.client_id', req.swagger.params.value.user_id);
     return doGetRecipes(query, res);
 }
 
@@ -139,14 +140,37 @@ function postRecipe(req, res) {
 
 function updateRecipe(req, res) {
     let id = req.swagger.params.id.value;
+    let ingredients = req.swagger.params.recipe.value.ingredients;
     return knex('recipes')
         .update(req.swagger.params.recipe.value)
         .then(() => {
-            return knex('recipes').where('id', id);
+            return knex('recipes').first().where('id', id);
         })
-        .then((recipes) => {
-            let recipe = recipes[0];
-            res.json(recipe);
+        .then((recipe) => {
+            let promises = [];
+            let data = ingredients.map((value) => {
+                return {
+                    recipe_id: recipe.id,
+                    ingredient_id: value
+                };
+            });
+            promises.push(
+                knex('recipe_ingredients').where('recipe_id', recipe.id).del()
+            );
+            console.log('did delete');
+            promises.push(
+                knex('recipe_ingredients').insert(data).returning("*")
+            );
+            console.log('did insert');
+
+            return promises;
+        })
+        .then((result) => {
+            return knex('recipes').first().where('id', id);
+        })
+        .then((recipe) => {
+            // let recipe = recipes[0];
+            return res.json(recipe);
         });
 }
 
@@ -161,4 +185,10 @@ function deleteRecipe(req, res) {
         .then(() => {
             knex('recipes').where('id', id).del();
         });
+}
+
+function searchRecipes(req, res) {
+    // To list clients
+    // let text = req.swagger.params.text.value;
+    return doGetRecipes(knex("recipes").where('name', 'ilike', `%${req.swagger.params.text.value}%`), res);
 }

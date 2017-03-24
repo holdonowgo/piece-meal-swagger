@@ -41,6 +41,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "node_modules/mocha/bin/mocha"
+    "test": "node_modules/mocha/bin/mocha",
+    "heroku-postbuild": "knex seed:run"
   }
 }
