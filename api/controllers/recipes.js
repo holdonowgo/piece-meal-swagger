@@ -3,16 +3,16 @@ const knex = require('../../knex');
 
 module.exports = {
   getRecipesList: getRecipesList,
+  getClientRecipes: getClientRecipes,
   getRecipe: getRecipe,
   postRecipe: postRecipe,
   updateRecipe: updateRecipe,
   deleteRecipe: deleteRecipe
 };
 
-// /recipes
-function getRecipesList(req, res) {
+function doGetRecipes(query, res) {
   let recipes;
-  return knex("recipes").then((rows) => {
+  return query.then((rows) => {
     recipes = rows;
     let promises = rows.map((recipe) => getIngredientsQuery(recipe.id));
     return Promise.all(promises);
@@ -24,6 +24,19 @@ function getRecipesList(req, res) {
     }
     return res.json({ recipes: recipes });
   });
+}
+
+// /recipes
+function getRecipesList(req, res) {
+  return doGetRecipes(knex("recipes"), res);
+}
+
+function getClientRecipes(req, res) {
+  const query = knex("recipes")
+    .join('client_recipes', 'client_recipes.recipe_id', 'recipes.id')
+    .select("recipes.*")
+    .where('client_recipes.client_id', req.swagger.params.user_id.value);
+  return doGetRecipes(query, res);
 }
 
 function getIngredientsQuery(recipeId) {
