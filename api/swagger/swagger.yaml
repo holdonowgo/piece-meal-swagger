@@ -572,6 +572,7 @@ paths:
   /clients/{user_id}/ingredients/{ingredient_id}/verify:
     x-swagger-router-controller: clients
     get:
+      operationId: verifyIngredient
       description: to check if an ingredient is safe for client
       parameters:
         - name: user_id
