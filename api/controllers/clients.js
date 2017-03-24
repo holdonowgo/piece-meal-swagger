@@ -171,7 +171,7 @@ function getClient(req, res) {
 
             if (!client) {
                 res.set('Content-Type', 'application/json')
-                res.sendStatus(404);
+                return res.sendStatus(404);
             }
 
             client["recipes"] = recipes.map((recipe) => {
@@ -185,7 +185,7 @@ function getClient(req, res) {
             return res.json(client);
         })
         .catch((err) => {
-            res.sendStatus(500);
+            return res.sendStatus(500);
         });
 }
 
