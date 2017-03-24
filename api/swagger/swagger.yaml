@@ -279,6 +279,54 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
+  /clients/{user_id}/ingredients/{ingredient_id}/verify:
+    x-swagger-router-controller: clients
+    get:
+      operationId: verifyIngredient
+      description: to check if an ingredient is safe for client
+      parameters:
+        - name: user_id
+          type: integer
+          in: path
+          required: true
+        - name: ingredient_id
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetIngredientVerifyResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /clients/{user_id}/recipes/{recipe_id}/crosscheck:
+    x-swagger-router-controller: clients
+    get:
+      description: to find out what ingredients are safe and non-safe in an existing recipe
+      operationId: crossCheckRecipe
+      parameters:
+        - name: user_id
+          type: integer
+          in: path
+          required: true
+        - name: recipe_id
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetRecipeIngredientSafetyResponse"
+        default:
+            description: Error
+            schema:
+              $ref: "#/definitions/ErrorResponse"
+
   /ingredients:
     x-swagger-router-controller: ingredients
     get:
@@ -306,6 +354,73 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/Ingredient"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetIngredientResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /ingredients/{id}:
+    x-swagger-router-controller: ingredients
+    get:
+      description: get an ingredient
+      # define the type of response for Success "200" and Error
+      operationId: getIngredient
+      parameters:
+        - name: id
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetIngredientResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+    # put:
+    #   description: update an ingredient
+    #   # define the parameters
+    #   operationId: updateIngredient
+    #   parameters:
+    #     - name: id
+    #       description: Ingredient id
+    #       type: integer
+    #       in: path
+    #       required: true
+    #     - name: ingredient
+    #       description: Ingredient
+    #       in: body
+    #       required: true
+    #       schema:
+    #         $ref: "#/definitions/PatchIngredient"
+    #   responses:
+    #     "200":
+    #       description: Success
+    #       schema:
+    #         $ref: "#/definitions/GetIngredientResponse"
+    #     default:
+    #       description: Error
+    #       schema:
+    #         $ref: "#/definitions/ErrorResponse"
+
+    delete:
+      description: delete an ingredient
+      # define the parameters
+      operationId: deleteIngredient
+      parameters:
+        - name: id
+          description: Ingredient id
+          type: integer
+          in: path
+          required: true
       responses:
         "200":
           description: Success
@@ -419,73 +534,6 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-  /ingredients/{id}:
-    x-swagger-router-controller: ingredients
-    get:
-      description: get an ingredient
-      # define the type of response for Success "200" and Error
-      operationId: getIngredient
-      parameters:
-        - name: id
-          type: integer
-          in: path
-          required: true
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/GetIngredientResponse"
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
-
-    # put:
-    #   description: update an ingredient
-    #   # define the parameters
-    #   operationId: updateIngredient
-    #   parameters:
-    #     - name: id
-    #       description: Ingredient id
-    #       type: integer
-    #       in: path
-    #       required: true
-    #     - name: ingredient
-    #       description: Ingredient
-    #       in: body
-    #       required: true
-    #       schema:
-    #         $ref: "#/definitions/PatchIngredient"
-    #   responses:
-    #     "200":
-    #       description: Success
-    #       schema:
-    #         $ref: "#/definitions/GetIngredientResponse"
-    #     default:
-    #       description: Error
-    #       schema:
-    #         $ref: "#/definitions/ErrorResponse"
-
-    delete:
-      description: delete an ingredient
-      # define the parameters
-      operationId: deleteIngredient
-      parameters:
-        - name: id
-          description: Ingredient id
-          type: integer
-          in: path
-          required: true
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/GetIngredientResponse"
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
-
   # /ingredients/{id}/alternatives:
   #   x-swagger-router-controller: ingredients
   #   get:
@@ -574,54 +622,6 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-
-  /clients/{user_id}/ingredients/{ingredient_id}/verify:
-    x-swagger-router-controller: clients
-    get:
-      operationId: verifyIngredient
-      description: to check if an ingredient is safe for client
-      parameters:
-        - name: user_id
-          type: integer
-          in: path
-          required: true
-        - name: ingredient_id
-          type: integer
-          in: path
-          required: true
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/GetIngredientVerifyResponse"
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
-
-  /clients/{user_id}/recipes/{recipe_id}/crosscheck:
-    x-swagger-router-controller: clients
-    get:
-      description: to find out what ingredients are safe and non-safe in an existing recipe
-      operationId: crossCheckRecipe
-      parameters:
-        - name: user_id
-          type: integer
-          in: path
-          required: true
-        - name: recipe_id
-          type: integer
-          in: path
-          required: true
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/GetRecipeIngredientSafetyResponse"
-        default:
-            description: Error
-            schema:
-              $ref: "#/definitions/ErrorResponse"
 
   # /clients/{user_id}/recipes/{recipe_id}/rating:
   #   x-swagger-router-controller: clients
