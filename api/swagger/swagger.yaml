@@ -340,7 +340,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PostRecipeResponse"
+            $ref: "#/definitions/Recipe"
         default:
           description: Error
           schema:
@@ -572,6 +572,7 @@ paths:
   /clients/{user_id}/ingredients/{ingredient_id}/verify:
     x-swagger-router-controller: clients
     get:
+      operationId: verifyIngredient
       description: to check if an ingredient is safe for client
       parameters:
         - name: user_id
@@ -959,16 +960,15 @@ definitions:
         type: string
       instructions:
         type: string
-
-  PostRecipeResponse:
-    type: object
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-      instructions:
-        type: string
+      ingredients:
+        type: array
+        items:
+          type: object
+        properties:
+          id:
+            type: integer
+          name:
+            type: string
 
   PostRecipe:
     type: object
