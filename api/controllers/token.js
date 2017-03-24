@@ -38,13 +38,15 @@ function postToken(req, res) {
             );
         })
         .then((passwordMatched) => {
-          if (!passwordMatched) {
-            res.status(400).json({message: 'Bad email or password'});
-            return;
-          }
-          return knex('clients')
-              .where('email', req.swagger.params.credentials.value.email)
-              .first();
+            if (!passwordMatched) {
+                res.status(400).json({
+                    message: 'Bad email or password'
+                });
+                return;
+            }
+            return knex('clients')
+                .where('email', req.swagger.params.credentials.value.email)
+                .first();
         })
         .then((client) => {
             const claim = {
@@ -68,9 +70,13 @@ function postToken(req, res) {
             res.status(200).json(client);
         })
         .catch((err) => {
-            res.status(400).json({message: "Can't make token"});
+            res.status(400).json({
+                message: "Can't make token"
+            });
         })
         .catch(bcrypt.MISMATCH_ERROR, () => {
-            res.status(400).json({message: 'Bad email or password'});
+            res.status(400).json({
+                message: 'Bad email or password'
+            });
         });
 }

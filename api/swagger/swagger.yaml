@@ -622,59 +622,59 @@ paths:
             schema:
               $ref: "#/definitions/ErrorResponse"
 
-  /clients/{user_id}/recipes/{recipe_id}/rating:
-    x-swagger-router-controller: clients
-    get:
-      description: to get client's rating for a recipe
-      parameters:
-        - name: user_id
-          type: integer
-          in: path
-          required: true
-        - name: recipe_id
-          type: integer
-          in: path
-          required: true
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/GetUserRecipeRatingResponse"
-        default:
-            description: Error
-            schema:
-              $ref: "#/definitions/ErrorResponse"
-    post:
-      description: to post/update client's rating
-      parameters:
-        - name: user_id
-          type: integer
-          in: path
-          required: true
-        - name: recipe_id
-          in: path
-          type: integer
-          required: true
-        - name: rating
-          in: body
-          schema:
-            type: object
-            required:
-              - rating
-            properties:
-              rating:
-                description: rating to post/update
-                type: number
-
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/GeneralResponse"
-        default:
-            description: Error
-            schema:
-              $ref: "#/definitions/ErrorResponse"
+  # /clients/{user_id}/recipes/{recipe_id}/rating:
+  #   x-swagger-router-controller: clients
+  #   get:
+  #     description: to get client's rating for a recipe
+  #     parameters:
+  #       - name: user_id
+  #         type: integer
+  #         in: path
+  #         required: true
+  #       - name: recipe_id
+  #         type: integer
+  #         in: path
+  #         required: true
+  #     responses:
+  #       "200":
+  #         description: Success
+  #         schema:
+  #           $ref: "#/definitions/GetUserRecipeRatingResponse"
+  #       default:
+  #           description: Error
+  #           schema:
+  #             $ref: "#/definitions/ErrorResponse"
+  #   post:
+  #     description: to post/update client's rating
+  #     parameters:
+  #       - name: user_id
+  #         type: integer
+  #         in: path
+  #         required: true
+  #       - name: recipe_id
+  #         in: path
+  #         type: integer
+  #         required: true
+  #       - name: rating
+  #         in: body
+  #         schema:
+  #           type: object
+  #           required:
+  #             - rating
+  #           properties:
+  #             rating:
+  #               description: rating to post/update
+  #               type: number
+  #
+  #     responses:
+  #       "200":
+  #         description: Success
+  #         schema:
+  #           $ref: "#/definitions/GeneralResponse"
+  #       default:
+  #           description: Error
+  #           schema:
+  #             $ref: "#/definitions/ErrorResponse"
 
   /token:
     x-swagger-router-controller: token
@@ -1072,13 +1072,13 @@ definitions:
           #   ingredient_id:
           #     type: integer
 
-  GetUserRecipeRatingResponse:
-    required:
-      - rating
-    properties:
-      rating:
-        type: number
-        description: "User's rating for a recipe"
+  # GetUserRecipeRatingResponse:
+  #   required:
+  #     - rating
+  #   properties:
+  #     rating:
+  #       type: number
+  #       description: "User's rating for a recipe"
 
   ErrorResponse:
     required:

@@ -115,23 +115,25 @@ function crossCheckRecipe(req, res) {
 }
 
 function verifyIngredient(req, res) {
-  knex("client_restriction")
-    .where('client_id', req.swagger.params.user_id.value)
-    .where('ingredient_id', req.swagger.params.ingredient_id.value)
-    .then((results) => {
-      if (results.length === 0) {
-        return res.json({ safe: true });
-      }
-      return knex("ingredients")
-        .join('ingredient_alternatives', 'ingredient_alternatives.alt_ingredient_id', 'ingredients.id')
-        .select("ingredients.id", "name")
-        .where("ingredient_alternatives.ingredient_id", req.swagger.params.ingredient_id.value);
-    }).then((alternatives) => {
-      return res.json({
-        safe: false,
-        alternatives: alternatives
-      });
-    });
+    knex("client_restriction")
+        .where('client_id', req.swagger.params.user_id.value)
+        .where('ingredient_id', req.swagger.params.ingredient_id.value)
+        .then((results) => {
+            if (results.length === 0) {
+                return res.json({
+                    safe: true
+                });
+            }
+            return knex("ingredients")
+                .join('ingredient_alternatives', 'ingredient_alternatives.alt_ingredient_id', 'ingredients.id')
+                .select("ingredients.id", "name")
+                .where("ingredient_alternatives.ingredient_id", req.swagger.params.ingredient_id.value);
+        }).then((alternatives) => {
+            return res.json({
+                safe: false,
+                alternatives: alternatives
+            });
+        });
 }
 
 function getClients(req, res) {
