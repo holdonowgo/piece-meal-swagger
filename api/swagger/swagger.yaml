@@ -372,32 +372,31 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-    # put:
-    #   description: update a recipe
-    #   # define the parameters
-    #   operationId: updateRecipe
-    #   parameters:
-    #     - name: id
-    #       description: recipe id
-    #       type: integer
-    #       in: path
-    #       required: true
-    #     - name: recipe
-    #       description: recipe
-    #       in: body
-    #       required: true
-    #       schema:
-    #         # $ref: "#/definitions/Recipe"
-    #         $ref: "#/definitions/PostRecipe"
-    #   responses:
-    #     "200":
-    #       description: Success
-    #       schema:
-    #         $ref: "#/definitions/Recipe"
-    #     default:
-    #       description: Error
-    #       schema:
-    #         $ref: "#/definitions/ErrorResponse"
+    put:
+      description: update a recipe
+      # define the parameters
+      operationId: updateRecipe
+      parameters:
+        - name: id
+          description: recipe id
+          type: integer
+          in: path
+          required: true
+        - name: recipe
+          description: recipe
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Recipe"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Recipe"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 
 
     delete:
