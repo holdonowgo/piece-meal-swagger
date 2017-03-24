@@ -4,8 +4,9 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
-var SwaggerExpress = require('swagger-express-mw');
-var app = require('express')();
+const SwaggerExpress = require('swagger-express-mw');
+const express = require('express');
+const app = express();
 
 app.disable('x-powered-by');
 
