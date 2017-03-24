@@ -18,7 +18,7 @@ const cors = require('cors');
 
 const path = require('path');
 app.use(express.static(path.join('public')));
-app.user(cors());
+app.use(cors());
 
 switch (app.get('env')) {
   case 'development':
