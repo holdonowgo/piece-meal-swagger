@@ -10,6 +10,12 @@ const data = [{
 }, {
   id: 4,
   name: 'avocado'
+}, {
+  id: 5,
+  name: 'almond milk'
+}, {
+  id: 6,
+  name: 'coconut milk'
 }];
 
 exports.seed = function(knex, Promise) {

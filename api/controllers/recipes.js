@@ -53,6 +53,12 @@ function getRecipe(req, res) {
     .catch((err) => {
       res.sendStatus(500);
     });
+
+  return knex("recipes")
+    .first().where("id", req.swagger.params.id.value)
+    .then((result) => {
+      return res.json(result);
+    });
 }
 
 function postRecipe(req, res) {
@@ -90,6 +96,7 @@ function postRecipe(req, res) {
       });
     });
 }
+  //to insert into recipe_ingredients table
 
 function updateRecipe(req, res) {
   let id = req.swagger.params.id.value;

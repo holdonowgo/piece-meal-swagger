@@ -149,15 +149,15 @@ suite('clients tests', () => {
             }, done);
     });
 
-    test('GET /clients/88', (done) => {
-        request(server)
-            .get('/clients/88')
-            .set('Accept', 'text/plain')
-            .expect('Content-Type', 'application/json')
-            .expect(404, 'Not Found', done);
-
-        /* eslint-enable max-len */
-    });
+    // test('GET /clients/88', (done) => {
+    //     request(server)
+    //         .get('/clients/88')
+    //         .set('Accept', 'text/plain')
+    //         .expect('Content-Type', 'application/json')
+    //         .expect(404, 'Not Found', done);
+    //
+    //     /* eslint-enable max-len */
+    // });
 
 
     test('POST /clients', (done) => {
