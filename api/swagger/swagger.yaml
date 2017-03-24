@@ -960,7 +960,9 @@ definitions:
       instructions:
         type: string
       ingredients:
-        type: object
+        type: array
+        items:
+          type: object
         properties:
           id:
             type: integer

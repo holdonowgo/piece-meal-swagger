@@ -35,14 +35,24 @@ function getRecipe(req, res) {
   );
   Promise.all(promises)
     .then((results) => {
-      console.log(results);
+      let recipe = results[0];
+      let ingredients = results[1]
+      // console.log(results[1]); --> recipe_id, id(ingredient)
+      if (!recipe) {
+        res.set('Content-Type', 'application/json')
+        res.sendStatus(404);
+      }
+      recipe["ingredients"] = ingredients.map((ingredient) => {
+        return {
+          id: ingredient.id,
+          name: ingredient.name,
+        };
+      }).sort();
+      return res.json(recipe);
     })
-  // return knex("recipes")
-  //   .first().where("id", req.swagger.params.id.value)
-  //   .then((result) => {
-  //     console.log(result);
-  //     return res.json(result);
-  //   });
+    .catch((err) => {
+      res.sendStatus(500);
+    });
 }
 
 function postRecipe(req, res) {
@@ -52,7 +62,6 @@ function postRecipe(req, res) {
 
   //to insert into recipe_ingredients table
   let ingredients = req.swagger.params.recipe.value.ingredients;
-  console.log(ingredients);
   knex("recipes")
     .first().where("name", name)
     .then((result) => {
@@ -73,11 +82,12 @@ function postRecipe(req, res) {
           ingredient_id: value
         };
       });
-      console.log(data);
       return knex('recipe_ingredients').insert(data).returning("*");
     })
     .then((recipe) => {
-      return res.json({id: recipe[0].recipe_id});
+      return res.json({
+        id: recipe[0].recipe_id
+      });
     });
 }
 
