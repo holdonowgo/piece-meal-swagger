@@ -212,7 +212,47 @@ suite("recipes test", () => {
         ]
       }, done);
   });
-  
+
+  test("POST /clients/2/recipes", () => {
+    return request(server)
+      .post("/clients/2/recipes")
+      .set("Accept", "application/json")
+      .send({ recipe_id: 1 })
+      .expect(200, {
+        success: 1,
+        description: "Added"
+      }).then(() => {
+        // check that it was actually added.
+        return request(server)
+          .get("/clients/2/recipes")
+          .set("Accept", "application/json")
+          .expect((res) => {
+            deleteIngredientTimestamps(res);
+          })
+          .expect(200, {
+            "recipes": [
+              {
+                "id": 1,
+                "name": "cauliflower buffalo bites",
+                "instructions": "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk.",
+                "ingredients": [
+                  {
+                    "id": 1,
+                    "name": "bacon",
+                    "active": true
+                  },
+                  {
+                    "id": 3,
+                    "name": "milk",
+                    "active": true
+                  }
+                ]
+              }
+            ]
+          });
+    });
+  });
+
   // test("GET /recipes/-1", (done) => {
   //   request(server)
   //     .get("/recipes/-1")

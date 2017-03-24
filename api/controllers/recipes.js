@@ -4,6 +4,7 @@ const knex = require('../../knex');
 module.exports = {
   getRecipesList: getRecipesList,
   getClientRecipes: getClientRecipes,
+  addClientRecipe: addClientRecipe,
   getRecipe: getRecipe,
   postRecipe: postRecipe,
   updateRecipe: updateRecipe,
@@ -37,6 +38,16 @@ function getClientRecipes(req, res) {
     .select("recipes.*")
     .where('client_recipes.client_id', req.swagger.params.user_id.value);
   return doGetRecipes(query, res);
+}
+
+function addClientRecipe(req, res) {
+  return knex("client_recipes")
+    .insert({
+      client_id: req.swagger.params.user_id.value,
+      recipe_id: req.swagger.params.request.value.recipe_id
+    }).then(() => {
+      res.json({ success: 1, description: "Added" });
+    });
 }
 
 function getIngredientsQuery(recipeId) {
