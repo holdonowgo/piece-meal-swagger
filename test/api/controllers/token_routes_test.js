@@ -44,7 +44,7 @@ suite('part4 routes token', () => {
 
     test('POST /token', (done) => {
         request(server)
-            .post('/token')
+            .post('/api/token')
             .set('Accept', 'application/json')
             .set('Content-Type', 'application/json')
             .send({

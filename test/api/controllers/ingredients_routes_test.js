@@ -45,37 +45,10 @@ suite('ingredients test', () => {
     test('GET /ingredients', (done) => {
         /* eslint-disable max-len */
         request(server)
-            .get('/ingredients')
+            .get('/api/ingredients')
             .set('Accept', 'application/json')
             .set('Token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5MDI5NDE0MSwiZXhwIjoxNDkwODk4OTQxfQ.gm9LVr8P57ZDSgUZGFiyTSA8qpYsUgaFlRTa_NvlYfA')
             .expect('Content-Type', /json/)
-            // .expect(200, {
-            //     "ingredients": [{
-            //             "id": 1,
-            //             "name": "bacon",
-            //             "tags": ['meat', 'pork'],
-            //             "active": true
-            //         },
-            //         {
-            //             "id": 2,
-            //             "name": "egg",
-            //             "tags": ['vegetarian'],
-            //             "active": true
-            //         },
-            //         {
-            //             "id": 3,
-            //             "name": "milk",
-            //             "tags": ['dairy', 'vegetarian'],
-            //             "active": true
-            //         },
-            //         {
-            //             "id": 4,
-            //             "name": "avocado",
-            //             "tags": ['vegan', 'vegetarian'],
-            //             "active": true
-            //         }
-            //     ]
-            // }, done);
             .expect(200, {
                 "ingredients": [{
                         "id": 1,
@@ -112,33 +85,141 @@ suite('ingredients test', () => {
                         "name": "coconut milk",
                         "active": true,
                         "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 7,
+                        "name": "brown sugar",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 8,
+                        "name": "spinach",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 9,
+                        "name": "kale",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 10,
+                        "name": "tomato",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 11,
+                        "name": "banana",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 12,
+                        "name": "grapes",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 13,
+                        "name": "chicken breast (bone-in)",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 14,
+                        "name": "chicken thigh (skin-on)",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 15,
+                        "name": "russet potato",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 16,
+                        "name": "lime juice (fresh)",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 17,
+                        "name": "lemon juice (fresh)",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 18,
+                        "name": "salt",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 19,
+                        "name": "black pepper",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 20,
+                        "name": "grains of paradise",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 21,
+                        "name": "garlic",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 22,
+                        "name": "onion",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 23,
+                        "name": "asafoetida (powder)",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 24,
+                        "name": "white flour",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 25,
+                        "name": "carrot",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 26,
+                        "name": "celery",
+                        "tags": []
+                    },
+                    {
+                        "active": true,
+                        "id": 27,
+                        "name": "kombu",
+                        "tags": []
                     }
                 ]
             }, done);
     });
 
-    // test('GET /ingredients/:id', (done) => {
-    //     /* eslint-disable max-len */
-    //     request(server)
-    //         .get('/ingredients/1')
-    //         .set('Accept', 'application/json')
-    //         .expect('Content-Type', /json/)
-    //         .expect(200, {
-    //             "id": 1,
-    //             "name": "bacon",
-    //             "tags": ['meat', 'pork'],
-    //             "alternatives": [],
-    //             "active": true,
-    //             "calories": 120
-    //         }, done);
-    //
-    //     /* eslint-enable max-len */
-    // });
-
     test('GET /ingredients/:id', (done) => {
         /* eslint-disable max-len */
         request(server)
-            .get('/ingredients/1')
+            .get('/api/ingredients/1')
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200, {
@@ -162,10 +243,10 @@ suite('ingredients test', () => {
     test('POST /ingredients', (done) => {
         /* eslint-disable max-len */
         request(server)
-            .post('/ingredients')
+            .post('/api/ingredients')
             .set('Accept', 'application/json')
             .send({
-                name: 'salmon',
+                name: 'tuna',
                 tags: ['seafood', 'fish'],
                 active: true
             })
@@ -175,8 +256,8 @@ suite('ingredients test', () => {
                 delete res.body.updatedAt;
             })
             .expect(200, {
-                id: 7,
-                name: 'salmon',
+                id: 28,
+                name: 'tuna',
                 tags: ['seafood', 'fish'],
                 active: true
             }, done);
@@ -187,7 +268,7 @@ suite('ingredients test', () => {
     // test('PATCH /ingredients/:id', (done) => {
     //     /* eslint-disable max-len */
     //     request(server)
-    //         .patch('/ingredients/1')
+    //         .patch('/api/ingredients/1')
     //         .set('Accept', 'application/json')
     //         .send({
     //             name: 'BACON',
@@ -212,7 +293,7 @@ suite('ingredients test', () => {
     test('DELETE /ingredients/:id', (done) => {
         /* eslint-disable max-len */
         request(server)
-            .del('/ingredients/1')
+            .del('/api/ingredients/1')
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect((res) => {
@@ -232,7 +313,7 @@ suite('ingredients test', () => {
 
     test('GET /search/ingredients/?text=mi', (done) => {
         request(server)
-            .get('/search/ingredients?text=mi')
+            .get('/api/search/ingredients?text=mi')
             .set('Accept', 'application/json')
             .set('Token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5MDI5NDE0MSwiZXhwIjoxNDkwODk4OTQxfQ.gm9LVr8P57ZDSgUZGFiyTSA8qpYsUgaFlRTa_NvlYfA')
             .expect('Content-Type', /json/)
@@ -261,7 +342,7 @@ suite('ingredients test', () => {
 
     // test('GET /ingredients/9000', (done) => {
     //     request(server)
-    //         .get('/ingredients/9000')
+    //         .get('/api/api/ingredients/9000')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);
@@ -269,7 +350,7 @@ suite('ingredients test', () => {
     //
     // test('GET /ingredients/-1', (done) => {
     //     request(server)
-    //         .get('/ingredients/-1')
+    //         .get('/api/api/ingredients/-1')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);
@@ -277,7 +358,7 @@ suite('ingredients test', () => {
     //
     // test('GET /ingredients/one', (done) => {
     //     request(server)
-    //         .get('/ingredients/one')
+    //         .get('/api/api/ingredients/one')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);
@@ -286,7 +367,7 @@ suite('ingredients test', () => {
     // test('POST /ingredients without name', (done) => {
     //     /* eslint-disable max-len */
     //     request(server)
-    //         .post('/ingredients')
+    //         .post('/api/ingredients')
     //         .set('Accept', 'application/json')
     //         .send({
     //             tags: ['citrus']
@@ -299,7 +380,7 @@ suite('ingredients test', () => {
     //
     // test('PATCH /ingredients/9000', (done) => {
     //     request(server)
-    //         .patch('/ingredients/9000')
+    //         .patch('/api/ingredients/9000')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);
@@ -307,7 +388,7 @@ suite('ingredients test', () => {
     //
     // test('PATCH /ingredients/-1', (done) => {
     //     request(server)
-    //         .patch('/ingredients/-1')
+    //         .patch('/api/ingredients/-1')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);
@@ -315,7 +396,7 @@ suite('ingredients test', () => {
     //
     // test('PATCH /ingredients/one', (done) => {
     //     request(server)
-    //         .patch('/ingredients/one')
+    //         .patch('/api/ingredients/one')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);
@@ -323,7 +404,7 @@ suite('ingredients test', () => {
     //
     // test('DELETE /ingredients/9000', (done) => {
     //     request(server)
-    //         .del('/books/9000')
+    //         .del('/api/books/9000')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);
@@ -331,7 +412,7 @@ suite('ingredients test', () => {
     //
     // test('DELETE /ingredients/-1', (done) => {
     //     request(server)
-    //         .del('/books/-1')
+    //         .del('/api/books/-1')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);
@@ -339,7 +420,7 @@ suite('ingredients test', () => {
     //
     // test('DELETE /ingredients/one', (done) => {
     //     request(server)
-    //         .del('/books/one')
+    //         .del('/api/books/one')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);

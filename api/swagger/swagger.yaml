@@ -3,7 +3,8 @@ info:
   version: "0.0.1"
   title: Piece-Meal App
 # during dev, should point to your local machine
-host: piecemeal-api.herokuapp.com
+# host: piecemeal-api.herokuapp.com
+host: localhost:10010
 # basePath prefixes all resource paths
 basePath: /api
 #
@@ -1065,13 +1066,13 @@ definitions:
       forbidden:
         type: array
         items:
-          type: integer
-          # type: object
-          # properties:
-          #   client_id:
-          #     type: integer
-          #   ingredient_id:
-          #     type: integer
+          # type: integer
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
 
   # GetUserRecipeRatingResponse:
   #   required:
