@@ -4,8 +4,9 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
-var SwaggerExpress = require('swagger-express-mw');
-var app = require('express')();
+const SwaggerExpress = require('swagger-express-mw');
+const express = require('express');
+const app = express();
 
 app.disable('x-powered-by');
 
@@ -13,6 +14,11 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
 const morgan = require('morgan');
 const ev = require('express-validation');
+const cors = require('cors');
+
+const path = require('path');
+app.use(express.static(path.join('public')));
+app.use(cors());
 
 switch (app.get('env')) {
   case 'development':

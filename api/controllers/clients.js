@@ -83,17 +83,38 @@ function addClient(req, res, next) {
 function crossCheckRecipe(req, res) {
     let promises = [];
     // promises.push(knex("clients").select("id"));
-    promises.push(knex("clients")
-        .join('client_restriction', 'clients.id', 'client_restriction.client_id')
-        .where("clients.id", req.swagger.params.user_id.value)
+    // console.log(knex("ingredients")
+    // .select('client_restriction.ingredient_id', 'ingredients.name')
+    //     .join('client_restriction', 'ingredients.id', 'client_restriction.ingredient_id')
+    //     .where("client_restriction.client_id", req.swagger.params.user_id.value).toString());
+    promises.push(knex("ingredients")
+    .select('client_restriction.ingredient_id', 'ingredients.name')
+        .join('client_restriction', 'ingredients.id', 'client_restriction.ingredient_id')
+        .where("client_restriction.client_id", req.swagger.params.user_id.value)
     );
-    promises.push(knex("recipe_ingredients")
-        .where("recipe_id", req.swagger.params.recipe_id.value)
-    );
+    // console.log(knex("ingredients")
+    //     .select('ingredients.id', 'ingredients.name')
+    //     .join('recipe_ingredients', 'recipe_ingredients.ingredient_id', 'ingredients.id')
+    //     .where("recipe_ingredients.recipe_id", req.swagger.params.recipe_id.value).toString());
+    // promises.push(knex("ingredients")
+    //     .select('ingredients.id', 'ingredients.name')
+    //     .join('recipe_ingredients', 'recipe_ingredients.ingredient_id', 'ingredients.id')
+    // );
+    promises.push(knex
+        .select('ingredients.id', 'ingredients.name')
+        .from('ingredients')
+        .join('recipe_ingredients', function() {
+            this
+                .on('recipe_ingredients.ingredient_id', 'ingredients.id')
+                .andOn('recipe_ingredients.recipe_id', req.swagger.params.recipe_id.value);
+        }));
     Promise.all(promises)
         .then((results) => {
             let restrictions = results[0];
-            let recipe_ingredient = results[1];
+            let recipe_ingredients = results[1];
+
+            console.log('restrictions:', restrictions);
+            console.log('recipe_ingredients', recipe_ingredients);
 
             let result = {
                 is_safe: true,
@@ -101,11 +122,12 @@ function crossCheckRecipe(req, res) {
             };
 
             for (let restriction of restrictions) {
-                let found = recipe_ingredient.some(function(ingredient) {
-                    return ingredient.id === restriction.id;
+                // console.log(restriction.id);
+                let found = recipe_ingredients.some(function(ingredient) {
+                    return ingredient.id === restriction.ingredient_id;
                 });
                 if (found) {
-                    result.forbidden.push(restriction.ingredient_id);
+                    result.forbidden.push(restriction);
                     result.is_safe = false;
                 }
             }

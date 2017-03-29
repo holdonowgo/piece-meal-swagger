@@ -14,7 +14,43 @@ const data = [{
     id: 4,
     ingredient_id: 3,
     alt_ingredient_id: 6
-}]
+}, {
+    id: 5,
+    ingredient_id: 18,
+    alt_ingredient_id: 17
+}
+, {
+    id: 6,
+    ingredient_id: 25,
+    alt_ingredient_id: 27
+}
+, {
+    id: 7,
+    ingredient_id: 26,
+    alt_ingredient_id: 27
+}
+// , {
+//     id: 0,
+//     ingredient_id: 0,
+//     alt_ingredient_id: 0
+// }
+// , {
+//     id: 0,
+//     ingredient_id: 0,
+//     alt_ingredient_id: 0
+// }
+// , {
+//     id: 0,
+//     ingredient_id: 0,
+//     alt_ingredient_id: 0
+// }
+// ,
+// {
+//     id: 0,
+//     ingredient_id: 0,
+//     alt_ingredient_id: 0
+// }
+]
 exports.seed = function(knex, Promise) {
   // Deletes ALL existing entries
   return knex('ingredient_alternatives').del()

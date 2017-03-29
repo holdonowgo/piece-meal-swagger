@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   version: "0.0.1"
-  title: Piece-Meal App
+  title: Piece-Meal API
 # during dev, should point to your local machine
 # host: piecemeal-api.herokuapp.com
 host: localhost:10010
@@ -18,11 +18,13 @@ consumes:
 # format of the responses to the client (Accepts)
 produces:
   - application/json
+  - text/plain
 paths:
   /clients:
     # our controller name
     x-swagger-router-controller: clients
     get:
+      summary: Get all registered clients
       description: This endpoint returns all clients available in the database
       # define the type of response for Success "200" and Error
       operationId: getClients
@@ -37,6 +39,7 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     post:
+      summary: Register a client for our api
       description: Add a new client
       operationId: addClient
       # movie info to be stored
@@ -61,6 +64,7 @@ paths:
     # our controller name
     x-swagger-router-controller: clients
     get:
+      summary: Get a specific registered user from our database.
       description: Retrieve a single client by id
       operationId: getClient
       # define the type of response for Success "200" and Error
@@ -80,6 +84,7 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     put:
+      summary: Update a specific registerd user in our database
       description: Update a client by id
       operationId: updateClient
       parameters:
@@ -87,6 +92,7 @@ paths:
           type: integer
           in: path
           required: true
+
         - name: client
           in: body
           description: client object

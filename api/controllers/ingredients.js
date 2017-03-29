@@ -40,7 +40,7 @@ function deleteIngredient(req, res) {
 
 function getIngredientsList(req, res) {
     // To list ingredients
-
+    console.log('getIngredientsList');
     let promises = [];
     promises.push(knex("ingredients").select("id", "name", "active"));
     promises.push(knex("ingredient_tags").select("ingredient_id", "tag_text"));
@@ -80,7 +80,6 @@ function getIngredientAlternatives(req, res) {
                     }
                 });
                 return fetch('https://api.edamam.com/api/nutrition-data' + qstring);
-
             }
         })
         .then((fetchResponse) => {

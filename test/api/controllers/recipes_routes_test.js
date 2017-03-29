@@ -42,7 +42,7 @@ suite("recipes test", () => {
 
     test("GET /recipes", (done) => {
         request(server)
-            .get("/recipes")
+            .get("/api/recipes")
             .set("Accept", "application/json")
             .expect("Content-Type", /json/)
             .expect((res) => {
@@ -64,7 +64,8 @@ suite("recipes test", () => {
                         ],
                         name: "cauliflower buffalo bites",
                         instructions: "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
-                    }, {
+                    },
+                    {
                         "id": 2,
                         "name": "simple oatmeal",
                         "instructions": "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
@@ -83,6 +84,61 @@ suite("recipes test", () => {
                             "name": "bacon",
                             "active": true
                         }]
+                    },
+                    {
+                        "id": 4,
+                        "ingredients": [{
+                                "active": true,
+                                "id": 17,
+                                "name": "lemon juice (fresh)"
+                            },
+                            {
+                                "active": true,
+                                "id": 18,
+                                "name": "salt"
+                            }
+                        ],
+                        "instructions": "This is how we do it.",
+                        "name": "Recipe #4"
+                    },
+                    {
+                        "id": 5,
+                        "ingredients": [{
+                                "active": true,
+                                "id": 21,
+                                "name": "garlic"
+                            },
+                            {
+                                "active": true,
+                                "id": 22,
+                                "name": "onion"
+                            },
+                            {
+                                "active": true,
+                                "id": 23,
+                                "name": "asafoetida (powder)"
+                            }
+                        ],
+                        "instructions": "It's Friday night.",
+                        "name": "Recipe #5"
+                    },
+                    {
+                        "id": 6,
+                        "ingredients": [],
+                        "instructions": "And I'm feelin' right.",
+                        "name": "Recipe #6"
+                    },
+                    {
+                        "id": 7,
+                        "ingredients": [],
+                        "instructions": "The party's over on the west side.",
+                        "name": "Recipe #7"
+                    },
+                    {
+                        "id": 8,
+                        "ingredients": [],
+                        "instructions": "So I creep...",
+                        "name": "Recipe #8"
                     }
                 ]
             }, done);
@@ -90,7 +146,7 @@ suite("recipes test", () => {
 
     test("POST /recipes", () => {
         return request(server)
-            .post("/recipes")
+            .post("/api/recipes")
             .set("Accept", "application/json")
             .send({
                 name: "seaweed salad",
@@ -99,7 +155,7 @@ suite("recipes test", () => {
             })
             .expect("Content-Type", /json/)
             .expect(200, {
-                id: 4,
+                id: 9,
                 "ingredients": [{
                         "id": 1,
                         "name": "bacon"
@@ -116,7 +172,7 @@ suite("recipes test", () => {
 
     test("GET /recipes/:id", (done) => {
         request(server)
-            .get("/recipes/1")
+            .get("/api/recipes/1")
             .set("Accept", "application/json")
             .expect(200, {
                 "id": 1,
@@ -136,7 +192,7 @@ suite("recipes test", () => {
 
     test("PUT /recipes:id", (done) => {
         request(server)
-            .put("/recipes/1")
+            .put("/api/recipes/1")
             .set("Accept", "application/json")
             .send({
                 name: "seaweed salad",
@@ -152,7 +208,7 @@ suite("recipes test", () => {
 
     test("DELETE /recipes/:id", (done) => {
         request(server)
-            .del("/recipes/1")
+            .del("/api/recipes/1")
             .set("Accept", "application/json")
             .expect("Content-Type", /json/)
             .expect(200, {
@@ -163,7 +219,7 @@ suite("recipes test", () => {
 
     test("GET /clients/1/recipes", (done) => {
         request(server)
-            .get("/clients/1/recipes")
+            .get("/api/clients/1/recipes")
             .set("Accept", "application/json")
             .expect((res) => {
                 deleteIngredientTimestamps(res);
@@ -211,7 +267,7 @@ suite("recipes test", () => {
 
     test("POST /clients/2/recipes", () => {
         return request(server)
-            .post("/clients/2/recipes")
+            .post("/api/clients/2/recipes")
             .set("Accept", "application/json")
             .send({
                 recipe_id: 1
@@ -222,7 +278,7 @@ suite("recipes test", () => {
             }).then(() => {
                 // check that it was actually added.
                 return request(server)
-                    .get("/clients/2/recipes")
+                    .get("/api/clients/2/recipes")
                     .set("Accept", "application/json")
                     .expect((res) => {
                         deleteIngredientTimestamps(res);
@@ -250,7 +306,7 @@ suite("recipes test", () => {
 
     // test("GET /recipes/-1", (done) => {
     //   request(server)
-    //     .get("/recipes/-1")
+    //     .get("/api/recipes/-1")
     //     .set("Accept", "application/json")
     //     .expect("Content-Type", /plain/)
     //     .expect(404, "Not Found", done);
@@ -258,7 +314,7 @@ suite("recipes test", () => {
     //
     // test("GET /recipes/one", (done) => {
     //   request(server)
-    //     .get("/recipes/one")
+    //     .get("/api/recipes/one")
     //     .set("Accept", "application/json")
     //     .expect("Content-Type", /plain/)
     //     .expect(404, "Not Found", done);
