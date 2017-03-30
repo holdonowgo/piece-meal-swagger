@@ -543,24 +543,57 @@ paths:
 
   # /ingredients/{id}/alternatives:
   #   x-swagger-router-controller: ingredients
-  #   get:
-  #     description: get alternatives for an ingredient
-  #     # define the type of response for Success "200" and Error
-  #     operationId: getIngredientAlternatives
-  #     parameters:
-  #       - name: id
-  #         type: integer
-  #         in: path
-  #         required: true
-  #     responses:
-  #       "200":
-  #         description: Success
-  #         schema:
-  #           $ref: "#/definitions/GetIngredientAlternativesResponse"
-  #       default:
-  #         description: Error
-  #         schema:
-  #           $ref: "#/definitions/ErrorResponse"
+    # get:
+    #   description: get alternatives for an ingredient
+    #   # define the type of response for Success "200" and Error
+    #   operationId: getIngredientAlternatives
+    #   parameters:
+    #     - name: id
+    #       type: integer
+    #       in: path
+    #       required: true
+    #   responses:
+    #     "200":
+    #       description: Success
+    #       schema:
+    #         $ref: "#/definitions/GetIngredientAlternativesResponse"
+    #     default:
+    #       description: Error
+    #       schema:
+    #         $ref: "#/definitions/ErrorResponse"
+
+    post:
+      description: add alternatives for an ingredient
+      # define the type of response for Success "200" and Error
+      operationId: addIngredientAlternatives
+      parameters:
+        - name: id
+          type: integer
+          in: path
+          required: true
+        - name: alternatives
+          in: body
+          description: Json object informations.
+          required: true
+          schema:
+            type: object
+            required:
+              - alternatives
+            properties:
+              alternatives:
+                description: alternaive ingredients
+                type: array
+                items:
+                  type: integer
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetIngredientResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 
   /search/clients:
     x-swagger-router-controller: clients

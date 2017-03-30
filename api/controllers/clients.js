@@ -181,7 +181,9 @@ function getClients(req, res) {
                         instructions: recipe.instructions,
                         name: recipe.name
                     };
-                }).sort();
+                }).sort((a, b) => {
+                  return a.id - b.id;
+                });
 
                 client.recipes = r;
             }

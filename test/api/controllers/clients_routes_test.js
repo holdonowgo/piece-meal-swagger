@@ -76,9 +76,9 @@ suite('clients tests', () => {
                         "email": 'randy.spence@gmail.com',
                         "is_super_user": true,
                         "recipes": [{
-                            "id": 8,
-                            "instructions": "So I creep...",
-                            "name": "Recipe #8"
+                            "id": 2,
+                            "instructions": "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
+                            "name": "simple oatmeal"
                         }, {
                             "id": 4,
                             "instructions": "This is how we do it.",
@@ -88,9 +88,9 @@ suite('clients tests', () => {
                             "instructions": "It's Friday night.",
                             "name": "Recipe #5"
                         }, {
-                            "id": 2,
-                            "instructions": "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
-                            "name": "simple oatmeal"
+                            "id": 8,
+                            "instructions": "So I creep...",
+                            "name": "Recipe #8"
                         }]
                     },
                     {

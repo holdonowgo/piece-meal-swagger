@@ -535,26 +535,61 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-  # /ingredients/{id}/alternatives:
-  #   x-swagger-router-controller: ingredients
-  #   get:
-  #     description: get alternatives for an ingredient
-  #     # define the type of response for Success "200" and Error
-  #     operationId: getIngredientAlternatives
-  #     parameters:
-  #       - name: id
-  #         type: integer
-  #         in: path
-  #         required: true
-  #     responses:
-  #       "200":
-  #         description: Success
-  #         schema:
-  #           $ref: "#/definitions/GetIngredientAlternativesResponse"
-  #       default:
-  #         description: Error
-  #         schema:
-  #           $ref: "#/definitions/ErrorResponse"
+  /ingredients/{id}/alternatives:
+    x-swagger-router-controller: ingredients
+    # get:
+    #   description: get alternatives for an ingredient
+    #   # define the type of response for Success "200" and Error
+    #   operationId: getIngredientAlternatives
+    #   parameters:
+    #     - name: id
+    #       type: integer
+    #       in: path
+    #       required: true
+    #   responses:
+    #     "200":
+    #       description: Success
+    #       schema:
+    #         $ref: "#/definitions/GetIngredientAlternativesResponse"
+    #     default:
+    #       description: Error
+    #       schema:
+    #         $ref: "#/definitions/ErrorResponse"
+
+    post:
+      description: add alternatives for an ingredient
+      # define the type of response for Success "200" and Error
+      operationId: addIngredientAlternatives
+      parameters:
+        - name: id
+          type: integer
+          in: path
+          required: true
+        - name: alternatives
+          in: body
+          description: alternaive ingredients
+          # type: array
+          # items:
+          #   type: integer
+          schema:
+            type: object
+            required:
+              - ingredients
+            properties:
+              ingredients:
+                description: array of alt ingredient ids
+                type: array
+                items:
+                  type: integer
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetIngredientResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 
   /search/clients:
     x-swagger-router-controller: clients
@@ -889,24 +924,24 @@ definitions:
   #             items:
   #               type: string
 
-  GetRecipeSearchResponse:
-    required:
-      - recipes
-    properties:
-      # The array of recipes
-      recipes:
-        type: array
-        items:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-            tags:
-              type: array
-              items:
-                type: string
+  # GetRecipeSearchResponse:
+  #   required:
+  #     - recipes
+  #   properties:
+  #     # The array of recipes
+  #     recipes:
+  #       type: array
+  #       items:
+  #         type: object
+  #         properties:
+  #           id:
+  #             type: integer
+  #           name:
+  #             type: string
+  #           tags:
+  #             type: array
+  #             items:
+  #               type: string
 
   GetUserRestrictionsResponse:
     required:
@@ -1011,12 +1046,12 @@ definitions:
         type: integer
       name:
         type: string
+      active:
+        type: boolean
       tags:
         type: array
         items:
           type: string
-      calories:
-        type: integer
       alternatives:
         type: array
         items:
@@ -1026,6 +1061,8 @@ definitions:
               type: integer
             name:
               type: string
+      calories:
+        type: integer
           # type: integer
 
   # GetIngredientAlternativesResponse:

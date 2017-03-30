@@ -20,6 +20,7 @@ const request = require('supertest');
 const bcrypt = require('bcrypt');
 const knex = require('../../../knex');
 const server = require('../../../app');
+const should = require('should');
 
 suite('ingredients test', () => {
     before((done) => {
@@ -261,6 +262,63 @@ suite('ingredients test', () => {
                 tags: ['seafood', 'fish'],
                 active: true
             }, done);
+
+        /* eslint-enable max-len */
+    });
+
+    test('POST /ingredients/:id/alternatives', (done) => {
+        /* eslint-disable max-len */
+        request(server)
+            .post('/api/ingredients/13/alternatives')
+            .set('Accept', 'application/json')
+            .send({
+                ingredients: [7, 10, 12]
+            })
+            .expect('Content-Type', /json/)
+            // .expect((res) => {
+            //     delete res.body.createdAt;
+            //     delete res.body.updatedAt;
+            // })
+            .expect(200, {
+                "id": 13,
+                "name": "chicken breast (bone-in)",
+                "active": true,
+                "tags": [],
+                "alternatives": [{
+                    id: 7,
+                    name: 'brown sugar'
+                }, {
+                    id: 10,
+                    name: 'tomato'
+                }, {
+                    id: 12,
+                    name: 'grapes'
+                }],
+                calories: 299
+            }, done);
+            // .end(function(err, res) {
+            //     let compare = {
+            //         "id": 9,
+            //         "name": "kale",
+            //         "active": true,
+            //         "tags": [],
+            //         "alternatives": [{
+            //             id: 7,
+            //             name: 'brown sugar'
+            //         }, {
+            //             id: 10,
+            //             name: 'tomato'
+            //         }, {
+            //             id: 12,
+            //             name: 'grapes'
+            //         }]
+            //     };
+            //     // HTTP status should be 200
+            //     res.status.should.equal(200);
+            //     // Error key should be false.
+            //     res.body.should.equal(compare);
+            //     done();
+            // });
 
         /* eslint-enable max-len */
     });

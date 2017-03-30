@@ -35,13 +35,14 @@
     "foreman": "^2.0.0",
     "mocha": "^3.2.0",
     "nodemon": "^1.11.0",
+    "nyc": "^10.2.0",
     "should": "^7.1.0",
     "supertest": "^2.0.0",
     "swagger-express-mw": "^0.1.0"
   },
   "scripts": {
     "start": "node app.js",
-    "test": "node_modules/mocha/bin/mocha",
+    "test": "nyc node_modules/mocha/bin/mocha",
     "heroku-postbuild": "knex seed:run"
   }
 }

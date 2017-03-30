@@ -1,6 +1,6 @@
 const bookshelf = require('../../bookshelf');
 
-var Ingredient = bookshelf.Model.extend({
+let Ingredient = bookshelf.Model.extend({
     tableName: 'ingredients',
     hasTimestamps: true,
 
@@ -8,15 +8,15 @@ var Ingredient = bookshelf.Model.extend({
         return this.hasMany(IngredientTag);
     },
     alternatives: function() {
-        return this.hasMany(AltIingredient);
+        return this.belongsToMany(Ingredient, 'ingredient_alternatives', 'ingredient_id', 'alt_ingredient_id');
     }
 });
 
-var Ingredients = bookshelf.Collection.extend({
+let Ingredients = bookshelf.Collection.extend({
     model: Ingredient
 });
 
-var IngredientTag = bookshelf.Model.extend({
+let IngredientTag = bookshelf.Model.extend({
     tableName: 'ingredient_tags',
     hasTimestamps: false,
 
@@ -25,23 +25,8 @@ var IngredientTag = bookshelf.Model.extend({
     }
 });
 
-var IngredientTags = bookshelf.Collection.extend({
+let IngredientTags = bookshelf.Collection.extend({
     model: IngredientTag
-});
-
-
-
-var AltIingredients = bookshelf.Collection.extend({
-    model: AltIingredient
-});
-
-var AltIingredient = bookshelf.Model.extend({
-    tableName: 'ingredient_alternatives',
-    hasTimestamps: false,
-
-    ingredient: function() {
-        return this.belongsToMany(Ingredient);
-    }
 });
 
 module.exports = {
