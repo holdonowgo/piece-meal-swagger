@@ -266,6 +266,29 @@ suite('ingredients test', () => {
         /* eslint-enable max-len */
     });
 
+    test('POST /ingredients using duplicate name', (done) => {
+        /* eslint-disable max-len */
+        request(server)
+            .post('/api/ingredients')
+            .set('Accept', 'application/json')
+            .send({
+                name: 'garlic',
+                tags: [],
+                active: true
+            })
+            .expect('Content-Type', /json/)
+            .expect(400, {
+                message: 'Ingredient already exists!',
+                ingredient: {
+                    active: true,
+                    id: 21,
+                    name: 'garlic'
+                }
+            }, done);
+
+        /* eslint-enable max-len */
+    });
+
     test('POST /ingredients/:id/alternatives', (done) => {
         /* eslint-disable max-len */
         request(server)
@@ -296,29 +319,29 @@ suite('ingredients test', () => {
                 }],
                 calories: 299
             }, done);
-            // .end(function(err, res) {
-            //     let compare = {
-            //         "id": 9,
-            //         "name": "kale",
-            //         "active": true,
-            //         "tags": [],
-            //         "alternatives": [{
-            //             id: 7,
-            //             name: 'brown sugar'
-            //         }, {
-            //             id: 10,
-            //             name: 'tomato'
-            //         }, {
-            //             id: 12,
-            //             name: 'grapes'
-            //         }]
-            //     };
-            //     // HTTP status should be 200
-            //     res.status.should.equal(200);
-            //     // Error key should be false.
-            //     res.body.should.equal(compare);
-            //     done();
-            // });
+        // .end(function(err, res) {
+        //     let compare = {
+        //         "id": 9,
+        //         "name": "kale",
+        //         "active": true,
+        //         "tags": [],
+        //         "alternatives": [{
+        //             id: 7,
+        //             name: 'brown sugar'
+        //         }, {
+        //             id: 10,
+        //             name: 'tomato'
+        //         }, {
+        //             id: 12,
+        //             name: 'grapes'
+        //         }]
+        //     };
+        //     // HTTP status should be 200
+        //     res.status.should.equal(200);
+        //     // Error key should be false.
+        //     res.body.should.equal(compare);
+        //     done();
+        // });
 
         /* eslint-enable max-len */
     });

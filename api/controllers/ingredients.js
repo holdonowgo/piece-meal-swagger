@@ -266,14 +266,20 @@ function getIngredient(req, res) {
 //         });
 // };
 
-function addIngredient(req, res) {
+function addIngredient(req, res, next) {
     let name = req.swagger.params.ingredient.value.name;
     var id;
     knex("ingredients")
         .first().where("name", name)
         .then((result) => {
             if (result) {
-                res.status(400).json('Ingredient already exists!');
+                delete result.created_at;
+                delete result.updated_at;
+                res.status(400).json({
+                    message: 'Ingredient already exists!',
+                    ingredient: result
+                });
+                throw new Error('Ingredient already exists!');
             } else {
                 return knex("ingredients").insert({
                     "name": name
@@ -299,6 +305,9 @@ function addIngredient(req, res) {
             let newIngredient = req.swagger.params.ingredient.value;
             newIngredient.id = ingredient[0].id;
             return res.json(newIngredient);
+        })
+        .catch((error) => {
+
         });
 }
 

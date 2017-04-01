@@ -146,6 +146,25 @@ suite('clients tests', () => {
             }, done);
     });
 
+    test('GET /clients/:user_id/recipes/:recipe_id/crosscheck', (done) => {
+        request(server)
+            .get('/api/clients/2/recipes/1/crosscheck')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200, {
+                "is_safe": false,
+                "forbidden": [{
+                        "ingredient_id": 1,
+                        "name": "bacon"
+                    },
+                    {
+                        "ingredient_id": 3,
+                        "name": "milk"
+                    }
+                ]
+            }, done);
+    })
+
     test('GET /clients/:id', (done) => {
         /* eslint-disable max-len */
         request(server)

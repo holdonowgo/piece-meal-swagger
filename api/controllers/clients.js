@@ -112,17 +112,12 @@ function crossCheckRecipe(req, res) {
         .then((results) => {
             let restrictions = results[0];
             let recipe_ingredients = results[1];
-
-            console.log('restrictions:', restrictions);
-            console.log('recipe_ingredients', recipe_ingredients);
-
             let result = {
                 is_safe: true,
                 forbidden: []
             };
 
             for (let restriction of restrictions) {
-                // console.log(restriction.id);
                 let found = recipe_ingredients.some(function(ingredient) {
                     return ingredient.id === restriction.ingredient_id;
                 });
@@ -162,7 +157,7 @@ function getClients(req, res) {
     // To list clients
 
     let promises = [];
-    // promises.push(knex("clients").select("id"));
+
     promises.push(knex("clients").select("id", "first_name", "last_name", "email", "is_super_user"));
     promises.push(knex("client_recipes")
         .join('recipes', 'recipes.id', '=', 'client_recipes.recipe_id')
