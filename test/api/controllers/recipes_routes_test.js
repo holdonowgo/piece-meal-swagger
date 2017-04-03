@@ -42,7 +42,7 @@ suite("recipes test", () => {
 
     test("GET /recipes", (done) => {
         request(server)
-            .get("/api/recipes")
+            .get("/api/v1/recipes")
             .set("Accept", "application/json")
             .expect("Content-Type", /json/)
             .expect((res) => {
@@ -146,7 +146,7 @@ suite("recipes test", () => {
 
     test("POST /recipes", () => {
         return request(server)
-            .post("/api/recipes")
+            .post("/api/v1/recipes")
             .set("Accept", "application/json")
             .send({
                 name: "seaweed salad",
@@ -172,7 +172,7 @@ suite("recipes test", () => {
 
     test("GET /recipes/:id", (done) => {
         request(server)
-            .get("/api/recipes/1")
+            .get("/api/v1/recipes/1")
             .set("Accept", "application/json")
             .expect(200, {
                 "id": 1,
@@ -192,7 +192,7 @@ suite("recipes test", () => {
 
     test("PUT /recipes:id", (done) => {
         request(server)
-            .put("/api/recipes/1")
+            .put("/api/v1/recipes/1")
             .set("Accept", "application/json")
             .send({
                 name: "seaweed salad",
@@ -208,7 +208,7 @@ suite("recipes test", () => {
 
     test("DELETE /recipes/:id", (done) => {
         request(server)
-            .del("/api/recipes/1")
+            .del("/api/v1/recipes/1")
             .set("Accept", "application/json")
             .expect("Content-Type", /json/)
             .expect(200, {
@@ -219,7 +219,7 @@ suite("recipes test", () => {
 
     test("GET /clients/1/recipes", (done) => {
         request(server)
-            .get("/api/clients/1/recipes")
+            .get("/api/v1/clients/1/recipes")
             .set("Accept", "application/json")
             .expect((res) => {
                 deleteIngredientTimestamps(res);
@@ -267,7 +267,7 @@ suite("recipes test", () => {
 
     test("POST /clients/2/recipes", () => {
         return request(server)
-            .post("/api/clients/2/recipes")
+            .post("/api/v1/clients/2/recipes")
             .set("Accept", "application/json")
             .send({
                 recipe_id: 1
@@ -278,7 +278,7 @@ suite("recipes test", () => {
             }).then(() => {
                 // check that it was actually added.
                 return request(server)
-                    .get("/api/clients/2/recipes")
+                    .get("/api/v1/clients/2/recipes")
                     .set("Accept", "application/json")
                     .expect((res) => {
                         deleteIngredientTimestamps(res);
@@ -306,7 +306,7 @@ suite("recipes test", () => {
 
     // test("GET /recipes/-1", (done) => {
     //   request(server)
-    //     .get("/api/recipes/-1")
+    //     .get("/api/v1/recipes/-1")
     //     .set("Accept", "application/json")
     //     .expect("Content-Type", /plain/)
     //     .expect(404, "Not Found", done);
@@ -314,7 +314,7 @@ suite("recipes test", () => {
     //
     // test("GET /recipes/one", (done) => {
     //   request(server)
-    //     .get("/api/recipes/one")
+    //     .get("/api/v1/recipes/one")
     //     .set("Accept", "application/json")
     //     .expect("Content-Type", /plain/)
     //     .expect(404, "Not Found", done);

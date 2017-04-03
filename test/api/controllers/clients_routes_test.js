@@ -37,7 +37,7 @@ suite('clients tests', () => {
     test('GET /clients', (done) => {
         /* eslint-disable max-len */
         request(server)
-            .get('/api/clients')
+            .get('/api/v1/clients')
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200, {
@@ -76,9 +76,9 @@ suite('clients tests', () => {
                         "email": 'randy.spence@gmail.com',
                         "is_super_user": true,
                         "recipes": [{
-                            "id": 8,
-                            "instructions": "So I creep...",
-                            "name": "Recipe #8"
+                            "id": 2,
+                            "instructions": "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
+                            "name": "simple oatmeal"
                         }, {
                             "id": 4,
                             "instructions": "This is how we do it.",
@@ -88,9 +88,9 @@ suite('clients tests', () => {
                             "instructions": "It's Friday night.",
                             "name": "Recipe #5"
                         }, {
-                            "id": 2,
-                            "instructions": "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
-                            "name": "simple oatmeal"
+                            "id": 8,
+                            "instructions": "So I creep...",
+                            "name": "Recipe #8"
                         }]
                     },
                     {
@@ -119,7 +119,7 @@ suite('clients tests', () => {
 
     test('GET /clients/:id/ingredients/:ingredient_id/verify (safe case)', (done) => {
         request(server)
-            .get('/api/clients/1/ingredients/1/verify')
+            .get('/api/v1/clients/1/ingredients/1/verify')
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200, {
@@ -129,7 +129,7 @@ suite('clients tests', () => {
 
     test('GET /clients/:id/ingredients/:ingredient_id/verify (non-safe case)', (done) => {
         request(server)
-            .get('/api/clients/2/ingredients/1/verify')
+            .get('/api/v1/clients/2/ingredients/1/verify')
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200, {
@@ -146,10 +146,29 @@ suite('clients tests', () => {
             }, done);
     });
 
+    test('GET /clients/:user_id/recipes/:recipe_id/crosscheck', (done) => {
+        request(server)
+            .get('/api/v1/clients/2/recipes/1/crosscheck')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(200, {
+                "is_safe": false,
+                "forbidden": [{
+                        "ingredient_id": 1,
+                        "name": "bacon"
+                    },
+                    {
+                        "ingredient_id": 3,
+                        "name": "milk"
+                    }
+                ]
+            }, done);
+    })
+
     test('GET /clients/:id', (done) => {
         /* eslint-disable max-len */
         request(server)
-            .get('/api/clients/1')
+            .get('/api/v1/clients/1')
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200, {
@@ -174,7 +193,7 @@ suite('clients tests', () => {
             });
 
         request(server)
-            .get('/api/clients/4')
+            .get('/api/v1/clients/4')
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200, {
@@ -203,7 +222,7 @@ suite('clients tests', () => {
 
     test('GET /search/clients/?email=aom', (done) => {
         request(server)
-            .get('/api/search/clients/?last_name=ant')
+            .get('/api/v1/search/clients/?last_name=ant')
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200, {
@@ -245,7 +264,7 @@ suite('clients tests', () => {
         const password = 'ilikebigcats';
 
         request(server)
-            .post('/api/clients')
+            .post('/api/v1/clients')
             .set('Accept', 'application/json')
             .set('Content-Type', 'application/json')
             .send({
@@ -304,7 +323,7 @@ suite('clients tests', () => {
 
     test('POST /clients/:id/restrictions', (done) => {
         request(server)
-            .post('/api/clients/2/restrictions')
+            .post('/api/v1/clients/2/restrictions')
             .set('Accept', 'application/json')
             .send({
                 ingredient_id: 4
@@ -318,7 +337,7 @@ suite('clients tests', () => {
 
     test('GET /clients/:id/restrictions', (done) => {
         request(server)
-            .get('/api/clients/2/restrictions')
+            .get('/api/v1/clients/2/restrictions')
             .set('Accept', 'application/json')
             .expect(200, {
                 ingredients: [{
@@ -336,7 +355,7 @@ suite('clients tests', () => {
 
     test('DELETE /clients/:id/restrictions', (done) => {
         request(server)
-            .del('/api/clients/2/restrictions')
+            .del('/api/v1/clients/2/restrictions')
             .set('Accept', 'application/json')
             .send({
                 ingredient_id: 2

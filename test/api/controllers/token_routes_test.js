@@ -44,7 +44,7 @@ suite('part4 routes token', () => {
 
     test('POST /token', (done) => {
         request(server)
-            .post('/api/token')
+            .post('/api/v1/token')
             .set('Accept', 'application/json')
             .set('Content-Type', 'application/json')
             .send({
@@ -71,8 +71,9 @@ suite('part4 routes token', () => {
 
     function hasToken(res) {
         if (!('token' in res.body)) throw new Error("Token is missing!");
+        if (!('token' in res.headers)) throw new Error("Token is missing!");
         if (!('id' in res.body)) throw new Error("ID is missing!");
-        if (!('email' in res.body)) throw new Error("email is missing!");
+        if (!('email' in res.body)) throw new Error("Email is missing!");
         // if (!('super' in res.body)) throw new Error("Super user status is missing!");
     }
 
