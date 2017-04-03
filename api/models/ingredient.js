@@ -8,7 +8,11 @@ let Ingredient = bookshelf.Model.extend({
         return this.hasMany(IngredientTag);
     },
     alternatives: function() {
-        return this.belongsToMany(Ingredient, 'ingredient_alternatives', 'ingredient_id', 'alt_ingredient_id');
+        return this.belongsToMany(
+          Ingredient,
+          'ingredient_alternatives',
+          'ingredient_id',
+          'alt_ingredient_id');
     }
 });
 
