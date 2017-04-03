@@ -46,7 +46,7 @@ suite('ingredients test', () => {
     test('GET /ingredients', (done) => {
         /* eslint-disable max-len */
         request(server)
-            .get('/api/ingredients')
+            .get('/api/v1/ingredients')
             .set('Accept', 'application/json')
             .set('Token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5MDI5NDE0MSwiZXhwIjoxNDkwODk4OTQxfQ.gm9LVr8P57ZDSgUZGFiyTSA8qpYsUgaFlRTa_NvlYfA')
             .expect('Content-Type', /json/)
@@ -220,7 +220,7 @@ suite('ingredients test', () => {
     test('GET /ingredients/:id', (done) => {
         /* eslint-disable max-len */
         request(server)
-            .get('/api/ingredients/1')
+            .get('/api/v1/ingredients/1')
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200, {
@@ -244,7 +244,7 @@ suite('ingredients test', () => {
     test('POST /ingredients', (done) => {
         /* eslint-disable max-len */
         request(server)
-            .post('/api/ingredients')
+            .post('/api/v1/ingredients')
             .set('Accept', 'application/json')
             .send({
                 name: 'tuna',
@@ -269,7 +269,7 @@ suite('ingredients test', () => {
     test('POST /ingredients using duplicate name', (done) => {
         /* eslint-disable max-len */
         request(server)
-            .post('/api/ingredients')
+            .post('/api/v1/ingredients')
             .set('Accept', 'application/json')
             .send({
                 name: 'garlic',
@@ -292,7 +292,7 @@ suite('ingredients test', () => {
     test('POST /ingredients/:id/alternatives', (done) => {
         /* eslint-disable max-len */
         request(server)
-            .post('/api/ingredients/13/alternatives')
+            .post('/api/v1/ingredients/13/alternatives')
             .set('Accept', 'application/json')
             .send({
                 ingredients: [7, 10, 12]
@@ -349,7 +349,7 @@ suite('ingredients test', () => {
     // test('PATCH /ingredients/:id', (done) => {
     //     /* eslint-disable max-len */
     //     request(server)
-    //         .patch('/api/ingredients/1')
+    //         .patch('/api/v1/ingredients/1')
     //         .set('Accept', 'application/json')
     //         .send({
     //             name: 'BACON',
@@ -374,7 +374,7 @@ suite('ingredients test', () => {
     test('DELETE /ingredients/:id', (done) => {
         /* eslint-disable max-len */
         request(server)
-            .del('/api/ingredients/1')
+            .del('/api/v1/ingredients/1')
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect((res) => {
@@ -394,7 +394,7 @@ suite('ingredients test', () => {
 
     test('GET /search/ingredients/?text=mi', (done) => {
         request(server)
-            .get('/api/search/ingredients?text=mi')
+            .get('/api/v1/search/ingredients?text=mi')
             .set('Accept', 'application/json')
             .set('Token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5MDI5NDE0MSwiZXhwIjoxNDkwODk4OTQxfQ.gm9LVr8P57ZDSgUZGFiyTSA8qpYsUgaFlRTa_NvlYfA')
             .expect('Content-Type', /json/)
@@ -423,7 +423,7 @@ suite('ingredients test', () => {
 
     // test('GET /ingredients/9000', (done) => {
     //     request(server)
-    //         .get('/api/api/ingredients/9000')
+    //         .get('/api/v1/ingredients/9000')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);
@@ -431,7 +431,7 @@ suite('ingredients test', () => {
     //
     // test('GET /ingredients/-1', (done) => {
     //     request(server)
-    //         .get('/api/api/ingredients/-1')
+    //         .get('/api/v1/ingredients/-1')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);
@@ -439,7 +439,7 @@ suite('ingredients test', () => {
     //
     // test('GET /ingredients/one', (done) => {
     //     request(server)
-    //         .get('/api/api/ingredients/one')
+    //         .get('/api/v1/ingredients/one')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);
@@ -448,7 +448,7 @@ suite('ingredients test', () => {
     // test('POST /ingredients without name', (done) => {
     //     /* eslint-disable max-len */
     //     request(server)
-    //         .post('/api/ingredients')
+    //         .post('/api/v1/ingredients')
     //         .set('Accept', 'application/json')
     //         .send({
     //             tags: ['citrus']
@@ -461,7 +461,7 @@ suite('ingredients test', () => {
     //
     // test('PATCH /ingredients/9000', (done) => {
     //     request(server)
-    //         .patch('/api/ingredients/9000')
+    //         .patch('/api/v1/ingredients/9000')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);
@@ -469,7 +469,7 @@ suite('ingredients test', () => {
     //
     // test('PATCH /ingredients/-1', (done) => {
     //     request(server)
-    //         .patch('/api/ingredients/-1')
+    //         .patch('/api/v1/ingredients/-1')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);
@@ -477,7 +477,7 @@ suite('ingredients test', () => {
     //
     // test('PATCH /ingredients/one', (done) => {
     //     request(server)
-    //         .patch('/api/ingredients/one')
+    //         .patch('/api/v1/ingredients/one')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);
@@ -485,7 +485,7 @@ suite('ingredients test', () => {
     //
     // test('DELETE /ingredients/9000', (done) => {
     //     request(server)
-    //         .del('/api/books/9000')
+    //         .del('/api/v1/books/9000')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);
@@ -493,7 +493,7 @@ suite('ingredients test', () => {
     //
     // test('DELETE /ingredients/-1', (done) => {
     //     request(server)
-    //         .del('/api/books/-1')
+    //         .del('/api/v1/books/-1')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);
@@ -501,7 +501,7 @@ suite('ingredients test', () => {
     //
     // test('DELETE /ingredients/one', (done) => {
     //     request(server)
-    //         .del('/api/books/one')
+    //         .del('/api/v1/books/one')
     //         .set('Accept', 'application/json')
     //         .expect('Content-Type', /plain/)
     //         .expect(404, 'Not Found', done);
