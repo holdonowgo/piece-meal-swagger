@@ -9,7 +9,7 @@ const request = require("supertest");
 const bcrypt = require("bcrypt");
 const knex = require("../../../knex");
 const server = require("../../../app");
-const authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5MTE4NTkzMCwiZXhwIjoxNDkxNzkwNzMwfQ.s4Z3TmJt8DbHkdg2mG5uYK9ey8HPaVoD7mg6_MkGhys";
+const authToken = process.env.AUTH_TOKEN;
 
 const deleteIngredientTimestamps = function(res) {
     for (let recipe of res.body.recipes) {
