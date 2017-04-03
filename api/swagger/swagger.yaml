@@ -65,6 +65,12 @@ paths:
       operationId: getClient
       # define the type of response for Success "200" and Error
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
@@ -83,6 +89,12 @@ paths:
       description: Update a client by id
       operationId: updateClient
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
@@ -129,6 +141,12 @@ paths:
       description: get a client's recipes
       operationId: getClientRecipes
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
@@ -148,11 +166,18 @@ paths:
       description: add a new recipe to the client's list of recipes
       operationId: addClientRecipe
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
           description: client's id
           required: true
+
         - name: request
           in: body
           required: true
@@ -179,6 +204,12 @@ paths:
       # define the type of response for Success "200" and Error
       operationId: getRestrictions
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
@@ -197,6 +228,12 @@ paths:
       description: add a new ingredient to the client's restrictions
       operationId: addRestriction
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
@@ -228,6 +265,12 @@ paths:
       description: add a new ingredient to the client's restrictions
       operationId: updateRestrictions
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
@@ -253,11 +296,18 @@ paths:
       description: delete a client's restriction
       operationId: deleteRestriction
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           description: Client Id
           type: integer
           in: path
           required: true
+
         - name: ingredient
           description: Request body
           in: body
@@ -275,6 +325,16 @@ paths:
           description: Success
           schema:
             $ref: "#/definitions/GeneralResponse"
+
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/ErrorResponse"
         default:
           description: Error
           schema:
@@ -286,10 +346,17 @@ paths:
       operationId: verifyIngredient
       description: to check if an ingredient is safe for client
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
           required: true
+
         - name: ingredient_id
           type: integer
           in: path
@@ -310,10 +377,17 @@ paths:
       description: to find out what ingredients are safe and non-safe in an existing recipe
       operationId: crossCheckRecipe
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
           required: true
+
         - name: recipe_id
           type: integer
           in: path
@@ -334,6 +408,13 @@ paths:
       description: get the ingredients list
       # define the type of response for Success "200" and Error
       operationId: getIngredientsList
+      parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
       responses:
         "200":
           description: Success
@@ -349,6 +430,12 @@ paths:
       # movie info to be stored
       operationId: addIngredient
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: ingredient
           description: Ingredient
           in: body
@@ -372,6 +459,12 @@ paths:
       # define the type of response for Success "200" and Error
       operationId: getIngredient
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: id
           type: integer
           in: path
@@ -417,6 +510,12 @@ paths:
       # define the parameters
       operationId: deleteIngredient
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: id
           description: Ingredient id
           type: integer

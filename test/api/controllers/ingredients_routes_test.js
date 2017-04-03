@@ -21,6 +21,7 @@ const bcrypt = require('bcrypt');
 const knex = require('../../../knex');
 const server = require('../../../app');
 const should = require('should');
+const authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5MTE4NTkzMCwiZXhwIjoxNDkxNzkwNzMwfQ.s4Z3TmJt8DbHkdg2mG5uYK9ey8HPaVoD7mg6_MkGhys";
 
 suite('ingredients test', () => {
     before((done) => {
@@ -48,7 +49,7 @@ suite('ingredients test', () => {
         request(server)
             .get('/api/v1/ingredients')
             .set('Accept', 'application/json')
-            .set('Token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5MDI5NDE0MSwiZXhwIjoxNDkwODk4OTQxfQ.gm9LVr8P57ZDSgUZGFiyTSA8qpYsUgaFlRTa_NvlYfA')
+            .set('Token', authToken)
             .expect('Content-Type', /json/)
             .expect(200, {
                 "ingredients": [{
@@ -222,6 +223,7 @@ suite('ingredients test', () => {
         request(server)
             .get('/api/v1/ingredients/1')
             .set('Accept', 'application/json')
+            .set('Token', authToken)
             .expect('Content-Type', /json/)
             .expect(200, {
                 "id": 1,
@@ -246,6 +248,7 @@ suite('ingredients test', () => {
         request(server)
             .post('/api/v1/ingredients')
             .set('Accept', 'application/json')
+            .set('Token', authToken)
             .send({
                 name: 'tuna',
                 tags: ['seafood', 'fish'],
@@ -271,6 +274,7 @@ suite('ingredients test', () => {
         request(server)
             .post('/api/v1/ingredients')
             .set('Accept', 'application/json')
+            .set('Token', authToken)
             .send({
                 name: 'garlic',
                 tags: [],
@@ -294,6 +298,7 @@ suite('ingredients test', () => {
         request(server)
             .post('/api/v1/ingredients/13/alternatives')
             .set('Accept', 'application/json')
+            .set('Token', authToken)
             .send({
                 ingredients: [7, 10, 12]
             })
@@ -376,6 +381,7 @@ suite('ingredients test', () => {
         request(server)
             .del('/api/v1/ingredients/1')
             .set('Accept', 'application/json')
+            .set('Token', authToken)
             .expect('Content-Type', /json/)
             .expect((res) => {
                 delete res.body.createdAt;
@@ -396,7 +402,7 @@ suite('ingredients test', () => {
         request(server)
             .get('/api/v1/search/ingredients?text=mi')
             .set('Accept', 'application/json')
-            .set('Token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5MDI5NDE0MSwiZXhwIjoxNDkwODk4OTQxfQ.gm9LVr8P57ZDSgUZGFiyTSA8qpYsUgaFlRTa_NvlYfA')
+            .set('Token', authToken)
             .expect('Content-Type', /json/)
             .expect(200, {
                 "ingredients": [{

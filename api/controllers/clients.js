@@ -1,6 +1,7 @@
 'use strict';
 const knex = require('../../knex');
 const bookshelf = require('../../bookshelf');
+const jwt = require('jsonwebtoken');
 // const Client = require('../models/client.js').Client;
 
 module.exports = {
@@ -88,7 +89,7 @@ function crossCheckRecipe(req, res) {
     //     .join('client_restriction', 'ingredients.id', 'client_restriction.ingredient_id')
     //     .where("client_restriction.client_id", req.swagger.params.user_id.value).toString());
     promises.push(knex("ingredients")
-    .select('client_restriction.ingredient_id', 'ingredients.name')
+        .select('client_restriction.ingredient_id', 'ingredients.name')
         .join('client_restriction', 'ingredients.id', 'client_restriction.ingredient_id')
         .where("client_restriction.client_id", req.swagger.params.user_id.value)
     );
@@ -177,7 +178,7 @@ function getClients(req, res) {
                         name: recipe.name
                     };
                 }).sort((a, b) => {
-                  return a.id - b.id;
+                    return a.id - b.id;
                 });
 
                 client.recipes = r;
@@ -266,16 +267,22 @@ function addRestriction(req, res) {
 }
 
 function deleteRestriction(req, res) {
-    let user_id = req.swagger.params.user_id.value;
-    let ingredient_id = req.swagger.params.ingredient.value.ingredient_id;
-    knex('client_restriction').where('client_id', user_id)
-        .where('ingredient_id', ingredient_id).del()
-        .then(() => {
-            return res.json({
-                success: 1,
-                description: 'Restriction has been deleted'
+    jwt.verify(req.headers['token'], process.env.JWT_KEY, (err, payload) => {
+        if (err) {
+            res.set('Content-Type', 'application/json');
+            res.status(401).send('Unauthorized');
+        }
+        let user_id = req.swagger.params.user_id.value;
+        let ingredient_id = req.swagger.params.ingredient.value.ingredient_id;
+        knex('client_restriction').where('client_id', user_id)
+            .where('ingredient_id', ingredient_id).del()
+            .then(() => {
+                return res.json({
+                    success: 1,
+                    description: 'Restriction has been deleted'
+                });
             });
-        });
+    });
 }
 
 function getUsersSearchResponse(req, res) {
