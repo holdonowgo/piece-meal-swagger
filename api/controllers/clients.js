@@ -40,18 +40,39 @@ function addClient(req, res, next) {
                 hashed_password: hashed_password // youreawizard
             };
 
-            knex('clients')
-                .insert(client, '*')
+            return knex('clients')
+                .insert(client, '*').returning('*')
                 .then((insertedClient) => {
                     delete insertedClient[0].created_at;
                     delete insertedClient[0].updated_at;
                     delete insertedClient[0]['hashed_password'];
 
-                    res.status(200).json(insertedClient[0]);
+                    // return res.status(200).json(insertedClient[0]);
+                    return insertedClient[0];
                 })
                 .catch((err) => {
                     res.sendStatus(500);
                 });
+        })
+        .then((client) => {
+          console.log(client);
+            const claim = {
+                userId: client.id
+            };
+
+            const token = jwt.sign(claim, process.env.JWT_KEY, {
+                expiresIn: '7 days'
+            });
+
+            client.token = token;
+            
+            delete client.hashed_password;
+            delete client.created_at;
+            delete client.updated_at;
+
+            res.set('Token', token);
+            res.set('Content-Type', 'application/json');
+            res.status(200).json(client);
         })
         .catch((err) => {
             next(err);
