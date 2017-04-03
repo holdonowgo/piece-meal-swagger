@@ -12,6 +12,7 @@ const bcrypt = require('bcrypt');
 const knex = require('../../../knex');
 const server = require('../../../app');
 const assert = require('chai').assert;
+const authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5MTE4NTkzMCwiZXhwIjoxNDkxNzkwNzMwfQ.s4Z3TmJt8DbHkdg2mG5uYK9ey8HPaVoD7mg6_MkGhys";
 
 suite('clients tests', () => {
     before((done) => {
@@ -39,6 +40,7 @@ suite('clients tests', () => {
         request(server)
             .get('/api/v1/clients')
             .set('Accept', 'application/json')
+            .set('token', authToken)
             .expect('Content-Type', /json/)
             .expect(200, {
                 "clients": [{
@@ -121,6 +123,7 @@ suite('clients tests', () => {
         request(server)
             .get('/api/v1/clients/1/ingredients/1/verify')
             .set('Accept', 'application/json')
+            .set('token', authToken)
             .expect('Content-Type', /json/)
             .expect(200, {
                 safe: true
@@ -131,6 +134,7 @@ suite('clients tests', () => {
         request(server)
             .get('/api/v1/clients/2/ingredients/1/verify')
             .set('Accept', 'application/json')
+            .set('token', authToken)
             .expect('Content-Type', /json/)
             .expect(200, {
                 "safe": false,
@@ -151,6 +155,7 @@ suite('clients tests', () => {
             .get('/api/v1/clients/2/recipes/1/crosscheck')
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
+            .set('token', authToken)
             .expect(200, {
                 "is_safe": false,
                 "forbidden": [{
@@ -170,6 +175,7 @@ suite('clients tests', () => {
         request(server)
             .get('/api/v1/clients/1')
             .set('Accept', 'application/json')
+            .set('token', authToken)
             .expect('Content-Type', /json/)
             .expect(200, {
                 "id": 1,
@@ -195,6 +201,7 @@ suite('clients tests', () => {
         request(server)
             .get('/api/v1/clients/4')
             .set('Accept', 'application/json')
+            .set('token', authToken)
             .expect('Content-Type', /json/)
             .expect(200, {
                 "id": 4,
@@ -224,6 +231,7 @@ suite('clients tests', () => {
         request(server)
             .get('/api/v1/search/clients/?last_name=ant')
             .set('Accept', 'application/json')
+            .set('token', authToken)
             .expect('Content-Type', /json/)
             .expect(200, {
                 clients: [{
@@ -267,6 +275,7 @@ suite('clients tests', () => {
             .post('/api/v1/clients')
             .set('Accept', 'application/json')
             .set('Content-Type', 'application/json')
+            .set('token', authToken)
             .send({
                 first_name: 'John',
                 last_name: 'Siracusa',
@@ -320,11 +329,11 @@ suite('clients tests', () => {
             });
     });
 
-
     test('POST /clients/:id/restrictions', (done) => {
         request(server)
             .post('/api/v1/clients/2/restrictions')
             .set('Accept', 'application/json')
+            .set('token', authToken)
             .send({
                 ingredient_id: 4
             })
@@ -339,6 +348,7 @@ suite('clients tests', () => {
         request(server)
             .get('/api/v1/clients/2/restrictions')
             .set('Accept', 'application/json')
+            .set('token', authToken)
             .expect(200, {
                 ingredients: [{
                     id: 1,
@@ -357,6 +367,7 @@ suite('clients tests', () => {
         request(server)
             .del('/api/v1/clients/2/restrictions')
             .set('Accept', 'application/json')
+            .set('token', authToken)
             .send({
                 ingredient_id: 2
             })
@@ -365,6 +376,18 @@ suite('clients tests', () => {
                 success: 1,
                 description: 'Restriction has been deleted'
             }, done);
+    });
+
+    test('DELETE /clients/:id/restrictions', (done) => {
+        request(server)
+            .del('/api/v1/clients/2/restrictions')
+            .set('Accept', 'application/json')
+            // .set('token', authToken)
+            .send({
+                ingredient_id: 2
+            })
+            .expect('Content-Type', /json/)
+            .expect(401, JSON.stringify('Not Logged In'), done)
     });
     //
 });

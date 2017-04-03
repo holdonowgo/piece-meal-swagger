@@ -60,6 +60,7 @@ function getIngredientsQuery(recipeId) {
     return knex("recipe_ingredients")
         .join("ingredients", "ingredients.id", "recipe_ingredients.ingredient_id")
         .select("ingredients.*")
+        .orderBy('id')
         .where("recipe_ingredients.recipe_id", recipeId);
 }
 

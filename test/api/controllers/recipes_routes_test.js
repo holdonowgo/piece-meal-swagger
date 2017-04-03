@@ -9,6 +9,7 @@ const request = require("supertest");
 const bcrypt = require("bcrypt");
 const knex = require("../../../knex");
 const server = require("../../../app");
+const authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5MTE4NTkzMCwiZXhwIjoxNDkxNzkwNzMwfQ.s4Z3TmJt8DbHkdg2mG5uYK9ey8HPaVoD7mg6_MkGhys";
 
 const deleteIngredientTimestamps = function(res) {
     for (let recipe of res.body.recipes) {
@@ -44,6 +45,7 @@ suite("recipes test", () => {
         request(server)
             .get("/api/v1/recipes")
             .set("Accept", "application/json")
+            .set('token', authToken)
             .expect("Content-Type", /json/)
             .expect((res) => {
                 deleteIngredientTimestamps(res);
@@ -148,6 +150,7 @@ suite("recipes test", () => {
         return request(server)
             .post("/api/v1/recipes")
             .set("Accept", "application/json")
+            .set('token', authToken)
             .send({
                 name: "seaweed salad",
                 instructions: "1.Soak seaweed in warm water to cover, 5 minutes. Drain, rinse then squeeze out excess water. If wakame is uncut, cut into 1/2-inch-wide strips.2.Stir together vinegar, soy sauce, sesame oil, sugar, pepper flakes, ginger, and garlic in a bowl until sugar is dissolved. Add the seaweed, scallions, carrots, and cilantro, tossing to combine well. Sprinkle salad with sesame seeds.",
@@ -174,6 +177,7 @@ suite("recipes test", () => {
         request(server)
             .get("/api/v1/recipes/1")
             .set("Accept", "application/json")
+            .set('token', authToken)
             .expect(200, {
                 "id": 1,
                 "name": "cauliflower buffalo bites",
@@ -194,6 +198,7 @@ suite("recipes test", () => {
         request(server)
             .put("/api/v1/recipes/1")
             .set("Accept", "application/json")
+            .set('token', authToken)
             .send({
                 name: "seaweed salad",
                 instructions: "xyz"
@@ -210,6 +215,7 @@ suite("recipes test", () => {
         request(server)
             .del("/api/v1/recipes/1")
             .set("Accept", "application/json")
+            .set('token', authToken)
             .expect("Content-Type", /json/)
             .expect(200, {
                 name: "cauliflower buffalo bites",
@@ -221,6 +227,7 @@ suite("recipes test", () => {
         request(server)
             .get("/api/v1/clients/1/recipes")
             .set("Accept", "application/json")
+            .set('token', authToken)
             .expect((res) => {
                 deleteIngredientTimestamps(res);
             })
@@ -269,6 +276,7 @@ suite("recipes test", () => {
         return request(server)
             .post("/api/v1/clients/2/recipes")
             .set("Accept", "application/json")
+            .set('token', authToken)
             .send({
                 recipe_id: 1
             })
@@ -280,6 +288,7 @@ suite("recipes test", () => {
                 return request(server)
                     .get("/api/v1/clients/2/recipes")
                     .set("Accept", "application/json")
+                    .set('token', authToken)
                     .expect((res) => {
                         deleteIngredientTimestamps(res);
                     })
