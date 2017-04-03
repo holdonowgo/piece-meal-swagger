@@ -17,6 +17,66 @@ module.exports = {
     addIngredientAlternatives: addIngredientAlternatives
 };
 
+function updateIngredient(req, res, next) {
+    knex('ingredients')
+        .where('id', req.swagger.params.id.value)
+        .update({
+            name: req.swagger.params.ingredient.value.name
+        })
+        .returning('*')
+        .then((result) => {
+            let ingredient = result[0];
+            // ingredient.alternatives = [];
+            delete ingredient.created_at;
+            delete ingredient.updated_at;
+            return res.json(ingredient);
+        });
+
+    let name = req.swagger.params.ingredient.value.name;
+    var id;
+    knex("ingredients")
+        .first().where("name", name)
+        .then((result) => {
+            if (result) {
+                delete result.created_at;
+                delete result.updated_at;
+                res.status(400).json({
+                    message: 'Ingredient already exists!',
+                    ingredient: result
+                });
+                throw new Error('Ingredient already exists!');
+            } else {
+                return knex("ingredients")
+                    .insert({
+                        "name": name
+                    }).returning('*');
+            }
+        })
+        .then((ingredient) => {
+            if (req.swagger.params.ingredient.value.tags) {
+                let promises = [];
+                for (let val of req.swagger.params.ingredient.value.tags) {
+                    promises.push(
+                        knex("ingredient_tags").insert({
+                            "ingredient_id": ingredient[0].id,
+                            "tag_test": val
+                        }).returning('*')
+                    );
+                }
+                return ingredient;
+            }
+        })
+        .then((ingredient) => {
+            // return res.json(queryIngredient(ingredient[0].id));
+            let newIngredient = req.swagger.params.ingredient.value;
+            newIngredient.id = ingredient[0].id;
+            return res.json(newIngredient);
+        })
+        .catch((error) => {
+
+        });
+}
+
 function deleteIngredient(req, res) {
     // knex('ingredients').update('active', false)
     //     .returning('*')

@@ -204,5 +204,7 @@ function deleteRecipe(req, res) {
 function searchRecipes(req, res) {
     // To list clients
     // let text = req.swagger.params.text.value;
-    return doGetRecipes(knex("recipes").where('name', 'ilike', `%${req.swagger.params.text.value}%`), res);
+    return doGetRecipes(
+      knex("recipes")
+      .where('name', 'ilike', `%${req.swagger.params.text.value}%`), res);
 }
