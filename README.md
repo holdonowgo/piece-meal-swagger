@@ -6,4 +6,4 @@ Swagger Documentation: `http://piecemeal-api.herokuapp.com/api-docs/`
 
 Trello Tracker `https://trello.com/b/eTb2zVIr/galvanize-q2-project`
 
-Link to Deployed Site: `http://piecemeal-api.herokuapp.com/api`
+Link to Deployed Site: `http://piecemeal-api.herokuapp.com/api/v1`

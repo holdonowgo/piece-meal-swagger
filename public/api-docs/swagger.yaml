@@ -3,8 +3,8 @@ info:
   version: "0.0.1"
   title: Piece-Meal API
 # during dev, should point to your local machine
-# host: piecemeal-api.herokuapp.com
-host: localhost:10010
+host: piecemeal-api.herokuapp.com
+# host: localhost:10010
 # basePath prefixes all resource paths
 basePath: /api/v1
 #
