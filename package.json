@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "description": "New Swagger API Project",
+  "engines": {
+    "node": "6.9.4"
+  },
   "keywords": [],
   "author": "",
   "license": "",
