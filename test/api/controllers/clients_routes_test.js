@@ -285,6 +285,7 @@ suite('clients tests', () => {
             .expect((res) => {
                 delete res.body.created_at;
                 delete res.body.updated_at;
+                delete res.body.token;
             })
             .expect(200, {
                 id: 5,
