@@ -4,7 +4,7 @@
   "private": true,
   "description": "New Swagger API Project",
   "engines": {
-    "node": "6.9.4"
+    "node": "6.4.0"
   },
   "keywords": [],
   "author": "",
