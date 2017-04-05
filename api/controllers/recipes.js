@@ -206,5 +206,9 @@ function searchRecipes(req, res) {
     // let text = req.swagger.params.text.value;
     return doGetRecipes(
       knex("recipes")
-      .where('name', 'ilike', `%${req.swagger.params.text.value}%`), res);
+      .join('recipe_ingredients', 'recipes.id', 'recipe_ingredients.ingredient_id')
+      .leftJoin('ingredient_tags', 'recipe_ingredients.ingredient_id', 'ingredient_tags.ingredient_id')
+      .distinct('recipes.*')
+      .where('name', 'ilike', `%${req.swagger.params.text.value}%`)
+      .orWhere('ingredient_tags.tag_text', 'ilike', `%${req.swagger.params.text.value}%`), res);
 }

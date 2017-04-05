@@ -378,8 +378,12 @@ function searchIngredients(req, res) {
 
     promises.push(
         knex("ingredients")
-        .select("id", "name", "active")
+        // .select("ingredients.id", "name", "active")
+        .leftJoin('ingredient_tags', 'ingredients.id', 'ingredient_tags.ingredient_id')
+        .distinct("ingredients.id", "name", "active")
         .where('name', 'ilike', `%${text}%`)
+        .orWhere('ingredient_tags.tag_text', 'ilike', `%${text}%`)
+        .orderBy('ingredients.id')
     );
     promises.push(knex("ingredient_tags").select("ingredient_id", "tag_text"));
     Promise.all(promises)

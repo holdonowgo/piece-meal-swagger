@@ -550,6 +550,12 @@ paths:
       description: add a new recipe
       operationId: postRecipe
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: recipe
           description: Recipe
           in: body
@@ -573,6 +579,12 @@ paths:
       # define the type of response for Success "200" and Error
       operationId: getRecipe
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: id
           type: integer
           in: path
@@ -592,6 +604,12 @@ paths:
       # define the parameters
       operationId: updateRecipe
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: id
           description: recipe id
           type: integer
@@ -619,6 +637,12 @@ paths:
       # define the parameters
       operationId: deleteRecipe
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: id
           description: recipe id
           type: integer
@@ -660,6 +684,12 @@ paths:
       # define the type of response for Success "200" and Error
       operationId: addIngredientAlternatives
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: id
           type: integer
           in: path
@@ -696,6 +726,12 @@ paths:
       description: get results from client search
       operationId: getUsersSearchResponse
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: first_name
           type: string
           in: query
@@ -724,6 +760,12 @@ paths:
       description: get results from ingredient search
       operationId: searchIngredients
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: text
           type: string
           in: query
@@ -744,6 +786,12 @@ paths:
       description: get results from recipe search
       operationId: searchRecipes
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: text
           type: string
           in: query
