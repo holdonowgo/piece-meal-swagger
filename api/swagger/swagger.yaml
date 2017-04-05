@@ -26,6 +26,12 @@ paths:
       description: This endpoint returns all clients available in the database
       # define the type of response for Success "200" and Error
       operationId: getClients
+      parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
       responses:
         "200":
           description: Success
@@ -536,6 +542,12 @@ paths:
     get:
       description: get the recipes list
       operationId: getRecipesList
+      parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
       responses:
         "200":
           description: Success
