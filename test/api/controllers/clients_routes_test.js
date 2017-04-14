@@ -52,15 +52,30 @@ suite('clients tests', () => {
                         "recipes": [{
                             id: 1,
                             name: "cauliflower buffalo bites",
-                            instructions: "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
+                            instructions: [{
+                              step_number: 1,
+                              instructions: 'do step one'
+                            },{
+                              step_number: 2,
+                              instructions: 'do step two'
+                            },{
+                              step_number: 3,
+                              instructions: 'do step three'
+                            },{
+                              step_number: 4,
+                              instructions: 'do step four'
+                            },{
+                              step_number: 5,
+                              instructions: 'do step five'
+                            }]// "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
                         }, {
                             id: 2,
                             name: "simple oatmeal",
-                            instructions: "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil."
+                            instructions: []// "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil."
                         }, {
                             id: 3,
                             name: "cheese omelette",
-                            instructions: "1.Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.2.Place a small non-stick frying pan on a low heat to warm up."
+                            instructions: []// "1.Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.2.Place a small non-stick frying pan on a low heat to warm up."
                         }]
                     },
                     {
@@ -79,19 +94,19 @@ suite('clients tests', () => {
                         "is_super_user": true,
                         "recipes": [{
                             "id": 2,
-                            "instructions": "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
+                            "instructions": [],// "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
                             "name": "simple oatmeal"
                         }, {
                             "id": 4,
-                            "instructions": "This is how we do it.",
+                            "instructions": [],// "This is how we do it.",
                             "name": "Recipe #4"
                         }, {
                             "id": 5,
-                            "instructions": "It's Friday night.",
+                            "instructions": [],// "It's Friday night.",
                             "name": "Recipe #5"
                         }, {
                             "id": 8,
-                            "instructions": "So I creep...",
+                            "instructions": [],// "So I creep...",
                             "name": "Recipe #8"
                         }]
                     },
@@ -103,15 +118,15 @@ suite('clients tests', () => {
                         "is_super_user": true,
                         "recipes": [{
                             "id": 5,
-                            "instructions": "It's Friday night.",
+                            "instructions": [],// "It's Friday night.",
                             "name": "Recipe #5"
                         }, {
                             "id": 6,
-                            "instructions": "And I'm feelin' right.",
+                            "instructions": [],// "And I'm feelin' right.",
                             "name": "Recipe #6"
                         }, {
                             "id": 7,
-                            "instructions": "The party's over on the west side.",
+                            "instructions": [],// "The party's over on the west side.",
                             "name": "Recipe #7"
                         }]
                     }
@@ -186,15 +201,15 @@ suite('clients tests', () => {
                 "recipes": [{
                     id: 1,
                     name: "cauliflower buffalo bites",
-                    instructions: "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
+                    instructions: [] //"1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
                 }, {
                     id: 2,
                     name: "simple oatmeal",
-                    instructions: "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil."
+                    instructions: [] //"1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil."
                 }, {
                     id: 3,
                     name: "cheese omelette",
-                    instructions: "1.Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.2.Place a small non-stick frying pan on a low heat to warm up."
+                    instructions: [] //"1.Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.2.Place a small non-stick frying pan on a low heat to warm up."
                 }]
             });
 
@@ -211,15 +226,15 @@ suite('clients tests', () => {
                 "is_super_user": true,
                 "recipes": [{
                     "id": 5,
-                    "instructions": "It's Friday night.",
+                    "instructions": [],// "It's Friday night.",
                     "name": "Recipe #5"
                 }, {
                     "id": 6,
-                    "instructions": "And I'm feelin' right.",
+                    "instructions": [],// "And I'm feelin' right.",
                     "name": "Recipe #6"
                 }, {
                     "id": 7,
-                    "instructions": "The party's over on the west side.",
+                    "instructions": [],// "The party's over on the west side.",
                     "name": "Recipe #7"
                 }]
             }, done);
@@ -242,15 +257,15 @@ suite('clients tests', () => {
                     "is_super_user": true,
                     "recipes": [{
                         "id": 5,
-                        "instructions": "It's Friday night.",
+                        "instructions": [],// "It's Friday night.",
                         "name": "Recipe #5"
                     }, {
                         "id": 6,
-                        "instructions": "And I'm feelin' right.",
+                        "instructions": [],// "And I'm feelin' right.",
                         "name": "Recipe #6"
                     }, {
                         "id": 7,
-                        "instructions": "The party's over on the west side.",
+                        "instructions": [],// "The party's over on the west side.",
                         "name": "Recipe #7"
                     }]
                 }]

@@ -55,7 +55,6 @@ function addClient(req, res, next) {
                 });
         })
         .then((client) => {
-          console.log(client);
             const claim = {
                 userId: client.id
             };
@@ -65,7 +64,7 @@ function addClient(req, res, next) {
             });
 
             client.token = token;
-            
+
             delete client.hashed_password;
             delete client.created_at;
             delete client.updated_at;
@@ -184,10 +183,14 @@ function getClients(req, res) {
     promises.push(knex("client_recipes")
         .join('recipes', 'recipes.id', '=', 'client_recipes.recipe_id')
         .select("client_recipes.client_id", "recipes.*"));
+    promises.push(knex("recipe_steps")
+        .join('recipes', 'recipes.id', '=', 'recipe_steps.recipe_id')
+        .select("recipe_steps.*"));
     Promise.all(promises)
         .then((results) => {
             let clients = results[0];
             let recipes = results[1];
+            let recipe_steps = results[2];
 
             for (let client of clients) {
                 let r = recipes.filter((recipe) => {
@@ -195,7 +198,17 @@ function getClients(req, res) {
                 }).map((recipe) => {
                     return {
                         id: recipe.id,
-                        instructions: recipe.instructions,
+                        instructions:
+                          recipe_steps.filter((step) => {
+                            return step.recipe_id === recipe.id;
+                          }).map((step) => {
+                            return {
+                              step_number: step.step_number,
+                              instructions: step.instructions
+                            }
+                          }).sort((a, b) => {
+                              return a.step_number - b.step_number;
+                          }), // steps,
                         name: recipe.name
                     };
                 }).sort((a, b) => {
@@ -227,11 +240,16 @@ function getClient(req, res) {
         .select("client_recipes.client_id", "recipes.*")
         .where("client_recipes.client_id", req.swagger.params.user_id.value)
     );
+    promises.push(knex("recipe_steps")
+        .join('recipes', 'recipes.id', '=', 'recipe_steps.recipe_id')
+        .select("recipe_steps.*")
+      );
 
     Promise.all(promises)
         .then((results) => {
             let client = results[0];
             let recipes = results[1];
+            let instructions = results[2];
 
             if (!client) {
                 res.set('Content-Type', 'application/json')
@@ -242,7 +260,9 @@ function getClient(req, res) {
                 return {
                     id: recipe.id,
                     name: recipe.name,
-                    instructions: recipe.instructions
+                    instructions: instructions.filter((step) => {
+                      return step.recipe_id === recipe.id;
+                    }) // recipe.instructions
                 };
             }).sort();
 
@@ -259,14 +279,16 @@ function getRestrictions(req, res) {
         .where('client_id', req.swagger.params.user_id.value)
         .then((results) => {
             let result = [];
+
             for (let i = 0; i < results.length; i++) {
                 result.push({
                     id: results[i].ingredient_id,
                     name: results[i].name
                 });
             }
+
             return res.json({
-                ingredients: result
+                ingredients: result.sort((a, b) => {return a.id - b.id})
             });
         });
 }
@@ -318,14 +340,20 @@ function getUsersSearchResponse(req, res) {
         .where(`clients.first_name`, `like`, `%${first_name}%`)
         .orWhere(`clients.last_name`, `like`, `%${last_name}%`)
         .orWhere(`clients.email`, `like`, `%${email}%`)
-    );
+      );
     promises.push(knex("client_recipes")
         .join('recipes', 'recipes.id', '=', 'client_recipes.recipe_id')
-        .select("client_recipes.client_id", "recipes.*"));
+        .select("client_recipes.client_id", "recipes.*")
+      );
+    promises.push(knex("recipe_steps")
+        .join('recipes', 'recipes.id', '=', 'recipe_steps.recipe_id')
+        .select("recipe_steps.*")
+      );
     Promise.all(promises)
         .then((results) => {
             let clients = results[0];
             let recipes = results[1];
+            let instructions = results[2];
 
             for (let client of clients) {
                 let r = recipes.filter((recipe) => {
@@ -333,7 +361,9 @@ function getUsersSearchResponse(req, res) {
                 }).map((recipe) => {
                     return {
                         id: recipe.id,
-                        instructions: recipe.instructions,
+                        instructions: instructions.filter((step) => {
+                          return step.recipe_id === recipe.id
+                        }), // recipe.instructions,
                         name: recipe.name
                     };
                 }).sort();

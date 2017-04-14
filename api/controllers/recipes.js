@@ -24,9 +24,16 @@ function doGetRecipes(query, res) {
         for (var i = 0; i < recipes.length; i++) {
             recipes[i].ingredients = promiseResults[i];
         }
-        return res.json({
-            recipes: recipes
-        });
+
+        let promises = recipes.map((recipe) => getRecipeStepsQuery(recipe.id));
+
+        return Promise.all(promises);
+    }).then((promiseResults) => {
+        for (var i = 0; i < recipes.length; i++) {
+            recipes[i].instructions = promiseResults[i];
+        }
+
+        return res.json({recipes: recipes});
     });
 }
 
@@ -36,32 +43,22 @@ function getRecipesList(req, res) {
 }
 
 function getClientRecipes(req, res) {
-    const query = knex("recipes")
-        .join('client_recipes', 'client_recipes.recipe_id', 'recipes.id')
-        .select("recipes.*")
-        .where('client_recipes.client_id', req.swagger.params.user_id.value);
+    const query = knex("recipes").join('client_recipes', 'client_recipes.recipe_id', 'recipes.id').select("recipes.*").where('client_recipes.client_id', req.swagger.params.user_id.value);
     return doGetRecipes(query, res);
 }
 
 function addClientRecipe(req, res) {
-    return knex("client_recipes")
-        .insert({
-            client_id: req.swagger.params.user_id.value,
-            recipe_id: req.swagger.params.request.value.recipe_id
-        }).then(() => {
-            res.json({
-                success: 1,
-                description: "Added"
-            });
-        });
+    return knex("client_recipes").insert({client_id: req.swagger.params.user_id.value, recipe_id: req.swagger.params.request.value.recipe_id}).then(() => {
+        res.json({success: 1, description: "Added"});
+    });
 }
 
 function getIngredientsQuery(recipeId) {
-    return knex("recipe_ingredients")
-        .join("ingredients", "ingredients.id", "recipe_ingredients.ingredient_id")
-        .select("ingredients.*")
-        .orderBy('id')
-        .where("recipe_ingredients.recipe_id", recipeId);
+    return knex("recipe_ingredients").join("ingredients", "ingredients.id", "recipe_ingredients.ingredient_id").select("ingredients.*").orderBy('id').where("recipe_ingredients.recipe_id", recipeId);
+}
+
+function getRecipeStepsQuery(recipeId) {
+    return knex("recipe_steps").join("recipe", "recipe.id", "recipe_steps.recipe_id").select("recipe_steps.*").orderBy('order_number').where("recipe_steps.recipe_id", recipeId);
 }
 
 function getRecipe(req, res) {
@@ -70,37 +67,25 @@ function getRecipe(req, res) {
 
 function doGetRecipe(recipeId, res) {
     let promises = [];
-    promises.push(
-        knex("recipes")
-        .select("id", "name", "instructions")
-        .first()
-        .where("id", recipeId)
-    );
+    promises.push(knex("recipes").select("id", "name", "instructions").first().where("id", recipeId));
     promises.push(getIngredientsQuery(recipeId));
-    Promise.all(promises)
-        .then((results) => {
-            let recipe = results[0];
-            let ingredients = results[1];
+    Promise.all(promises).then((results) => {
+        let recipe = results[0];
+        let ingredients = results[1];
 
-            if (!recipe) {
-                res.set('Content-Type', 'application/json');
-                res.sendStatus(404);
-                return;
-            }
+        if (!recipe) {
+            res.set('Content-Type', 'application/json');
+            res.sendStatus(404);
+            return;
+        }
 
-            recipe.ingredients = ingredients.map((ingredient) => {
-                return {
-                    id: ingredient.id,
-                    name: ingredient.name,
-                };
-            }).sort();
-            return res.json(recipe);
-        })
-        .catch((err) => {
-            res.status(500).json({
-                message: err
-            });
-        });
+        recipe.ingredients = ingredients.map((ingredient) => {
+            return {id: ingredient.id, name: ingredient.name};
+        }).sort();
+        return res.json(recipe);
+    }).catch((err) => {
+        res.status(500).json({message: err});
+    });
 }
 
 function postRecipe(req, res) {
@@ -111,31 +96,21 @@ function postRecipe(req, res) {
     //to insert into recipe_ingredients table
     let ingredients = req.swagger.params.recipe.value.ingredients;
     let recipe;
-    knex("recipes")
-        .first().where("name", name)
-        .then((result) => {
-            if (result) {
-                res.status(400).json("Recipe already exists!");
-            } else {
-                return knex("recipes").insert({
-                    "name": name,
-                    "instructions": instructions
-                }).returning("*");
-            }
-        })
-        .then((recipes) => {
-            recipe = recipes[0];
-            let data = ingredients.map((value) => {
-                return {
-                    recipe_id: recipe.id,
-                    ingredient_id: value
-                };
-            });
-            return knex('recipe_ingredients').insert(data).returning("*");
-        })
-        .then(() => {
-            return doGetRecipe(recipe.id, res);
+    knex("recipes").first().where("name", name).then((result) => {
+        if (result) {
+            res.status(400).json("Recipe already exists!");
+        } else {
+            return knex("recipes").insert({"name": name, "instructions": instructions}).returning("*");
+        }
+    }).then((recipes) => {
+        recipe = recipes[0];
+        let data = ingredients.map((value) => {
+            return {recipe_id: recipe.id, ingredient_id: value};
         });
+        return knex('recipe_ingredients').insert(data).returning("*");
+    }).then(() => {
+        return doGetRecipe(recipe.id, res);
+    });
 }
 //to insert into recipe_ingredients table
 
@@ -176,39 +151,28 @@ function postRecipe(req, res) {
 // }
 
 function updateRecipe(req, res) {
- let id = req.swagger.params.id.value;
- return knex('recipes')
-   .update(req.swagger.params.recipe.value)
-   .then(() => {
-     return knex('recipes').where('id', id);
-   })
-   .then((recipes) => {
-     let recipe = recipes[0];
-     res.json(recipe);
-   });
+    let id = req.swagger.params.id.value;
+    return knex('recipes').update(req.swagger.params.recipe.value).then(() => {
+        return knex('recipes').where('id', id);
+    }).then((recipes) => {
+        let recipe = recipes[0];
+        res.json(recipe);
+    });
 }
 
 function deleteRecipe(req, res) {
     let id = Number(req.swagger.params.id.value);
-    return knex('recipes').where('id', id)
-        .then((result) => {
-            let recipe = result[0];
-            delete recipe.id;
-            res.json(recipe);
-        })
-        .then(() => {
-            knex('recipes').where('id', id).del();
-        });
+    return knex('recipes').where('id', id).then((result) => {
+        let recipe = result[0];
+        delete recipe.id;
+        res.json(recipe);
+    }).then(() => {
+        knex('recipes').where('id', id).del();
+    });
 }
 
 function searchRecipes(req, res) {
     // To list clients
     // let text = req.swagger.params.text.value;
-    return doGetRecipes(
-      knex("recipes")
-      .join('recipe_ingredients', 'recipes.id', 'recipe_ingredients.ingredient_id')
-      .leftJoin('ingredient_tags', 'recipe_ingredients.ingredient_id', 'ingredient_tags.ingredient_id')
-      .distinct('recipes.*')
-      .where('name', 'ilike', `%${req.swagger.params.text.value}%`)
-      .orWhere('ingredient_tags.tag_text', 'ilike', `%${req.swagger.params.text.value}%`), res);
+    return doGetRecipes(knex("recipes").join('recipe_ingredients', 'recipes.id', 'recipe_ingredients.ingredient_id').leftJoin('ingredient_tags', 'recipe_ingredients.ingredient_id', 'ingredient_tags.ingredient_id').distinct('recipes.*').where('name', 'ilike', `%${req.swagger.params.text.value}%`).orWhere('ingredient_tags.tag_text', 'ilike', `%${req.swagger.params.text.value}%`), res);
 }

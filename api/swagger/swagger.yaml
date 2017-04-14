@@ -1023,7 +1023,14 @@ definitions:
             name:
               type: string
             instructions:
-              type: string
+              type: array
+              items:
+                type: object
+                properties:
+                  step_number:
+                    type: integer
+                  instructions:
+                    type: string
 
   GetUsersResponse:
     required:
@@ -1160,7 +1167,14 @@ definitions:
       name:
         type: string
       instructions:
-        type: string
+        type: array
+        items:
+          type: object
+          properties:
+            step_number:
+              type: integer
+            instructions:
+              type: string
       ingredients:
         type: array
         items:
@@ -1179,7 +1193,14 @@ definitions:
       name:
         type: string
       instructions:
-        type: string
+        type: array
+        items:
+          type: object
+          properties:
+            step_number:
+              type: integer
+            instructions:
+              type: string
       ingredients:
         type: array
         items:
