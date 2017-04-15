@@ -1179,11 +1179,11 @@ definitions:
         type: array
         items:
           type: object
-        properties:
-          id:
-            type: integer
-          name:
-            type: string
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
 
   PostRecipe:
     type: object
