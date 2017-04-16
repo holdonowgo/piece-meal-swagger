@@ -632,7 +632,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Recipe"
+            $ref: "#/definitions/PostRecipe"
       responses:
         "200":
           description: Success

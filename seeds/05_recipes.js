@@ -9,6 +9,7 @@ const data = [{
 }, {
   id: 3,
   name: "cheese omelette",
+  description: "Great when making breakfast for the family!  Can be eaten cold too!"
   // instructions: "1.Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.2.Place a small non-stick frying pan on a low heat to warm up."
 }, {
   id: 4,

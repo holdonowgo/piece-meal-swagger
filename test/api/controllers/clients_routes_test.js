@@ -52,6 +52,7 @@ suite('clients tests', () => {
                         "recipes": [{
                             id: 1,
                             name: "cauliflower buffalo bites",
+                            "description": '',
                             instructions: [{
                               step_number: 1,
                               instructions: 'do step one'
@@ -67,15 +68,29 @@ suite('clients tests', () => {
                             },{
                               step_number: 5,
                               instructions: 'do step five'
-                            }]// "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
+                            }],
+                        "active": true
                         }, {
                             id: 2,
                             name: "simple oatmeal",
-                            instructions: []// "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil."
+                            "description": '',
+                            instructions: [],
+                            "active": true// "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil."
                         }, {
                             id: 3,
                             name: "cheese omelette",
-                            instructions: []// "1.Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.2.Place a small non-stick frying pan on a low heat to warm up."
+                            "description": 'Great when making breakfast for the family!  Can be eaten cold too!',
+                            "instructions": [
+                              {
+                                "instructions": "Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.",
+                                "step_number": 1
+                              },
+                              {
+                                "instructions": "Place a small non-stick frying pan on a low heat to warm up.",
+                                "step_number": 2
+                              }
+                            ],
+                            "active": true
                         }]
                     },
                     {
@@ -95,19 +110,27 @@ suite('clients tests', () => {
                         "recipes": [{
                             "id": 2,
                             "instructions": [],// "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
-                            "name": "simple oatmeal"
+                            "name": "simple oatmeal",
+                            "description": '',
+                            "active": true
                         }, {
                             "id": 4,
                             "instructions": [],// "This is how we do it.",
-                            "name": "Recipe #4"
+                            "name": "Recipe #4",
+                            "description": '',
+                            "active": true
                         }, {
                             "id": 5,
                             "instructions": [],// "It's Friday night.",
-                            "name": "Recipe #5"
+                            "name": "Recipe #5",
+                            "description": '',
+                            "active": true
                         }, {
                             "id": 8,
                             "instructions": [],// "So I creep...",
-                            "name": "Recipe #8"
+                            "name": "Recipe #8",
+                            "description": '',
+                            "active": true
                         }]
                     },
                     {
@@ -119,15 +142,21 @@ suite('clients tests', () => {
                         "recipes": [{
                             "id": 5,
                             "instructions": [],// "It's Friday night.",
-                            "name": "Recipe #5"
+                            "name": "Recipe #5",
+                            "description": '',
+                            "active": true
                         }, {
                             "id": 6,
                             "instructions": [],// "And I'm feelin' right.",
-                            "name": "Recipe #6"
+                            "name": "Recipe #6",
+                            "description": '',
+                            "active": true
                         }, {
                             "id": 7,
                             "instructions": [],// "The party's over on the west side.",
-                            "name": "Recipe #7"
+                            "name": "Recipe #7",
+                            "description": '',
+                            "active": true
                         }]
                     }
                 ]

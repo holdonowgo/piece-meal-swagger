@@ -196,21 +196,34 @@ function getClients(req, res) {
                 let r = recipes.filter((recipe) => {
                     return recipe.client_id === client.id;
                 }).map((recipe) => {
+                  recipe.instructions = recipe_steps.filter((step) => {
+                    return step.recipe_id === recipe.id;
+                  }).map((step) => {
                     return {
-                        id: recipe.id,
-                        instructions:
-                          recipe_steps.filter((step) => {
-                            return step.recipe_id === recipe.id;
-                          }).map((step) => {
-                            return {
-                              step_number: step.step_number,
-                              instructions: step.instructions
-                            }
-                          }).sort((a, b) => {
-                              return a.step_number - b.step_number;
-                          }), // steps,
-                        name: recipe.name
-                    };
+                      step_number: step.step_number,
+                      instructions: step.instructions
+                    }
+                  }).sort((a, b) => {
+                      return a.step_number - b.step_number;
+                  });
+                  delete recipe.client_id;
+                  return recipe;
+                    // return {
+                    //     id: recipe.id,
+                    //     instructions:
+                    //       recipe_steps.filter((step) => {
+                    //         return step.recipe_id === recipe.id;
+                    //       }).map((step) => {
+                    //         return {
+                    //           step_number: step.step_number,
+                    //           instructions: step.instructions
+                    //         }
+                    //       }).sort((a, b) => {
+                    //           return a.step_number - b.step_number;
+                    //       }), // steps,
+                    //     name: recipe.name,
+                    //     description: recipe.description
+                    // };
                 }).sort((a, b) => {
                     return a.id - b.id;
                 });

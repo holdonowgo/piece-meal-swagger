@@ -24,6 +24,18 @@ const data = [{
   recipe_id: 1,
   step_number: 5,
   instructions: 'do step five'
+},
+{
+  id: 6,
+  recipe_id: 3,
+  step_number: 1,
+  instructions: 'Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.'
+},
+{
+  id: 7,
+  recipe_id: 3,
+  step_number: 2,
+  instructions: 'Place a small non-stick frying pan on a low heat to warm up.'
 }];
 
 exports.seed = function(knex, Promise) {

@@ -90,8 +90,16 @@ suite("recipes test", () => {
                     "active": true,
                     "id": 3,
                     "name": "cheese omelette",
-                    "description": '',
-                    "instructions": [], // "1.Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.2.Place a small non-stick frying pan on a low heat to warm up.",
+                    "description": "Great when making breakfast for the family!  Can be eaten cold too!",
+                    "instructions": [
+                        {
+                            "instructions": "Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.",
+                            "step_number": 1
+                        }, {
+                            "instructions": "Place a small non-stick frying pan on a low heat to warm up.",
+                            "step_number": 2
+                        }
+                    ],
                     "ingredients": [
                         {
                             "id": 1,
@@ -164,249 +172,280 @@ suite("recipes test", () => {
     });
 
     test("POST /recipes", () => {
-        return request(server)
-            .post("/api/v1/recipes")
-            .set("Accept", "application/json")
-            .set('token', authToken)
-            .send({
-                name: "seaweed salad",
-                description: 'A flavorful, spicy, quick and simple Asian salad.',
-                instructions: [
-                  {
+        return request(server).post("/api/v1/recipes").set("Accept", "application/json").set('token', authToken).send({
+            name: "seaweed salad",
+            description: 'A flavorful, spicy, quick and simple Asian salad.',
+            instructions: [
+                {
                     step_number: 1,
                     instructions: 'Soak seaweed in warm water to cover, 5 minutes. Drain, rinse then squeeze out excess water. If wakame is uncut, cut into 1/2-inch-wide strips.'
-                  },
-                  {
+                }, {
                     step_number: 2,
                     instructions: `Stir together vinegar, soy sauce, sesame oil, sugar, pepper flakes, ginger, and garlic in a bowl until sugar is dissolved.
                                    Add the seaweed, scallions, carrots, and cilantro, tossing to combine well.
                                    Sprinkle salad with sesame seeds.`
-                  }
-                ],
-                ingredients: [1, 3]
-            })
-            .expect("Content-Type", /json/)
-            .expect(200, {
-                id: 9,
-                "ingredients": [{
-                        "id": 1,
-                        "name": "bacon"
-                    },
-                    {
-                        "id": 3,
-                        "name": "milk"
-                    }
-                ],
-                name: "seaweed salad",
-                description: 'A flavorful, spicy, quick and simple Asian salad.',
-                instructions: [
-                  {
+                }
+            ],
+            ingredients: [1, 3]
+        }).expect("Content-Type", /json/).expect(200, {
+            id: 9,
+            "ingredients": [
+                {
+                    "id": 1,
+                    "name": "bacon"
+                }, {
+                    "id": 3,
+                    "name": "milk"
+                }
+            ],
+            name: "seaweed salad",
+            description: 'A flavorful, spicy, quick and simple Asian salad.',
+            instructions: [
+                {
                     step_number: 1,
                     instructions: 'Soak seaweed in warm water to cover, 5 minutes. Drain, rinse then squeeze out excess water. If wakame is uncut, cut into 1/2-inch-wide strips.'
-                  },
-                  {
+                }, {
                     step_number: 2,
                     instructions: `Stir together vinegar, soy sauce, sesame oil, sugar, pepper flakes, ginger, and garlic in a bowl until sugar is dissolved.
                                    Add the seaweed, scallions, carrots, and cilantro, tossing to combine well.
                                    Sprinkle salad with sesame seeds.`
-                  }
-                ]
-            });
+                }
+            ]
+        });
     });
 
     test("GET /recipes/:id", (done) => {
-        request(server)
-            .get("/api/v1/recipes/1")
-            .set("Accept", "application/json")
-            .set('token', authToken)
-            .expect(200, {
-                "id": 1,
-                "name": "cauliflower buffalo bites",
-                "description": '',
-                "instructions": [
-                    {
-                        "instructions": "do step one",
-                        "step_number": 1
-                    }, {
-                        "instructions": "do step two",
-                        "step_number": 2
-                    }, {
-                        "instructions": "do step three",
-                        "step_number": 3
-                    }, {
-                        "instructions": "do step four",
-                        "step_number": 4
-                    }, {
-                        "instructions": "do step five",
-                        "step_number": 5
-                    }
-                ], // "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk.",
-                "ingredients": [{
-                        "id": 1,
-                        "name": "bacon"
-                    },
-                    {
-                        "id": 3,
-                        "name": "milk"
-                    }
-                ]
-            });
+        request(server).get("/api/v1/recipes/1").set("Accept", "application/json").set('token', authToken).expect(200, {
+            "id": 1,
+            "name": "cauliflower buffalo bites",
+            "description": '',
+            "instructions": [
+                {
+                    "instructions": "do step one",
+                    "step_number": 1
+                }, {
+                    "instructions": "do step two",
+                    "step_number": 2
+                }, {
+                    "instructions": "do step three",
+                    "step_number": 3
+                }, {
+                    "instructions": "do step four",
+                    "step_number": 4
+                }, {
+                    "instructions": "do step five",
+                    "step_number": 5
+                }
+            ], // "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk.",
+            "ingredients": [
+                {
+                    "id": 1,
+                    "name": "bacon"
+                }, {
+                    "id": 3,
+                    "name": "milk"
+                }
+            ]
+        });
 
-        request(server)
-            .get("/api/v1/recipes/2")
-            .set("Accept", "application/json")
-            .set('token', authToken)
-            .expect(200, {
-                "id": 2,
-                "name": "simple oatmeal",
-                "description": '',
-                "instructions": [], //"1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
-                "ingredients": [
-                    {
-                        "id": 1,
-                        "name": "bacon"
-                    }
-                ]
-            }, done);
+        request(server).get("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).expect(200, {
+            "id": 2,
+            "name": "simple oatmeal",
+            "description": '',
+            "instructions": [], //"1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
+            "ingredients": [
+                {
+                    "id": 1,
+                    "name": "bacon"
+                }
+            ]
+        }, done);
     });
 
-    // test("PUT /recipes:id", (done) => {
-    //     request(server)
-    //         .put("/api/v1/recipes/1")
-    //         .set("Accept", "application/json")
-    //         .set('token', authToken)
-    //         .send({
-    //             name: "seaweed salad",
-    //             instructions: "xyz"
-    //         })
-    //         .expect("Content-Type", /json/)
-    //         .expect(200, {
-    //             id: 1,
-    //             name: "seaweed salad",
-    //             instructions: "xyz"
-    //         }, done);
-    // });
+    test("PUT /recipes:id", (done) => {
+        request(server).get("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).expect(200, {
+            "id": 2,
+            "name": "simple oatmeal",
+            "description": '',
+            "instructions": [],
+            "ingredients": [
+                {
+                    "id": 1,
+                    "name": "bacon"
+                }
+            ]
+        });
+
+        request(server).put("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).send({
+            "id": 2,
+            "name": "simple maple oatmeal",
+            "description": 'A delicious winter time breakfast.  Try it with crumbled bacon!',
+            "instructions": [
+                {
+                    step_number: 1,
+                    instructions: "Place 3/4 cup of the rolled oats into a blender and process until a flour."
+                }, {
+                    step_number: 2,
+                    instructions: "Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil."
+                }
+            ],
+            "ingredients": [1]
+        }).expect("Content-Type", /json/).expect(200, {
+            "id": 2,
+            "name": "simple maple oatmeal",
+            "description": 'A delicious winter time breakfast.  Try it with crumbled bacon!',
+            "instructions": [
+                {
+                    step_number: 1,
+                    instructions: "Place 3/4 cup of the rolled oats into a blender and process until a flour."
+                }, {
+                    step_number: 2,
+                    instructions: "Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil."
+                }
+            ],
+            "ingredients": [
+                {
+                    "id": 1,
+                    "name": "bacon"
+                }
+            ]
+        }, done);
+    });
 
     test("DELETE /recipes/:id", (done) => {
-        request(server)
-            .del("/api/v1/recipes/1")
-            .set("Accept", "application/json")
-            .set('token', authToken)
-            .expect("Content-Type", /json/)
-            .expect(200, {
-                id: 1,
-                name: "cauliflower buffalo bites",
-                active: false, // "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
-            }, done);
+        request(server).del("/api/v1/recipes/1").set("Accept", "application/json").set('token', authToken).expect("Content-Type", /json/).expect(200, {
+            id: 1,
+            name: "cauliflower buffalo bites",
+            active: false, // "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
+        }, done);
     });
 
-    // test("GET /clients/1/recipes", (done) => {
-    //     request(server)
-    //         .get("/api/v1/clients/1/recipes")
-    //         .set("Accept", "application/json")
-    //         .set('token', authToken)
-    //         .expect((res) => {
-    //             deleteIngredientTimestamps(res);
-    //         })
-    //         .expect(200, {
-    //             "recipes": [{
-    //                     "id": 1,
-    //                     "name": "cauliflower buffalo bites",
-    //                     "instructions": [], // "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk.",
-    //                     "ingredients": [{
-    //                             "id": 1,
-    //                             "name": "bacon",
-    //                             "active": true
-    //                         },
-    //                         {
-    //                             "id": 3,
-    //                             "name": "milk",
-    //                             "active": true
-    //                         }
-    //                     ]
-    //                 },
-    //                 {
-    //                     "id": 2,
-    //                     "name": "simple oatmeal",
-    //                     "instructions": [], // "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
-    //                     "ingredients": [{
-    //                         "id": 1,
-    //                         "name": "bacon",
-    //                         "active": true
-    //                     }]
-    //                 },
-    //                 {
-    //                     "id": 3,
-    //                     "name": "cheese omelette",
-    //                     "instructions": [], // "1.Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.2.Place a small non-stick frying pan on a low heat to warm up.",
-    //                     "ingredients": [{
-    //                         "id": 1,
-    //                         "name": "bacon",
-    //                         "active": true
-    //                     }]
-    //                 }
-    //             ]
-    //         }, done);
-    // });
+    test("GET /clients/1/recipes", (done) => {
+        request(server).get("/api/v1/clients/1/recipes").set("Accept", "application/json").set('token', authToken).expect((res) => {
+            deleteIngredientTimestamps(res);
+        }).expect(200, {
+            "recipes": [
+                {
+                    "id": 1,
+                    "name": "cauliflower buffalo bites",
+                    "description": '',
+                    instructions: [
+                        {
+                            "instructions": "do step one",
+                            "step_number": 1
+                        }, {
+                            "instructions": "do step two",
+                            "step_number": 2
+                        }, {
+                            "instructions": "do step three",
+                            "step_number": 3
+                        }, {
+                            "instructions": "do step four",
+                            "step_number": 4
+                        }, {
+                            "instructions": "do step five",
+                            "step_number": 5
+                        }
+                    ],
+                    "ingredients": [
+                        {
+                            "id": 1,
+                            "name": "bacon",
+                            "active": true
+                        }, {
+                            "id": 3,
+                            "name": "milk",
+                            "active": true
+                        }
+                    ],
+                    "active": true
+                }, {
+                    "id": 2,
+                    "name": "simple oatmeal",
+                    "description": '',
+                    "instructions": [], // "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
+                    "ingredients": [
+                        {
+                            "id": 1,
+                            "name": "bacon",
+                            "active": true
+                        }
+                    ],
+                    "active": true
+                }, {
+                    "id": 3,
+                    "name": "cheese omelette",
+                    "description": 'Great when making breakfast for the family!  Can be eaten cold too!',
+                    "instructions": [
+                        {
+                            "instructions": "Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.",
+                            "step_number": 1
+                        }, {
+                            "instructions": "Place a small non-stick frying pan on a low heat to warm up.",
+                            "step_number": 2
+                        }
+                    ],
+                    "ingredients": [
+                        {
+                            "id": 1,
+                            "name": "bacon",
+                            "active": true
+                        }
+                    ],
+                    "active": true
+                }
+            ]
+        }, done);
+    });
 
     test("POST /clients/2/recipes", () => {
-        return request(server)
-            .post("/api/v1/clients/2/recipes")
-            .set("Accept", "application/json")
-            .set('token', authToken)
-            .send({
-                recipe_id: 1
-            })
-            .expect(200, {
-                success: 1,
-                description: "Added"
-            }).then(() => {
-                // check that it was actually added.
-                return request(server)
-                    .get("/api/v1/clients/2/recipes")
-                    .set("Accept", "application/json")
-                    .set('token', authToken)
-                    .expect((res) => {
-                        deleteIngredientTimestamps(res);
-                    })
-                    .expect(200, {
-                        "recipes": [{
-                            "id": 1,
-                            "name": "cauliflower buffalo bites",
-                            "description": '',
-                            instructions: [
-                                {
-                                    "instructions": "do step one",
-                                    "step_number": 1
-                                }, {
-                                    "instructions": "do step two",
-                                    "step_number": 2
-                                }, {
-                                    "instructions": "do step three",
-                                    "step_number": 3
-                                }, {
-                                    "instructions": "do step four",
-                                    "step_number": 4
-                                }, {
-                                    "instructions": "do step five",
-                                    "step_number": 5
-                                }
-                            ],
-                            "ingredients": [{
-                                    "id": 1,
-                                    "name": "bacon",
-                                    "active": true
-                                },
-                                {
-                                    "id": 3,
-                                    "name": "milk",
-                                    "active": true
-                                }
-                            ],
-                            "active": true
-                        }]
-                    });
+        return request(server).post("/api/v1/clients/2/recipes").set("Accept", "application/json").set('token', authToken).send({recipe_id: 1}).expect(200, {
+            success: 1,
+            description: "Added"
+        }).then(() => {
+            // check that it was actually added.
+            return request(server).get("/api/v1/clients/2/recipes").set("Accept", "application/json").set('token', authToken).expect((res) => {
+                deleteIngredientTimestamps(res);
+            }).expect(200, {
+                "recipes": [
+                    {
+                        "id": 1,
+                        "name": "cauliflower buffalo bites",
+                        "description": '',
+                        instructions: [
+                            {
+                                "instructions": "do step one",
+                                "step_number": 1
+                            }, {
+                                "instructions": "do step two",
+                                "step_number": 2
+                            }, {
+                                "instructions": "do step three",
+                                "step_number": 3
+                            }, {
+                                "instructions": "do step four",
+                                "step_number": 4
+                            }, {
+                                "instructions": "do step five",
+                                "step_number": 5
+                            }
+                        ],
+                        "ingredients": [
+                            {
+                                "id": 1,
+                                "name": "bacon",
+                                "active": true
+                            }, {
+                                "id": 3,
+                                "name": "milk",
+                                "active": true
+                            }
+                        ],
+                        "active": true
+                    }
+                ]
             });
+        });
     });
 
     // // test("GET /recipes/-1", (done) => {
