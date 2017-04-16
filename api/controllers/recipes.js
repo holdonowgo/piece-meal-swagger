@@ -72,7 +72,7 @@ function getRecipe(req, res) {
 
 function doGetRecipe(recipeId, res) {
     let promises = [];
-    promises.push(knex("recipes").select("id", "name").first().where("id", recipeId));
+    promises.push(knex("recipes").select("id", "name", "description").first().where("id", recipeId));
     promises.push(getIngredientsQuery(recipeId));
     promises.push(getRecipeStepsQuery(recipeId));
 
@@ -105,25 +105,33 @@ function doGetRecipe(recipeId, res) {
 
 function postRecipe(req, res) {
     //to insert into recipes table
+    let recipe;
     let name = req.swagger.params.recipe.value.name;
+    let description = req.swagger.params.recipe.value.description;
+
+    // to insert into the recipe_steps table
     let instructions = req.swagger.params.recipe.value.instructions;
 
     //to insert into recipe_ingredients table
     let ingredients = req.swagger.params.recipe.value.ingredients;
-    let recipe;
     knex("recipes").first().where("name", name).then((result) => {
         if (result) {
             res.status(400).json("Recipe already exists!");
         } else {
-            return knex("recipes").insert({"name": name, "instructions": instructions}).returning("*");
+            return knex("recipes").insert({ "name": name, description: description }).returning("*");
         }
-    }).then((recipes) => {
+    }).then((recipes) => {// insert ingredients
         recipe = recipes[0];
         let data = ingredients.map((value) => {
             return {recipe_id: recipe.id, ingredient_id: value};
         });
         return knex('recipe_ingredients').insert(data).returning("*");
-    }).then(() => {
+    }).then(() => {// insert instructions
+        let data = instructions.map((step) => {
+            return {recipe_id: recipe.id, step_number: step.step_number, instructions: step.instructions};
+        });
+        return knex('recipe_steps').insert(data).returning("*");
+    }).then(() => {// return new recipe
         return doGetRecipe(recipe.id, res);
     });
 }

@@ -54,6 +54,7 @@ suite("recipes test", () => {
                         }
                     ],
                     name: "cauliflower buffalo bites",
+                    description: '',
                     instructions: [
                         {
                             "instructions": "do step one",
@@ -76,6 +77,7 @@ suite("recipes test", () => {
                     "active": true,
                     "id": 2,
                     "name": "simple oatmeal",
+                    "description": '',
                     "instructions": [], //"1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
                     "ingredients": [
                         {
@@ -88,6 +90,7 @@ suite("recipes test", () => {
                     "active": true,
                     "id": 3,
                     "name": "cheese omelette",
+                    "description": '',
                     "instructions": [], // "1.Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.2.Place a small non-stick frying pan on a low heat to warm up.",
                     "ingredients": [
                         {
@@ -111,7 +114,8 @@ suite("recipes test", () => {
                         }
                     ],
                     "instructions": [], // "This is how we do it.",
-                    "name": "Recipe #4"
+                    "name": "Recipe #4",
+                    "description": ''
                 }, {
                     "active": true,
                     "id": 5,
@@ -131,56 +135,84 @@ suite("recipes test", () => {
                         }
                     ],
                     "instructions": [], // "It's Friday night.",
-                    "name": "Recipe #5"
+                    "name": "Recipe #5",
+                    "description": ''
                 }, {
                     "active": true,
                     "id": 6,
                     "ingredients": [],
                     "instructions": [], // "And I'm feelin' right.",
-                    "name": "Recipe #6"
+                    "name": "Recipe #6",
+                    "description": ''
                 }, {
                     "active": true,
                     "id": 7,
                     "ingredients": [],
                     "instructions": [], // "The party's over on the west side.",
-                    "name": "Recipe #7"
+                    "name": "Recipe #7",
+                    "description": ''
                 }, {
                     "active": true,
                     "id": 8,
                     "ingredients": [],
                     "instructions": [], // "So I creep...",
-                    "name": "Recipe #8"
+                    "name": "Recipe #8",
+                    "description": ''
                 }
             ]
         }, done);
     });
 
-    // test("POST /recipes", () => {
-    //     return request(server)
-    //         .post("/api/v1/recipes")
-    //         .set("Accept", "application/json")
-    //         .set('token', authToken)
-    //         .send({
-    //             name: "seaweed salad",
-    //             instructions: [], // "1.Soak seaweed in warm water to cover, 5 minutes. Drain, rinse then squeeze out excess water. If wakame is uncut, cut into 1/2-inch-wide strips.2.Stir together vinegar, soy sauce, sesame oil, sugar, pepper flakes, ginger, and garlic in a bowl until sugar is dissolved. Add the seaweed, scallions, carrots, and cilantro, tossing to combine well. Sprinkle salad with sesame seeds.",
-    //             ingredients: [1, 3]
-    //         })
-    //         .expect("Content-Type", /json/)
-    //         .expect(200, {
-    //             id: 9,
-    //             "ingredients": [{
-    //                     "id": 1,
-    //                     "name": "bacon"
-    //                 },
-    //                 {
-    //                     "id": 3,
-    //                     "name": "milk"
-    //                 }
-    //             ],
-    //             name: "seaweed salad",
-    //             instructions: [] // "1.Soak seaweed in warm water to cover, 5 minutes. Drain, rinse then squeeze out excess water. If wakame is uncut, cut into 1/2-inch-wide strips.2.Stir together vinegar, soy sauce, sesame oil, sugar, pepper flakes, ginger, and garlic in a bowl until sugar is dissolved. Add the seaweed, scallions, carrots, and cilantro, tossing to combine well. Sprinkle salad with sesame seeds."
-    //         });
-    // });
+    test("POST /recipes", () => {
+        return request(server)
+            .post("/api/v1/recipes")
+            .set("Accept", "application/json")
+            .set('token', authToken)
+            .send({
+                name: "seaweed salad",
+                description: 'A flavorful, spicy, quick and simple Asian salad.',
+                instructions: [
+                  {
+                    step_number: 1,
+                    instructions: 'Soak seaweed in warm water to cover, 5 minutes. Drain, rinse then squeeze out excess water. If wakame is uncut, cut into 1/2-inch-wide strips.'
+                  },
+                  {
+                    step_number: 2,
+                    instructions: `Stir together vinegar, soy sauce, sesame oil, sugar, pepper flakes, ginger, and garlic in a bowl until sugar is dissolved.
+                                   Add the seaweed, scallions, carrots, and cilantro, tossing to combine well.
+                                   Sprinkle salad with sesame seeds.`
+                  }
+                ],
+                ingredients: [1, 3]
+            })
+            .expect("Content-Type", /json/)
+            .expect(200, {
+                id: 9,
+                "ingredients": [{
+                        "id": 1,
+                        "name": "bacon"
+                    },
+                    {
+                        "id": 3,
+                        "name": "milk"
+                    }
+                ],
+                name: "seaweed salad",
+                description: 'A flavorful, spicy, quick and simple Asian salad.',
+                instructions: [
+                  {
+                    step_number: 1,
+                    instructions: 'Soak seaweed in warm water to cover, 5 minutes. Drain, rinse then squeeze out excess water. If wakame is uncut, cut into 1/2-inch-wide strips.'
+                  },
+                  {
+                    step_number: 2,
+                    instructions: `Stir together vinegar, soy sauce, sesame oil, sugar, pepper flakes, ginger, and garlic in a bowl until sugar is dissolved.
+                                   Add the seaweed, scallions, carrots, and cilantro, tossing to combine well.
+                                   Sprinkle salad with sesame seeds.`
+                  }
+                ]
+            });
+    });
 
     test("GET /recipes/:id", (done) => {
         request(server)
@@ -190,6 +222,7 @@ suite("recipes test", () => {
             .expect(200, {
                 "id": 1,
                 "name": "cauliflower buffalo bites",
+                "description": '',
                 "instructions": [
                     {
                         "instructions": "do step one",
@@ -226,6 +259,7 @@ suite("recipes test", () => {
             .expect(200, {
                 "id": 2,
                 "name": "simple oatmeal",
+                "description": '',
                 "instructions": [], //"1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
                 "ingredients": [
                     {
