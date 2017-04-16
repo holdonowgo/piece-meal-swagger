@@ -348,48 +348,67 @@ suite("recipes test", () => {
     //             ]
     //         }, done);
     // });
-    //
-    // test("POST /clients/2/recipes", () => {
-    //     return request(server)
-    //         .post("/api/v1/clients/2/recipes")
-    //         .set("Accept", "application/json")
-    //         .set('token', authToken)
-    //         .send({
-    //             recipe_id: 1
-    //         })
-    //         .expect(200, {
-    //             success: 1,
-    //             description: "Added"
-    //         }).then(() => {
-    //             // check that it was actually added.
-    //             return request(server)
-    //                 .get("/api/v1/clients/2/recipes")
-    //                 .set("Accept", "application/json")
-    //                 .set('token', authToken)
-    //                 .expect((res) => {
-    //                     deleteIngredientTimestamps(res);
-    //                 })
-    //                 .expect(200, {
-    //                     "recipes": [{
-    //                         "id": 1,
-    //                         "name": "cauliflower buffalo bites",
-    //                         "instructions": [], // "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk.",
-    //                         "ingredients": [{
-    //                                 "id": 1,
-    //                                 "name": "bacon",
-    //                                 "active": true
-    //                             },
-    //                             {
-    //                                 "id": 3,
-    //                                 "name": "milk",
-    //                                 "active": true
-    //                             }
-    //                         ]
-    //                     }]
-    //                 });
-    //         });
-    // });
-    //
+
+    test("POST /clients/2/recipes", () => {
+        return request(server)
+            .post("/api/v1/clients/2/recipes")
+            .set("Accept", "application/json")
+            .set('token', authToken)
+            .send({
+                recipe_id: 1
+            })
+            .expect(200, {
+                success: 1,
+                description: "Added"
+            }).then(() => {
+                // check that it was actually added.
+                return request(server)
+                    .get("/api/v1/clients/2/recipes")
+                    .set("Accept", "application/json")
+                    .set('token', authToken)
+                    .expect((res) => {
+                        deleteIngredientTimestamps(res);
+                    })
+                    .expect(200, {
+                        "recipes": [{
+                            "id": 1,
+                            "name": "cauliflower buffalo bites",
+                            "description": '',
+                            instructions: [
+                                {
+                                    "instructions": "do step one",
+                                    "step_number": 1
+                                }, {
+                                    "instructions": "do step two",
+                                    "step_number": 2
+                                }, {
+                                    "instructions": "do step three",
+                                    "step_number": 3
+                                }, {
+                                    "instructions": "do step four",
+                                    "step_number": 4
+                                }, {
+                                    "instructions": "do step five",
+                                    "step_number": 5
+                                }
+                            ],
+                            "ingredients": [{
+                                    "id": 1,
+                                    "name": "bacon",
+                                    "active": true
+                                },
+                                {
+                                    "id": 3,
+                                    "name": "milk",
+                                    "active": true
+                                }
+                            ],
+                            "active": true
+                        }]
+                    });
+            });
+    });
+
     // // test("GET /recipes/-1", (done) => {
     // //   request(server)
     // //     .get("/api/v1/recipes/-1")
