@@ -14,6 +14,7 @@ module.exports = {
 
 function doGetRecipes(query, res) {
     let recipes;
+    let ingredients;
     return query.then((rows) => {
         recipes = rows;
         let promises = rows.map((recipe) => getIngredientsQuery(recipe.id));
@@ -21,9 +22,39 @@ function doGetRecipes(query, res) {
     }).then((promiseResults) => {
         // 'recipes' is an array of the recipes
         // 'promiseResults' is an array of arrays of ingredients
+        let promises;
+
         for (var i = 0; i < recipes.length; i++) {
-            recipes[i].ingredients = promiseResults[i];
+            recipes[i].ingredients = promiseResults[i].map((ingredient) => {
+                delete ingredient.created_at;
+                delete ingredient.updated_at;
+                return ingredient;
+            });
+
+            for (let j = 0; j < recipes[i].ingredients.length; j++) {
+                let tags = [];
+                if (recipes[i]) {
+                    getIngredientTagsQuery(recipes[i].ingredients[j].id).then((promiseValue) => {
+                        tags = promiseValue.map(tag => tag.tag_text);
+                    }).catch((err) => {
+                        console.log(err);
+                    })
+                }
+                recipes[i].ingredients[j].tags = tags;
+            }
         }
+        // console.log('ingredients:', ingredients);
+        // console.log('promiseResults[0]:', promiseResults[0]);
+        // let promises = promiseResults[0].map((ingredient) => getIngredientTagsQuery(ingredient.id));
+        // let promises = promiseResults.map((ingredients) => {
+        //   console.log('ingredients:', ingredients);
+        //   return ingredients.map((ingredient) => {
+        //     return getIngredientTagsQuery(ingredient.id);
+        //   })
+        // })
+        //
+        // return Promise.all(promises);
+    }).then(() => {
 
         let promises = recipes.map((recipe) => getRecipeStepsQuery(recipe.id));
 
@@ -58,6 +89,10 @@ function getIngredientsQuery(recipeId) {
     return knex("recipe_ingredients").join("ingredients", "ingredients.id", "recipe_ingredients.ingredient_id").select("ingredients.*").orderBy('id').where("recipe_ingredients.recipe_id", recipeId);
 }
 
+function getIngredientTagsQuery(ingredientId) {
+    return knex("ingredient_tags").where("ingredient_tags.ingredient_id", ingredientId).orderBy('tag_text');
+}
+
 function getRecipeStepsQuery(recipeId) {
     return knex("recipe_steps").join("recipes", "recipes.id", "recipe_steps.recipe_id").select("recipe_steps.step_number", "recipe_steps.instructions").orderBy('step_number').where("recipe_steps.recipe_id", recipeId);
 }
@@ -67,13 +102,14 @@ function getRecipe(req, res) {
 }
 
 function doGetRecipe(recipeId, res) {
+    let recipe;
     let promises = [];
     promises.push(knex("recipes").select("id", "name", "description").first().where("id", recipeId));
     promises.push(getIngredientsQuery(recipeId));
     promises.push(getRecipeStepsQuery(recipeId));
 
     Promise.all(promises).then((results) => {
-        let recipe = results[0];
+        recipe = results[0];
         let ingredients = results[1];
         let instructions = results[2];
 
@@ -92,6 +128,15 @@ function doGetRecipe(recipeId, res) {
         }).sort((a, b) => {
             return a.step_number - b.step_number;
         });
+
+        let proms = recipe.ingredients.map(ingredient => getIngredientTagsQuery(ingredient.id));
+
+        return Promise.all(proms);
+    }).then((result) => {
+
+        for (let i = 0; i < recipe.ingredients.length; i++) {
+            recipe.ingredients[i].tags = result[i].map(tag => tag.tag_text);
+        }
 
         return res.json(recipe);
     }).catch((err) => {
@@ -131,43 +176,6 @@ function postRecipe(req, res) {
         return doGetRecipe(recipe.id, res);
     });
 }
-//to insert into recipe_ingredients table
-
-// function updateRecipe(req, res) {
-//     let id = req.swagger.params.id.value;
-//     let ingredients = req.swagger.params.recipe.value.ingredients;
-//     return knex('recipes')
-//         .update(req.swagger.params.recipe.value)
-//         .then(() => {
-//             return knex('recipes').first().where('id', id);
-//         })
-//         .then((recipe) => {
-//             let promises = [];
-//             let data = ingredients.map((value) => {
-//                 return {
-//                     recipe_id: recipe.id,
-//                     ingredient_id: value
-//                 };
-//             });
-//             promises.push(
-//                 knex('recipe_ingredients').where('recipe_id', recipe.id).del()
-//             );
-//             console.log('did delete');
-//             promises.push(
-//                 knex('recipe_ingredients').insert(data).returning("*")
-//             );
-//             console.log('did insert');
-//
-//             return promises;
-//         })
-//         .then((result) => {
-//             return knex('recipes').first().where('id', id);
-//         })
-//         .then((recipe) => {
-//             // let recipe = recipes[0];
-//             return res.json(recipe);
-//         });
-// }
 
 function updateRecipe(req, res) {
     let id = req.swagger.params.id.value;
@@ -200,7 +208,7 @@ function updateRecipe(req, res) {
     }).then(() => { // return updated recipe
         return doGetRecipe(recipe.id, res);
     }).catch((err) => {
-      console.log(err);
+        console.log(err);
     });
 }
 
@@ -223,5 +231,5 @@ function deleteRecipe(req, res) {
 function searchRecipes(req, res) {
     // To list clients
     // let text = req.swagger.params.text.value;
-    return doGetRecipes(knex("recipes").join('recipe_ingredients', 'recipes.id', 'recipe_ingredients.ingredient_id').leftJoin('ingredient_tags', 'recipe_ingredients.ingredient_id', 'ingredient_tags.ingredient_id').distinct('recipes.*').where('name', 'ilike', `%${req.swagger.params.text.value}%`).orWhere('ingredient_tags.tag_text', 'ilike', `%${req.swagger.params.text.value}%`), res);
+    return doGetRecipes(knex("recipes").join('recipe_ingredients', 'recipes.id', 'recipe_ingredients.recipe_id').leftJoin('ingredient_tags', 'recipe_ingredients.ingredient_id', 'ingredient_tags.ingredient_id').leftJoin('ingredients', 'recipe_ingredients.ingredient_id', 'ingredients.id').distinct('recipes.*').where('recipes.name', 'ilike', `%${req.swagger.params.text.value}%`).orWhere('description', 'ilike', `%${req.swagger.params.text.value}%`).orWhere('ingredients.name', 'ilike', `%${req.swagger.params.text.value}%`).orWhere('ingredient_tags.tag_text', 'ilike', `%${req.swagger.params.text.value}%`), res);
 }

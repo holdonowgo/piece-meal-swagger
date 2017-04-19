@@ -1160,6 +1160,10 @@ definitions:
               type: integer
             name:
               type: string
+            tags:
+              type: array
+              items:
+                type: string
 
   Recipe:
     type: object
@@ -1188,6 +1192,10 @@ definitions:
               type: integer
             name:
               type: string
+            tags:
+              type: array
+              items:
+                type: string
 
   PostRecipe:
     type: object
