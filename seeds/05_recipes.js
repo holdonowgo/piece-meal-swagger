@@ -5,6 +5,7 @@ const data = [{
 }, {
   id: 2,
   name: "simple oatmeal",
+  notes: "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!"
   // instructions: "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil."
 }, {
   id: 3,

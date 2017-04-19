@@ -1,6 +1,7 @@
 const data = [{
   id:1,
-  name: 'bacon'
+  name: 'bacon',
+  description: 'Mmmmmmmmm...Bacon!'
 }, {
   id:2,
   name: 'egg'
