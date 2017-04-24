@@ -78,12 +78,6 @@ function updateIngredient(req, res, next) {
 }
 
 function deleteIngredient(req, res) {
-    // knex('ingredients').update('active', false)
-    //     .returning('*')
-    //     .then((result) => {
-    //         return res.json(result);
-    //     });
-
     knex('ingredients')
         .where('id', req.swagger.params.id.value)
         .update({
@@ -92,7 +86,6 @@ function deleteIngredient(req, res) {
         .returning('*')
         .then((result) => {
             let ingredient = result[0];
-            // ingredient.alternatives = [];
             delete ingredient.created_at;
             delete ingredient.updated_at;
             return res.json(ingredient);
@@ -102,7 +95,7 @@ function deleteIngredient(req, res) {
 function getIngredientsList(req, res) {
     // To list ingredients
     let promises = [];
-    promises.push(knex("ingredients").select("id", "name", "active"));
+    promises.push(knex("ingredients").select("id", "name", "description", "active"));
     promises.push(knex("ingredient_tags").select("ingredient_id", "tag_text"));
     Promise.all(promises)
         .then((results) => {
@@ -120,7 +113,9 @@ function getIngredientsList(req, res) {
             }
 
             return res.json({
-                ingredients: ingredients
+                ingredients: ingredients.sort((a, b) => {
+                  return a.id - b.id
+                })
             });
         });
 }

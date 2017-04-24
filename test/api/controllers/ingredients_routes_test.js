@@ -55,36 +55,43 @@ suite('ingredients test', () => {
                 "ingredients": [{
                         "id": 1,
                         "name": "bacon",
+                        "description": "",
                         "active": true,
-                        "tags": ['meat', 'pork']
+                        "tags": ['meat', 'pork'],
+                        "description": "Mmmmmmmmm...Bacon!"
                     },
                     {
                         "id": 2,
                         "name": "egg",
+                        "description": "",
                         "active": true,
                         "tags": ['vegetarian']
                     },
                     {
                         "id": 3,
                         "name": "milk",
+                        "description": "",
                         "active": true,
                         "tags": ['dairy', 'vegetarian']
                     },
                     {
                         "id": 4,
                         "name": "avocado",
+                        "description": "",
                         "active": true,
                         "tags": ['vegan', 'vegetarian']
                     },
                     {
                         "id": 5,
                         "name": "almond milk",
+                        "description": "",
                         "active": true,
                         "tags": []
                     },
                     {
                         "id": 6,
                         "name": "coconut milk",
+                        "description": "",
                         "active": true,
                         "tags": []
                     },
@@ -92,126 +99,147 @@ suite('ingredients test', () => {
                         "active": true,
                         "id": 7,
                         "name": "brown sugar",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 8,
                         "name": "spinach",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 9,
                         "name": "kale",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 10,
                         "name": "tomato",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 11,
                         "name": "banana",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 12,
                         "name": "grapes",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 13,
                         "name": "chicken breast (bone-in)",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 14,
                         "name": "chicken thigh (skin-on)",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 15,
                         "name": "russet potato",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 16,
                         "name": "lime juice (fresh)",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 17,
                         "name": "lemon juice (fresh)",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 18,
                         "name": "salt",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 19,
                         "name": "black pepper",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 20,
                         "name": "grains of paradise",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 21,
                         "name": "garlic",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 22,
                         "name": "onion",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 23,
                         "name": "asafoetida (powder)",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 24,
                         "name": "white flour",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 25,
                         "name": "carrot",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 26,
                         "name": "celery",
+                        "description": "",
                         "tags": []
                     },
                     {
                         "active": true,
                         "id": 27,
                         "name": "kombu",
+                        "description": "",
                         "tags": []
                     }
                 ]
@@ -230,6 +258,7 @@ suite('ingredients test', () => {
                 "name": "bacon",
                 "active": true,
                 "tags": ['meat', 'pork'],
+                "description": "Mmmmmmmmm...Bacon!",
                 "alternatives": [{
                     id: 2,
                     name: 'egg'
@@ -286,7 +315,8 @@ suite('ingredients test', () => {
                 ingredient: {
                     active: true,
                     id: 21,
-                    name: 'garlic'
+                    name: 'garlic',
+                    description: ""
                 }
             }, done);
 
@@ -310,6 +340,7 @@ suite('ingredients test', () => {
             .expect(200, {
                 "id": 13,
                 "name": "chicken breast (bone-in)",
+                "description": "",
                 "active": true,
                 "tags": [],
                 "alternatives": [{
@@ -390,8 +421,7 @@ suite('ingredients test', () => {
             .expect(200, {
                 id: 1,
                 name: 'bacon',
-                // tags: ['meat', 'pork'],
-                // alternatives: [],
+                description: 'Mmmmmmmmm...Bacon!',
                 active: false
             }, done);
 

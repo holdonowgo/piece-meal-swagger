@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   version: "0.0.1"
-  title: Piece-Meal API
+  title: Piece-Meal App
 # during dev, should point to your local machine
 host: piecemeal-api.herokuapp.com
 # host: localhost:10010
@@ -18,16 +18,20 @@ consumes:
 # format of the responses to the client (Accepts)
 produces:
   - application/json
-  - text/plain
 paths:
   /clients:
     # our controller name
     x-swagger-router-controller: clients
     get:
-      summary: Get all registered clients
       description: This endpoint returns all clients available in the database
       # define the type of response for Success "200" and Error
       operationId: getClients
+      parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
       responses:
         "200":
           description: Success
@@ -39,7 +43,6 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     post:
-      summary: Register a client for our api
       description: Add a new client
       operationId: addClient
       # movie info to be stored
@@ -64,11 +67,16 @@ paths:
     # our controller name
     x-swagger-router-controller: clients
     get:
-      summary: Get a specific registered user from our database.
       description: Retrieve a single client by id
       operationId: getClient
       # define the type of response for Success "200" and Error
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
@@ -84,15 +92,19 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
     put:
-      summary: Update a specific registerd user in our database
       description: Update a client by id
       operationId: updateClient
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
           required: true
-
         - name: client
           in: body
           description: client object
@@ -135,6 +147,12 @@ paths:
       description: get a client's recipes
       operationId: getClientRecipes
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
@@ -154,11 +172,18 @@ paths:
       description: add a new recipe to the client's list of recipes
       operationId: addClientRecipe
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
           description: client's id
           required: true
+
         - name: request
           in: body
           required: true
@@ -185,6 +210,12 @@ paths:
       # define the type of response for Success "200" and Error
       operationId: getRestrictions
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
@@ -203,6 +234,12 @@ paths:
       description: add a new ingredient to the client's restrictions
       operationId: addRestriction
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
@@ -234,6 +271,12 @@ paths:
       description: add a new ingredient to the client's restrictions
       operationId: updateRestrictions
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
@@ -259,11 +302,18 @@ paths:
       description: delete a client's restriction
       operationId: deleteRestriction
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           description: Client Id
           type: integer
           in: path
           required: true
+
         - name: ingredient
           description: Request body
           in: body
@@ -281,6 +331,16 @@ paths:
           description: Success
           schema:
             $ref: "#/definitions/GeneralResponse"
+
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/ErrorResponse"
         default:
           description: Error
           schema:
@@ -292,10 +352,17 @@ paths:
       operationId: verifyIngredient
       description: to check if an ingredient is safe for client
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
           required: true
+
         - name: ingredient_id
           type: integer
           in: path
@@ -316,10 +383,17 @@ paths:
       description: to find out what ingredients are safe and non-safe in an existing recipe
       operationId: crossCheckRecipe
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: user_id
           type: integer
           in: path
           required: true
+
         - name: recipe_id
           type: integer
           in: path
@@ -340,6 +414,13 @@ paths:
       description: get the ingredients list
       # define the type of response for Success "200" and Error
       operationId: getIngredientsList
+      parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
       responses:
         "200":
           description: Success
@@ -355,6 +436,12 @@ paths:
       # movie info to be stored
       operationId: addIngredient
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: ingredient
           description: Ingredient
           in: body
@@ -378,6 +465,12 @@ paths:
       # define the type of response for Success "200" and Error
       operationId: getIngredient
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: id
           type: integer
           in: path
@@ -423,6 +516,12 @@ paths:
       # define the parameters
       operationId: deleteIngredient
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: id
           description: Ingredient id
           type: integer
@@ -443,6 +542,12 @@ paths:
     get:
       description: get the recipes list
       operationId: getRecipesList
+      parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
       responses:
         "200":
           description: Success
@@ -457,6 +562,12 @@ paths:
       description: add a new recipe
       operationId: postRecipe
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: recipe
           description: Recipe
           in: body
@@ -480,6 +591,12 @@ paths:
       # define the type of response for Success "200" and Error
       operationId: getRecipe
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: id
           type: integer
           in: path
@@ -499,6 +616,12 @@ paths:
       # define the parameters
       operationId: updateRecipe
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: id
           description: recipe id
           type: integer
@@ -526,6 +649,12 @@ paths:
       # define the parameters
       operationId: deleteRecipe
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: id
           description: recipe id
           type: integer
@@ -541,8 +670,8 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-  # /ingredients/{id}/alternatives:
-  #   x-swagger-router-controller: ingredients
+  /ingredients/{id}/alternatives:
+    x-swagger-router-controller: ingredients
     # get:
     #   description: get alternatives for an ingredient
     #   # define the type of response for Success "200" and Error
@@ -567,21 +696,29 @@ paths:
       # define the type of response for Success "200" and Error
       operationId: addIngredientAlternatives
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: id
           type: integer
           in: path
           required: true
         - name: alternatives
           in: body
-          description: Json object informations.
-          required: true
+          description: alternaive ingredients
+          # type: array
+          # items:
+          #   type: integer
           schema:
             type: object
             required:
-              - alternatives
+              - ingredients
             properties:
-              alternatives:
-                description: alternaive ingredients
+              ingredients:
+                description: array of alt ingredient ids
                 type: array
                 items:
                   type: integer
@@ -601,6 +738,12 @@ paths:
       description: get results from client search
       operationId: getUsersSearchResponse
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: first_name
           type: string
           in: query
@@ -629,6 +772,12 @@ paths:
       description: get results from ingredient search
       operationId: searchIngredients
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: text
           type: string
           in: query
@@ -649,6 +798,12 @@ paths:
       description: get results from recipe search
       operationId: searchRecipes
       parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
         - name: text
           type: string
           in: query
@@ -928,24 +1083,24 @@ definitions:
   #             items:
   #               type: string
 
-  GetRecipeSearchResponse:
-    required:
-      - recipes
-    properties:
-      # The array of recipes
-      recipes:
-        type: array
-        items:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-            tags:
-              type: array
-              items:
-                type: string
+  # GetRecipeSearchResponse:
+  #   required:
+  #     - recipes
+  #   properties:
+  #     # The array of recipes
+  #     recipes:
+  #       type: array
+  #       items:
+  #         type: object
+  #         properties:
+  #           id:
+  #             type: integer
+  #           name:
+  #             type: string
+  #           tags:
+  #             type: array
+  #             items:
+  #               type: string
 
   GetUserRestrictionsResponse:
     required:
@@ -1050,12 +1205,12 @@ definitions:
         type: integer
       name:
         type: string
+      active:
+        type: boolean
       tags:
         type: array
         items:
           type: string
-      calories:
-        type: integer
       alternatives:
         type: array
         items:
@@ -1065,6 +1220,8 @@ definitions:
               type: integer
             name:
               type: string
+      calories:
+        type: integer
           # type: integer
 
   # GetIngredientAlternativesResponse:

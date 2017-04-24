@@ -55,12 +55,12 @@ const data = [{
 
 exports.seed = function(knex, Promise) {
   // Deletes ALL existing entries
-  return knex('client_restriction').del()
+  return knex('client_restrictions').del()
     .then(function() {
       // Inserts seed entries
-      return knex('client_restriction').insert(data);
+      return knex('client_restrictions').insert(data);
     })
     .then(function() {
-      return knex.raw("SELECT setval('client_restriction_id_seq', (SELECT MAX(id) from client_restriction));");
+      return knex.raw("SELECT setval('client_restrictions_id_seq', (SELECT MAX(id) from client_restrictions));");
     });
 };

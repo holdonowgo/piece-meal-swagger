@@ -26,6 +26,12 @@ paths:
       description: This endpoint returns all clients available in the database
       # define the type of response for Success "200" and Error
       operationId: getClients
+      parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
       responses:
         "200":
           description: Success
@@ -536,6 +542,12 @@ paths:
     get:
       description: get the recipes list
       operationId: getRecipesList
+      parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
       responses:
         "200":
           description: Success
@@ -620,7 +632,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Recipe"
+            $ref: "#/definitions/PostRecipe"
       responses:
         "200":
           description: Success
@@ -1010,8 +1022,17 @@ definitions:
               type: integer
             name:
               type: string
-            instructions:
+            description:
               type: string
+            instructions:
+              type: array
+              items:
+                type: object
+                properties:
+                  step_number:
+                    type: integer
+                  instructions:
+                    type: string
 
   GetUsersResponse:
     required:
@@ -1104,6 +1125,12 @@ definitions:
               type: integer
             name:
               type: string
+            description:
+              type: string
+            tags:
+              type: array
+              items:
+                type: string
 
   # PostUserRestrictionResponse:
   #   type: object
@@ -1139,6 +1166,10 @@ definitions:
               type: integer
             name:
               type: string
+            tags:
+              type: array
+              items:
+                type: string
 
   Recipe:
     type: object
@@ -1147,17 +1178,38 @@ definitions:
         type: integer
       name:
         type: string
-      instructions:
+      description:
         type: string
+      notes:
+        type: string
+      active:
+        type: boolean
       ingredients:
         type: array
         items:
           type: object
-        properties:
-          id:
-            type: integer
-          name:
-            type: string
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            description:
+              type: string
+            active:
+              type: boolean
+            tags:
+              type: array
+              items:
+                type: string
+      instructions:
+        type: array
+        items:
+          type: object
+          properties:
+            step_number:
+              type: integer
+            instructions:
+              type: string
 
   PostRecipe:
     type: object
@@ -1166,8 +1218,17 @@ definitions:
         type: integer
       name:
         type: string
-      instructions:
+      description:
         type: string
+      instructions:
+        type: array
+        items:
+          type: object
+          properties:
+            step_number:
+              type: integer
+            instructions:
+              type: string
       ingredients:
         type: array
         items:
