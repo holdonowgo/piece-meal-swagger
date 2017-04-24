@@ -105,13 +105,13 @@ function crossCheckRecipe(req, res) {
     let promises = [];
     // promises.push(knex("clients").select("id"));
     // console.log(knex("ingredients")
-    // .select('client_restriction.ingredient_id', 'ingredients.name')
-    //     .join('client_restriction', 'ingredients.id', 'client_restriction.ingredient_id')
-    //     .where("client_restriction.client_id", req.swagger.params.user_id.value).toString());
+    // .select('client_restrictions.ingredient_id', 'ingredients.name')
+    //     .join('client_restrictions', 'ingredients.id', 'client_restrictions.ingredient_id')
+    //     .where("client_restrictions.client_id", req.swagger.params.user_id.value).toString());
     promises.push(knex("ingredients")
-        .select('client_restriction.ingredient_id', 'ingredients.name')
-        .join('client_restriction', 'ingredients.id', 'client_restriction.ingredient_id')
-        .where("client_restriction.client_id", req.swagger.params.user_id.value)
+        .select('client_restrictions.ingredient_id', 'ingredients.name', 'ingredients.description')
+        .join('client_restrictions', 'ingredients.id', 'client_restrictions.ingredient_id')
+        .where("client_restrictions.client_id", req.swagger.params.user_id.value)
     );
     // console.log(knex("ingredients")
     //     .select('ingredients.id', 'ingredients.name')
@@ -122,7 +122,7 @@ function crossCheckRecipe(req, res) {
     //     .join('recipe_ingredients', 'recipe_ingredients.ingredient_id', 'ingredients.id')
     // );
     promises.push(knex
-        .select('ingredients.id', 'ingredients.name')
+        .select('ingredients.id', 'ingredients.name', 'ingredients.description')
         .from('ingredients')
         .join('recipe_ingredients', function() {
             this
@@ -153,7 +153,7 @@ function crossCheckRecipe(req, res) {
 }
 
 function verifyIngredient(req, res) {
-    knex("client_restriction")
+    knex("client_restrictions")
         .where('client_id', req.swagger.params.user_id.value)
         .where('ingredient_id', req.swagger.params.ingredient_id.value)
         .then((results) => {
@@ -257,12 +257,19 @@ function getClient(req, res) {
         .join('recipes', 'recipes.id', '=', 'recipe_steps.recipe_id')
         .select("recipe_steps.*")
       );
+    promises.push(
+        knex("client_restrictions")
+        .join('ingredients', 'ingredients.id', 'client_restrictions.ingredient_id')
+        .select("client_restrictions.client_id", "ingredients.*")
+        .where("client_restrictions.client_id", req.swagger.params.user_id.value)
+    );
 
     Promise.all(promises)
         .then((results) => {
             let client = results[0];
             let recipes = results[1];
             let instructions = results[2];
+            let restrictions = results[3];
 
             if (!client) {
                 res.set('Content-Type', 'application/json')
@@ -279,6 +286,26 @@ function getClient(req, res) {
                 };
             }).sort();
 
+            client.restrictions = restrictions.map((restriction) => {
+                return {
+                    id: restriction.id,
+                    name: restriction.name,
+                    description: restriction.description
+                };
+            }).sort((a, b) => {
+              let nameA = a.name.toUpperCase(); // ignore upper and lowercase
+              let nameB = b.name.toUpperCase(); // ignore upper and lowercase
+              if (nameA < nameB) {
+                return -1;
+              }
+              if (nameA > nameB) {
+                return 1;
+              }
+
+              // names must be equal
+              return 0;
+            });
+
             return res.json(client);
         })
         .catch((err) => {
@@ -287,23 +314,52 @@ function getClient(req, res) {
 }
 
 function getRestrictions(req, res) {
-    knex('ingredients')
-        .join('client_restriction', 'ingredients.id', 'ingredient_id')
-        .where('client_id', req.swagger.params.user_id.value)
-        .then((results) => {
-            let result = [];
+    // knex('ingredients')
+    //     .join('client_restrictions', 'ingredients.id', 'ingredient_id')
+    //     .where('client_id', req.swagger.params.user_id.value)
+    //     .then((results) => {
+    //         let result = [];
+    //
+    //         for (let i = 0; i < results.length; i++) {
+    //             result.push({
+    //                 id: results[i].ingredient_id,
+    //                 name: results[i].name
+    //             });
+    //         }
+    //
+    //         return res.json({
+    //             ingredients: result.sort((a, b) => {return a.id - b.id})
+    //         });
+    //     });
+    let promises = [];
 
-            for (let i = 0; i < results.length; i++) {
-                result.push({
-                    id: results[i].ingredient_id,
-                    name: results[i].name
-                });
-            }
+    promises.push(knex("ingredient_tags").select("ingredient_id", "tag_text"));
 
-            return res.json({
-                ingredients: result.sort((a, b) => {return a.id - b.id})
-            });
+    promises.push(knex('ingredients')
+        .select('ingredients.id', 'ingredients.name', 'ingredients.description')
+        .join('client_restrictions', 'ingredients.id', 'ingredient_id')
+        .where('client_id', req.swagger.params.user_id.value));
+
+    Promise.all(promises)
+      .then((results) => {
+        let tags = results[0];
+        let ingredients = results[1];
+
+        for(let ingredient of ingredients) {
+          ingredient.tags =
+          tags.filter((tag) => {
+            return tag.ingredient_id === ingredient.id;
+          })
+          .map((tag) => {
+            return tag.tag_text;
+          })
+          .sort();
+        }
+
+        return res.json({
+            ingredients: ingredients.sort((a, b) => {return a.id - b.id})
         });
+      });
 }
 
 function addRestriction(req, res) {
@@ -313,7 +369,7 @@ function addRestriction(req, res) {
             'client_id': user_id,
             'ingredient_id': ingredient_id
         })
-        .into('client_restriction')
+        .into('client_restrictions')
         .then(() => {
             return res.json({
                 success: 1,
@@ -330,7 +386,7 @@ function deleteRestriction(req, res) {
         }
         let user_id = req.swagger.params.user_id.value;
         let ingredient_id = req.swagger.params.ingredient.value.ingredient_id;
-        knex('client_restriction').where('client_id', user_id)
+        knex('client_restrictions').where('client_id', user_id)
             .where('ingredient_id', ingredient_id).del()
             .then(() => {
                 return res.json({

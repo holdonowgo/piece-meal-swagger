@@ -1125,6 +1125,12 @@ definitions:
               type: integer
             name:
               type: string
+            description:
+              type: string
+            tags:
+              type: array
+              items:
+                type: string
 
   # PostUserRestrictionResponse:
   #   type: object
@@ -1174,15 +1180,10 @@ definitions:
         type: string
       description:
         type: string
-      instructions:
-        type: array
-        items:
-          type: object
-          properties:
-            step_number:
-              type: integer
-            instructions:
-              type: string
+      notes:
+        type: string
+      active:
+        type: boolean
       ingredients:
         type: array
         items:
@@ -1192,10 +1193,23 @@ definitions:
               type: integer
             name:
               type: string
+            description:
+              type: string
+            active:
+              type: boolean
             tags:
               type: array
               items:
                 type: string
+      instructions:
+        type: array
+        items:
+          type: object
+          properties:
+            step_number:
+              type: integer
+            instructions:
+              type: string
 
   PostRecipe:
     type: object

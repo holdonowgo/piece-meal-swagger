@@ -86,7 +86,6 @@ function deleteIngredient(req, res) {
         .returning('*')
         .then((result) => {
             let ingredient = result[0];
-            // ingredient.alternatives = [];
             delete ingredient.created_at;
             delete ingredient.updated_at;
             return res.json(ingredient);
@@ -96,7 +95,7 @@ function deleteIngredient(req, res) {
 function getIngredientsList(req, res) {
     // To list ingredients
     let promises = [];
-    promises.push(knex("ingredients").select("id", "name", "active"));
+    promises.push(knex("ingredients").select("id", "name", "description", "active"));
     promises.push(knex("ingredient_tags").select("ingredient_id", "tag_text"));
     Promise.all(promises)
         .then((results) => {

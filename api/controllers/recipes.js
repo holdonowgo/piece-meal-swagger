@@ -15,52 +15,54 @@ module.exports = {
 function doGetRecipes(query, res) {
     let recipes;
     let ingredients;
-    return query.then((rows) => {
+    query.then((rows) => {
         recipes = rows;
         let promises = rows.map((recipe) => getIngredientsQuery(recipe.id));
         return Promise.all(promises);
     }).then((promiseResults) => {
         // 'recipes' is an array of the recipes
         // 'promiseResults' is an array of arrays of ingredients
-        let promises;
-
         for (var i = 0; i < recipes.length; i++) {
             recipes[i].ingredients = promiseResults[i].map((ingredient) => {
                 delete ingredient.created_at;
                 delete ingredient.updated_at;
                 return ingredient;
             });
-
-            for (let j = 0; j < recipes[i].ingredients.length; j++) {
-                let tags = [];
-                if (recipes[i]) {
-                    getIngredientTagsQuery(recipes[i].ingredients[j].id).then((promiseValue) => {
-                        tags = promiseValue.map(tag => tag.tag_text);
-                    }).catch((err) => {
-                        console.log(err);
-                    })
-                }
-                recipes[i].ingredients[j].tags = tags;
-            }
         }
-        // console.log('ingredients:', ingredients);
-        // console.log('promiseResults[0]:', promiseResults[0]);
-        // let promises = promiseResults[0].map((ingredient) => getIngredientTagsQuery(ingredient.id));
-        // let promises = promiseResults.map((ingredients) => {
-        //   console.log('ingredients:', ingredients);
-        //   return ingredients.map((ingredient) => {
-        //     return getIngredientTagsQuery(ingredient.id);
-        //   })
-        // })
-        //
-        // return Promise.all(promises);
+        return;
     }).then(() => {
-
+    //   let promises = [];
+    //
+    //   for(let i = 0; i < recipes.length; i++){
+    //     for (let j = 0; j < recipes[i].ingredients.length; j++) {
+    //       let x = recipes[i].ingredients.map(
+    //         (ingredient) => {
+    //           console.log(ingredient.id);
+    //           getIngredientTagsQuery(ingredient.id)
+    //         }
+    //       );
+    //       promises.push(
+    //         Promise.all(x)
+    //       );
+    //     }
+    //   }
+    //   return Promise.all(promises);
+    // }).then((promiseResults) => {
+    //   // for(let [idx, promise] of promiseResults.entries()) {
+    //   //   console.log(idx, promise);
+    //   // }
+    //   for (var i = 0; i < recipes.length; i++) {
+    //     for(let j = 0; j < recipes[i].ingredients.length; j++) {
+    //       recipes[i].ingredients[j].tags = promiseResults[i][j].map((tag) => {
+    //           return tag.tag_text;
+    //       });
+    //     }
+    //   }
+    // }).then(() => {
         let promises = recipes.map((recipe) => getRecipeStepsQuery(recipe.id));
 
         return Promise.all(promises);
     }).then((promiseResults) => {
-
         for (var i = 0; i < recipes.length; i++) {
             recipes[i].instructions = promiseResults[i];
         }
@@ -104,7 +106,7 @@ function getRecipe(req, res) {
 function doGetRecipe(recipeId, res) {
     let recipe;
     let promises = [];
-    promises.push(knex("recipes").select("id", "name", "description").first().where("id", recipeId));
+    promises.push(knex("recipes").select("id", "name", "description", "notes", "image_url").first().where("id", recipeId));
     promises.push(getIngredientsQuery(recipeId));
     promises.push(getRecipeStepsQuery(recipeId));
 
@@ -120,7 +122,7 @@ function doGetRecipe(recipeId, res) {
         }
 
         recipe.ingredients = ingredients.map((ingredient) => {
-            return {id: ingredient.id, name: ingredient.name};
+            return {id: ingredient.id, name: ingredient.name, description: ingredient.description};
         }).sort();
 
         recipe.instructions = instructions.map((instruction) => {
@@ -187,7 +189,7 @@ function updateRecipe(req, res) {
         if (result) {
             res.status(400).json("Recipe already exists!");
         } else {
-            return knex("recipes").insert({"id": id, "name": recipe.name, description: recipe.description}).returning("*");
+            return knex("recipes").insert({"id": id, "name": recipe.name, description: recipe.description, notes: recipe.notes}).returning("*");
         }
     }).then((recipes) => {
         //to insert into recipe_ingredients table
@@ -231,5 +233,13 @@ function deleteRecipe(req, res) {
 function searchRecipes(req, res) {
     // To list clients
     // let text = req.swagger.params.text.value;
-    return doGetRecipes(knex("recipes").join('recipe_ingredients', 'recipes.id', 'recipe_ingredients.recipe_id').leftJoin('ingredient_tags', 'recipe_ingredients.ingredient_id', 'ingredient_tags.ingredient_id').leftJoin('ingredients', 'recipe_ingredients.ingredient_id', 'ingredients.id').distinct('recipes.*').where('recipes.name', 'ilike', `%${req.swagger.params.text.value}%`).orWhere('description', 'ilike', `%${req.swagger.params.text.value}%`).orWhere('ingredients.name', 'ilike', `%${req.swagger.params.text.value}%`).orWhere('ingredient_tags.tag_text', 'ilike', `%${req.swagger.params.text.value}%`), res);
+    return doGetRecipes(knex("recipes")
+    .join('recipe_ingredients', 'recipes.id', 'recipe_ingredients.recipe_id')
+    .leftJoin('ingredient_tags', 'recipe_ingredients.ingredient_id', 'ingredient_tags.ingredient_id')
+    .leftJoin('ingredients', 'recipe_ingredients.ingredient_id', 'ingredients.id')
+    .distinct('recipes.*')
+    .where('recipes.name', 'ilike', `%${req.swagger.params.text.value}%`)
+    .orWhere('recipes.description', 'ilike', `%${req.swagger.params.text.value}%`)
+    .orWhere('ingredients.name', 'ilike', `%${req.swagger.params.text.value}%`)
+    .orWhere('ingredient_tags.tag_text', 'ilike', `%${req.swagger.params.text.value}%`), res);
 }
