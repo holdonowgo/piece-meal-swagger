@@ -115,25 +115,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-    # delete:
-    #   description: delete a client
-    #   # define the parameters
-    #   operationId: deleteClient
-    #   parameters:
-    #     - name: user_id
-    #       description: Client id
-    #       type: integer
-    #       in: path
-    #       required: true
-    #   responses:
-    #     "200":
-    #       description: Success
-    #       schema:
-    #         $ref: "#/definitions/GeneralResponse"
-    #     default:
-    #       description: Error
-    #       schema:
-    #         $ref: "#/definitions/ErrorResponse"
+# extra code be gone!
 
   /clients/{user_id}/recipes:
     x-swagger-router-controller: recipes
@@ -479,31 +461,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-    # put:
-    #   description: update an ingredient
-    #   # define the parameters
-    #   operationId: updateIngredient
-    #   parameters:
-    #     - name: id
-    #       description: Ingredient id
-    #       type: integer
-    #       in: path
-    #       required: true
-    #     - name: ingredient
-    #       description: Ingredient
-    #       in: body
-    #       required: true
-    #       schema:
-    #         $ref: "#/definitions/PatchIngredient"
-    #   responses:
-    #     "200":
-    #       description: Success
-    #       schema:
-    #         $ref: "#/definitions/GetIngredientResponse"
-    #     default:
-    #       description: Error
-    #       schema:
-    #         $ref: "#/definitions/ErrorResponse"
+# extra code poof
 
     delete:
       description: delete an ingredient
@@ -660,24 +618,7 @@ paths:
 
   /ingredients/{id}/alternatives:
     x-swagger-router-controller: ingredients
-    # get:
-    #   description: get alternatives for an ingredient
-    #   # define the type of response for Success "200" and Error
-    #   operationId: getIngredientAlternatives
-    #   parameters:
-    #     - name: id
-    #       type: integer
-    #       in: path
-    #       required: true
-    #   responses:
-    #     "200":
-    #       description: Success
-    #       schema:
-    #         $ref: "#/definitions/GetIngredientAlternativesResponse"
-    #     default:
-    #       description: Error
-    #       schema:
-    #         $ref: "#/definitions/ErrorResponse"
+    # poof
 
     post:
       description: add alternatives for an ingredient
@@ -806,59 +747,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-  # /clients/{user_id}/recipes/{recipe_id}/rating:
-  #   x-swagger-router-controller: clients
-  #   get:
-  #     description: to get client's rating for a recipe
-  #     parameters:
-  #       - name: user_id
-  #         type: integer
-  #         in: path
-  #         required: true
-  #       - name: recipe_id
-  #         type: integer
-  #         in: path
-  #         required: true
-  #     responses:
-  #       "200":
-  #         description: Success
-  #         schema:
-  #           $ref: "#/definitions/GetUserRecipeRatingResponse"
-  #       default:
-  #           description: Error
-  #           schema:
-  #             $ref: "#/definitions/ErrorResponse"
-  #   post:
-  #     description: to post/update client's rating
-  #     parameters:
-  #       - name: user_id
-  #         type: integer
-  #         in: path
-  #         required: true
-  #       - name: recipe_id
-  #         in: path
-  #         type: integer
-  #         required: true
-  #       - name: rating
-  #         in: body
-  #         schema:
-  #           type: object
-  #           required:
-  #             - rating
-  #           properties:
-  #             rating:
-  #               description: rating to post/update
-  #               type: number
-  #
-  #     responses:
-  #       "200":
-  #         description: Success
-  #         schema:
-  #           $ref: "#/definitions/GeneralResponse"
-  #       default:
-  #           description: Error
-  #           schema:
-  #             $ref: "#/definitions/ErrorResponse"
+ # code you didn't need.
 
   /token:
     x-swagger-router-controller: token
