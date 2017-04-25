@@ -382,30 +382,44 @@ suite('ingredients test', () => {
         /* eslint-enable max-len */
     });
 
-    // test('PATCH /ingredients/:id', (done) => {
-    //     /* eslint-disable max-len */
-    //     request(server)
-    //         .patch('/api/v1/ingredients/1')
-    //         .set('Accept', 'application/json')
-    //         .send({
-    //             name: 'BACON',
-    //             tags: ['pork', 'meat'],
-    //             active: true
-    //         })
-    //         .expect('Content-Type', /json/)
-    //         .expect((res) => {
-    //             delete res.body.createdAt;
-    //             delete res.body.updatedAt;
-    //         })
-    //         .expect(200, {
-    //             id: 1,
-    //             name: 'BACON',
-    //             tags: ['pork', 'meat'],
-    //             active: true
-    //         }, done);
-    //
-    //     /* eslint-enable max-len */
-    // });
+    test('PUT /ingredients/:id', (done) => {
+        /* eslint-disable max-len */
+        request(server)
+            .put('/api/v1/ingredients/1')
+            .set('Accept', 'application/json')
+            .set('Token', authToken)
+            .send({
+                name: 'Bacon Strips',
+                description: "It's bacon...need we say more?",
+                tags: ['pork', 'meat'],
+                active: true
+            })
+            .expect('Content-Type', /json/)
+            .expect((res) => {
+                delete res.body.createdAt;
+                delete res.body.updatedAt;
+            })
+            .expect(200, {
+                id: 1,
+                name: 'Bacon Strips',
+                description: "It's bacon...need we say more?",
+                "alternatives": [
+                  {
+                    "id": 2,
+                    "name": "egg"
+                  },
+                  {
+                    "id": 3,
+                    "name": "milk"
+                  }
+                ],
+                "calories": 120,
+                tags: ['meat', 'pork'],
+                active: true
+            }, done);
+
+        /* eslint-enable max-len */
+    });
 
     test('DELETE /ingredients/:id', (done) => {
         /* eslint-disable max-len */
@@ -457,30 +471,39 @@ suite('ingredients test', () => {
             }, done);
     });
 
-    // test('GET /ingredients/9000', (done) => {
-    //     request(server)
-    //         .get('/api/v1/ingredients/9000')
-    //         .set('Accept', 'application/json')
-    //         .expect('Content-Type', /plain/)
-    //         .expect(404, 'Not Found', done);
-    // });
-    //
-    // test('GET /ingredients/-1', (done) => {
-    //     request(server)
-    //         .get('/api/v1/ingredients/-1')
-    //         .set('Accept', 'application/json')
-    //         .expect('Content-Type', /plain/)
-    //         .expect(404, 'Not Found', done);
-    // });
-    //
-    // test('GET /ingredients/one', (done) => {
-    //     request(server)
-    //         .get('/api/v1/ingredients/one')
-    //         .set('Accept', 'application/json')
-    //         .expect('Content-Type', /plain/)
-    //         .expect(404, 'Not Found', done);
-    // });
-    //
+    test('GET /ingredients/9000', (done) => {
+        request(server)
+            .get('/api/v1/ingredients/9000')
+            .set('Accept', 'application/json')
+            .set('Token', authToken)
+            .expect(404, JSON.stringify('Not Found'), done);
+    });
+
+    test('GET /ingredients/-1', (done) => {
+        request(server)
+            .get('/api/v1/ingredients/-1')
+            .set('Accept', 'application/json')
+            .set('Token', authToken)
+            .expect(404, JSON.stringify('Not Found'), done);
+    });
+
+    test('GET /ingredients/one', (done) => {
+        request(server)
+            .get('/api/v1/ingredients/one')
+            .set('Accept', 'application/json')
+            .set('Token', authToken)
+            .expect(400, JSON.stringify(
+              {
+                "message":"Request validation failed: Parameter (id) is not a valid integer: one",
+                "code":"INVALID_TYPE",
+                "failedValidation":true,
+                "path":["paths",
+                "/ingredients/{id}",
+                "get","parameters","1"],
+                "paramName":"id"
+              }), done);
+    });
+
     // test('POST /ingredients without name', (done) => {
     //     /* eslint-disable max-len */
     //     request(server)
@@ -494,52 +517,61 @@ suite('ingredients test', () => {
     //
     //     /* eslint-enable max-len */
     // });
-    //
-    // test('PATCH /ingredients/9000', (done) => {
+
+    // test('PUT /ingredients/9000', (done) => {
     //     request(server)
-    //         .patch('/api/v1/ingredients/9000')
+    //         .put('/api/v1/ingredients/9000')
     //         .set('Accept', 'application/json')
-    //         .expect('Content-Type', /plain/)
-    //         .expect(404, 'Not Found', done);
+    //         .set('Token', authToken)
+    //         .expect(400, JSON.stringify('Bad Request'), done);
     // });
-    //
-    // test('PATCH /ingredients/-1', (done) => {
+
+    // test('PUT /ingredients/-1', (done) => {
     //     request(server)
-    //         .patch('/api/v1/ingredients/-1')
+    //         .put('/api/v1/ingredients/-1')
     //         .set('Accept', 'application/json')
-    //         .expect('Content-Type', /plain/)
-    //         .expect(404, 'Not Found', done);
+    //         .set('Token', authToken)
+    //         .expect(404, JSON.stringify('Not Found'), done);
     // });
-    //
-    // test('PATCH /ingredients/one', (done) => {
+
+    // test('PUT /ingredients/one', (done) => {
     //     request(server)
-    //         .patch('/api/v1/ingredients/one')
+    //         .put('/api/v1/ingredients/one')
     //         .set('Accept', 'application/json')
-    //         .expect('Content-Type', /plain/)
-    //         .expect(404, 'Not Found', done);
+    //         .set('Token', authToken)
+    //         .expect(400, JSON.stringify(
+    //           {
+    //             "message":"Request validation failed: Parameter (id) is not a valid integer: one",
+    //             "code":"INVALID_TYPE",
+    //             "failedValidation":true,
+    //             "path":["paths",
+    //             "/ingredients/{id}",
+    //             "get","parameters","1"],
+    //             "paramName":"id"
+    //           }), done);
     // });
-    //
+
     // test('DELETE /ingredients/9000', (done) => {
     //     request(server)
     //         .del('/api/v1/books/9000')
     //         .set('Accept', 'application/json')
-    //         .expect('Content-Type', /plain/)
-    //         .expect(404, 'Not Found', done);
+    //         .set('Token', authToken)
+    //         .expect(404, JSON.stringify('Not Found'), done);
     // });
-    //
+
     // test('DELETE /ingredients/-1', (done) => {
     //     request(server)
     //         .del('/api/v1/books/-1')
     //         .set('Accept', 'application/json')
-    //         .expect('Content-Type', /plain/)
-    //         .expect(404, 'Not Found', done);
+    //         .set('Token', authToken)
+    //         .expect(404, JSON.stringify('Not Found'), done);
     // });
-    //
+
     // test('DELETE /ingredients/one', (done) => {
     //     request(server)
     //         .del('/api/v1/books/one')
     //         .set('Accept', 'application/json')
-    //         .expect('Content-Type', /plain/)
-    //         .expect(404, 'Not Found', done);
+    //         .set('Token', authToken)
+    //         .expect(404, JSON.stringify('Not Found'), done);
     // });
 });
