@@ -53,12 +53,14 @@ suite("recipes test", () => {
                             "id": 1,
                             "name": "bacon",
                             // "tags": ['meat', 'pork'],
-                            "description": "Mmmmmmmmm...Bacon!"
+                            "description": "Mmmmmmmmm...Bacon!",
+                            "image_url": ""
                         }, {
                             "active": true,
                             "id": 3,
                             "name": "milk",
                             "description": "",
+                            "image_url": "",
                             // "tags": ['dairy', 'vegetarian']
                         }
                     ],
@@ -97,7 +99,8 @@ suite("recipes test", () => {
                             "name": "bacon",
                             "active": true,
                             // "tags": ['meat', 'pork'],
-                            "description": "Mmmmmmmmm...Bacon!"
+                            "description": "Mmmmmmmmm...Bacon!",
+                            "image_url": ""
                         }
                     ],
                     "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!"
@@ -122,7 +125,8 @@ suite("recipes test", () => {
                             "name": "bacon",
                             "active": true,
                             // "tags": ['meat', 'pork'],
-                            "description": "Mmmmmmmmm...Bacon!"
+                            "description": "Mmmmmmmmm...Bacon!",
+                            "image_url": ""
                         }
                     ],
                     "notes": ""
@@ -135,13 +139,15 @@ suite("recipes test", () => {
                             "id": 17,
                             "name": "lemon juice (fresh)",
                             "description": "",
-                            // "tags": []
+                            // "tags": [],
+                            "image_url": ""
                         }, {
                             "active": true,
                             "id": 18,
                             "name": "salt",
                             "description": "",
-                            // "tags": []
+                            // "tags": [],
+                            "image_url": ""
                         }
                     ],
                     "image_url": "",
@@ -158,19 +164,22 @@ suite("recipes test", () => {
                             "id": 21,
                             "name": "garlic",
                             "description": "",
-                            // "tags": []
+                            // "tags": [],
+                            "image_url": ""
                         }, {
                             "active": true,
                             "id": 22,
                             "name": "onion",
                             "description": "",
-                            // "tags": []
+                            // "tags": [],
+                            "image_url": ""
                         }, {
                             "active": true,
                             "id": 23,
                             "name": "asafoetida (powder)",
                             "description": "",
-                            // "tags": []
+                            // "tags": [],
+                            "image_url": ""
                         }
                     ],
                     "image_url": "",
@@ -236,12 +245,14 @@ suite("recipes test", () => {
                     "name": "bacon",
                     "description": "Mmmmmmmmm...Bacon!",
                     "tags": ['meat', 'pork'],
+                    "image_url": "",
                     "active": true
                 }, {
                     "id": 3,
                     "name": "milk",
                     "description": '',
                     "tags": ['dairy', 'vegetarian'],
+                    "image_url": "",
                     "active": true
                 }
             ],
@@ -324,6 +335,7 @@ suite("recipes test", () => {
                   "name": "bacon",
                   "tags": ['meat', 'pork'],
                   "description": "Mmmmmmmmm...Bacon!",
+                  "image_url": "",
                   "active": true
                 }
             ],
@@ -346,6 +358,7 @@ suite("recipes test", () => {
                     "name": "bacon",
                     "description": "Mmmmmmmmm...Bacon!",
                     "tags": ['meat', 'pork'],
+                    "image_url": "",
                     "active": true
                 }
             ],
@@ -391,6 +404,7 @@ suite("recipes test", () => {
                     "name": "bacon",
                     "description": "Mmmmmmmmm...Bacon!",
                     "tags": ['meat', 'pork'],
+                    "image_url": "",
                     "active": true
                 }
             ],
@@ -442,13 +456,15 @@ suite("recipes test", () => {
                             "name": "bacon",
                             "active": true,
                             // "tags": ['meat', 'pork'],
-                            "description": "Mmmmmmmmm...Bacon!"
+                            "description": "Mmmmmmmmm...Bacon!",
+                            "image_url": ""
                         }, {
                             "id": 3,
                             "name": "milk",
                             "active": true,
                             // "tags": ['dairy', 'vegetarian'],
-                            "description": ""
+                            "description": "",
+                            "image_url": ""
                         }
                     ],
                     "notes": "",
@@ -465,7 +481,8 @@ suite("recipes test", () => {
                             "name": "bacon",
                             "active": true,
                             // "tags": ['meat', 'pork'],
-                            "description": "Mmmmmmmmm...Bacon!"
+                            "description": "Mmmmmmmmm...Bacon!",
+                            "image_url": ""
                         }
                     ],
                     "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
@@ -490,7 +507,8 @@ suite("recipes test", () => {
                             "name": "bacon",
                             "active": true,
                             // "tags": ['meat', 'pork'],
-                            "description": "Mmmmmmmmm...Bacon!"
+                            "description": "Mmmmmmmmm...Bacon!",
+                            "image_url": ""
                         }
                     ],
                     "notes": "",
@@ -539,13 +557,15 @@ suite("recipes test", () => {
                                 "name": "bacon",
                                 "active": true,
                                 // "tags": ['meat', 'pork'],
-                                "description": "Mmmmmmmmm...Bacon!"
+                                "description": "Mmmmmmmmm...Bacon!",
+                                "image_url": ""
                             }, {
                                 "id": 3,
                                 "name": "milk",
                                 "active": true,
                                 // "tags": ['dairy', 'vegetarian'],
-                                "description": ""
+                                "description": "",
+                                "image_url": ""
                             }
                         ],
                         "notes": "",
@@ -576,19 +596,22 @@ suite("recipes test", () => {
                       "active": true,
                       "description": "",
                       "id": 21,
-                      "name": "garlic"
+                      "name": "garlic",
+                      "image_url": ""
                     },
                     {
                       "active": true,
                       "description": "",
                       "id": 22,
-                      "name": "onion"
+                      "name": "onion",
+                      "image_url": ""
                     },
                     {
                       "active": true,
                       "description": "",
                       "id": 23,
-                      "name": "asafoetida (powder)"
+                      "name": "asafoetida (powder)",
+                      "image_url": ""
                     }
                   ],
                   "instructions": [],
@@ -605,13 +628,15 @@ suite("recipes test", () => {
                       "active": true,
                       "description": "Mmmmmmmmm...Bacon!",
                       "id": 1,
-                      "name": "bacon"
+                      "name": "bacon",
+                      "image_url": ""
                     },
                     {
                       "active": true,
                       "description": "",
                       "id": 3,
-                      "name": "milk"
+                      "name": "milk",
+                      "image_url": ""
                     }
                   ],
                   "instructions": [
@@ -649,7 +674,8 @@ suite("recipes test", () => {
                       "active": true,
                       "description": "Mmmmmmmmm...Bacon!",
                       "id": 1,
-                      "name": "bacon"
+                      "name": "bacon",
+                      "image_url": ""
                     }
                   ],
                   "instructions": [

@@ -1000,10 +1000,16 @@ definitions:
       name:
         type: string
         description: ingredient object name
+      description:
+        type: string
+        description: description of ingredient
       tags:
         type: array
         items:
           type: string
+      image_url:
+        type: string
+        description: link to image of ingredient
     required:
       - name
 

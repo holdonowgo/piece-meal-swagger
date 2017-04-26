@@ -103,7 +103,7 @@ function addClientRecipe(req, res) {
 }
 
 function getIngredientsQuery(recipeId) {
-    return knex("recipe_ingredients").join("ingredients", "ingredients.id", "recipe_ingredients.ingredient_id").select("ingredients.id", "ingredients.name", "ingredients.description", "ingredients.active").orderBy('id').where("recipe_ingredients.recipe_id", recipeId);
+    return knex("recipe_ingredients").join("ingredients", "ingredients.id", "recipe_ingredients.ingredient_id").select("ingredients.id", "ingredients.name", "ingredients.description", "ingredients.active", "ingredients.image_url").orderBy('id').where("recipe_ingredients.recipe_id", recipeId);
 }
 
 function getIngredientTagsQuery(ingredientId) {
