@@ -695,12 +695,12 @@ suite("recipes test", () => {
             }, done);
     });
 
-    // test("GET /recipes/-1", (done) => {
-    //   request(server)
-    //     .get("/api/v1/recipes/-1")
-    //     .set("Accept", "application/json")
-    //     .expect(401, JSON.stringify('Not Logged In'), done);
-    // });
+    test("GET /recipes/-1", (done) => {
+      request(server)
+        .get("/api/v1/recipes/-1")
+        .set("Accept", "application/json")
+        .expect(404, JSON.stringify('Not Found'), done);
+    });
 
     test("GET /recipes/-1", (done) => {
       request(server)
@@ -710,12 +710,21 @@ suite("recipes test", () => {
         .expect(404, JSON.stringify('Not Found'), done);
     });
 
-    // // test("GET /recipes/one", (done) => {
-    // //   request(server)
-    // //     .get("/api/v1/recipes/one")
-    // //     .set("Accept", "application/json")
-    // //     .expect("Content-Type", /plain/)
-    // //     .expect(404, "Not Found", done);
-    // // });
+    test("GET /recipes/one", (done) => {
+      request(server)
+        .get("/api/v1/recipes/one")
+        .set("Accept", "application/json")
+        // .set('Token', authToken)
+        .expect(400, JSON.stringify(
+          {
+            "message":"Request validation failed: Parameter (id) is not a valid integer: one",
+            "code":"INVALID_TYPE",
+            "failedValidation":true,
+            "path":["paths",
+            "/recipes/{id}",
+            "get","parameters","0"],
+            "paramName":"id"
+          }), done);
+    });
 
 });

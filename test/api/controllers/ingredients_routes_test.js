@@ -514,7 +514,7 @@ suite('ingredients test', () => {
         request(server)
             .get('/api/v1/ingredients/9000')
             .set('Accept', 'application/json')
-            .set('Token', authToken)
+            // .set('Token', authToken)
             .expect(404, JSON.stringify('Not Found'), done);
     });
 
@@ -522,7 +522,7 @@ suite('ingredients test', () => {
         request(server)
             .get('/api/v1/ingredients/-1')
             .set('Accept', 'application/json')
-            .set('Token', authToken)
+            // .set('Token', authToken)
             .expect(404, JSON.stringify('Not Found'), done);
     });
 
@@ -530,7 +530,7 @@ suite('ingredients test', () => {
         request(server)
             .get('/api/v1/ingredients/one')
             .set('Accept', 'application/json')
-            .set('Token', authToken)
+            // .set('Token', authToken)
             .expect(400, JSON.stringify(
               {
                 "message":"Request validation failed: Parameter (id) is not a valid integer: one",
