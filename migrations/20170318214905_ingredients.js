@@ -3,6 +3,7 @@ exports.up = function(knex, Promise) {
         table.increments('id').primary();
         table.string('name').notNullable().defaultTo('');
         table.string('description').defaultTo('');
+        table.string('image_url').defaultTo('');
         table.boolean('active').notNullable().defaultTo(true);
         table.timestamp('created_at').notNullable().defaultTo(knex.raw('now()'));
         table.timestamp('updated_at').notNullable().defaultTo(knex.raw('now()'));

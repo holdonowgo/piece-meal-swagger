@@ -32,6 +32,7 @@ function updateIngredient(req, res, next) {
         let name = req.swagger.params.ingredient.value.name;
         let description = req.swagger.params.ingredient.value.description;
         let tags = req.swagger.params.ingredient.value.tags;
+        let image_url = req.swagger.params.ingredient.value.image_url;
 
         Ingredient.forge({
             id: req.swagger.params.id.value
@@ -45,7 +46,8 @@ function updateIngredient(req, res, next) {
                   .where('id', id)
                   .update({
                       name: name,
-                      description: description
+                      description: description,
+                      image_url: image_url
                   })
                   .returning('*');
                 }
@@ -90,7 +92,7 @@ function deleteIngredient(req, res) {
 function getIngredientsList(req, res) {
     // To list ingredients
     let promises = [];
-    promises.push(knex("ingredients").select("id", "name", "description", "active"));
+    promises.push(knex("ingredients").select("id", "name", "description", "active", "image_url"));
     promises.push(knex("ingredient_tags").select("ingredient_id", "tag_text"));
     Promise.all(promises)
         .then((results) => {
@@ -195,6 +197,9 @@ function addIngredient(req, res, next) {
         }
 
         let name = req.swagger.params.ingredient.value.name;
+        let description = req.swagger.params.ingredient.value.description;
+        let image_url = req.swagger.params.ingredient.value.image_url;
+
         var id;
         knex("ingredients")
             .first().where("name", name)
@@ -209,7 +214,9 @@ function addIngredient(req, res, next) {
                     throw new Error('Ingredient already exists!');
                 } else {
                     return knex("ingredients").insert({
-                        "name": name
+                        "name": name,
+                        "description": description,
+                        "image_url": image_url
                     }).returning('*');
                 }
             })
@@ -224,14 +231,16 @@ function addIngredient(req, res, next) {
                             }).returning('*')
                         );
                     }
-                    return ingredient;
+
+                    ingredient[0].tags = req.swagger.params.ingredient.value.tags;
+                    return ingredient[0];
                 }
             })
             .then((ingredient) => {
-                // return res.json(queryIngredient(ingredient[0].id));
-                let newIngredient = req.swagger.params.ingredient.value;
-                newIngredient.id = ingredient[0].id;
-                return res.json(newIngredient);
+              delete ingredient.created_at;
+              delete ingredient.updated_at;
+              
+              return res.json(ingredient);
             })
             .catch((error) => {
 
@@ -248,7 +257,7 @@ function searchIngredients(req, res) {
         knex("ingredients")
         // .select("ingredients.id", "name", "active")
         .leftJoin('ingredient_tags', 'ingredients.id', 'ingredient_tags.ingredient_id')
-        .distinct("ingredients.id", "name", "active")
+        .distinct("ingredients.id", "name", "image_url", "active")
         .where('name', 'ilike', `%${text}%`)
         .orWhere('ingredient_tags.tag_text', 'ilike', `%${text}%`)
         .orderBy('ingredients.id')
