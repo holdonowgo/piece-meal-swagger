@@ -990,6 +990,15 @@ definitions:
         type: array
         items:
           type: string
+      alternatives:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
       image_url:
         type: string
         description: link to image of ingredient
@@ -1010,6 +1019,15 @@ definitions:
         type: array
         items:
           type: string
+      alternatives:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
       image_url:
         type: string
         description: link to image of ingredient
@@ -1145,6 +1163,15 @@ definitions:
               type: array
               items:
                 type: string
+            alternatives:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
 
   # PostUserRestrictionResponse:
   #   type: object
@@ -1184,6 +1211,15 @@ definitions:
               type: array
               items:
                 type: string
+            alternatives:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
             image_url:
               type: string
               description: link to image of ingredient
