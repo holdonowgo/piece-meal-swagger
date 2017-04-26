@@ -499,7 +499,7 @@ suite('ingredients test', () => {
                 "failedValidation":true,
                 "path":["paths",
                 "/ingredients/{id}",
-                "get","parameters","1"],
+                "get","parameters","0"],
                 "paramName":"id"
               }), done);
     });
