@@ -76,165 +76,149 @@ function addClient(req, res, next) {
         .catch((err) => {
             next(err);
         });
-    // bcrypt.hash(req.body.password, 12)
-    //     .then((hashed_password) => {
-    //         var client = {
-    //             first_name: req.body.firstName,
-    //             last_name: req.body.lastName,
-    //             email: req.body.email,
-    //             hashed_password: hashed_password // youreawizard
-    //         };
-    //
-    //         knex('clients')
-    //             .insert(client, '*')
-    //             .then((insertedClient) => {
-    //                 delete insertedClient[0]['hashed_password'];
-    //                 // res.status(200).json(humps.camelizeKeys(insertedUser[0]));
-    //                 res.status(200).json(insertedClient[0])
-    //             })
-    //             .catch((err) => {
-    //                 res.sendStatus(500);
-    //             });
-    //     })
-    //     .catch((err) => {
-    //         next(err);
-    //     });
 }
 
 function crossCheckRecipe(req, res) {
-    let promises = [];
-    // promises.push(knex("clients").select("id"));
-    // console.log(knex("ingredients")
-    // .select('client_restrictions.ingredient_id', 'ingredients.name')
-    //     .join('client_restrictions', 'ingredients.id', 'client_restrictions.ingredient_id')
-    //     .where("client_restrictions.client_id", req.swagger.params.user_id.value).toString());
-    promises.push(knex("ingredients")
-        .select('client_restrictions.ingredient_id', 'ingredients.name', 'ingredients.description')
-        .join('client_restrictions', 'ingredients.id', 'client_restrictions.ingredient_id')
-        .where("client_restrictions.client_id", req.swagger.params.user_id.value)
-    );
-    // console.log(knex("ingredients")
-    //     .select('ingredients.id', 'ingredients.name')
-    //     .join('recipe_ingredients', 'recipe_ingredients.ingredient_id', 'ingredients.id')
-    //     .where("recipe_ingredients.recipe_id", req.swagger.params.recipe_id.value).toString());
-    // promises.push(knex("ingredients")
-    //     .select('ingredients.id', 'ingredients.name')
-    //     .join('recipe_ingredients', 'recipe_ingredients.ingredient_id', 'ingredients.id')
-    // );
-    promises.push(knex
-        .select('ingredients.id', 'ingredients.name', 'ingredients.description')
-        .from('ingredients')
-        .join('recipe_ingredients', function() {
-            this
-                .on('recipe_ingredients.ingredient_id', 'ingredients.id')
-                .andOn('recipe_ingredients.recipe_id', req.swagger.params.recipe_id.value);
-        }));
-    Promise.all(promises)
-        .then((results) => {
-            let restrictions = results[0];
-            let recipe_ingredients = results[1];
-            let result = {
-                is_safe: true,
-                forbidden: []
-            };
+    jwt.verify(req.headers['token'], process.env.JWT_KEY, (err, payload) => {
+        if (err) {
+            res.set('Content-Type', 'application/json');
+            res.status(401).send('Unauthorized');
+        }
+        let promises = [];
 
-            for (let restriction of restrictions) {
-                let found = recipe_ingredients.some(function(ingredient) {
-                    return ingredient.id === restriction.ingredient_id;
-                });
-                if (found) {
-                    result.forbidden.push(restriction);
-                    result.is_safe = false;
+        promises.push(knex("ingredients")
+            .select('client_restrictions.ingredient_id', 'ingredients.name', 'ingredients.description')
+            .join('client_restrictions', 'ingredients.id', 'client_restrictions.ingredient_id')
+            .where("client_restrictions.client_id", req.swagger.params.user_id.value)
+        );
+
+        promises.push(knex
+            .select('ingredients.id', 'ingredients.name', 'ingredients.description')
+            .from('ingredients')
+            .join('recipe_ingredients', function() {
+                this
+                    .on('recipe_ingredients.ingredient_id', 'ingredients.id')
+                    .andOn('recipe_ingredients.recipe_id', req.swagger.params.recipe_id.value);
+            }));
+        Promise.all(promises)
+            .then((results) => {
+                let restrictions = results[0];
+                let recipe_ingredients = results[1];
+                let result = {
+                    is_safe: true,
+                    forbidden: []
+                };
+
+                for (let restriction of restrictions) {
+                    let found = recipe_ingredients.some(function(ingredient) {
+                        return ingredient.id === restriction.ingredient_id;
+                    });
+                    if (found) {
+                        result.forbidden.push(restriction);
+                        result.is_safe = false;
+                    }
                 }
-            }
 
-            return res.json(result);
-        });
+                return res.json(result);
+            });
+      });
 }
 
 function verifyIngredient(req, res) {
-    knex("client_restrictions")
-        .where('client_id', req.swagger.params.user_id.value)
-        .where('ingredient_id', req.swagger.params.ingredient_id.value)
-        .then((results) => {
-            if (results.length === 0) {
+    jwt.verify(req.headers['token'], process.env.JWT_KEY, (err, payload) => {
+        if (err) {
+            res.set('Content-Type', 'application/json');
+            res.status(401).send('Unauthorized');
+        }
+        knex("client_restrictions")
+            .where('client_id', req.swagger.params.user_id.value)
+            .where('ingredient_id', req.swagger.params.ingredient_id.value)
+            .then((results) => {
+                if (results.length === 0) {
+                    return res.json({
+                        safe: true
+                    });
+                }
+                return knex("ingredients")
+                    .join('ingredient_alternatives', 'ingredient_alternatives.alt_ingredient_id', 'ingredients.id')
+                    .select("ingredients.id", "name")
+                    .where("ingredient_alternatives.ingredient_id", req.swagger.params.ingredient_id.value);
+            }).then((alternatives) => {
                 return res.json({
-                    safe: true
+                    safe: false,
+                    alternatives: alternatives
                 });
-            }
-            return knex("ingredients")
-                .join('ingredient_alternatives', 'ingredient_alternatives.alt_ingredient_id', 'ingredients.id')
-                .select("ingredients.id", "name")
-                .where("ingredient_alternatives.ingredient_id", req.swagger.params.ingredient_id.value);
-        }).then((alternatives) => {
-            return res.json({
-                safe: false,
-                alternatives: alternatives
             });
-        });
+      });
 }
 
 function getClients(req, res) {
-    // To list clients
+    jwt.verify(req.headers['token'], process.env.JWT_KEY, (err, payload) => {
+        if (err) {
+            res.set('Content-Type', 'application/json');
+            res.status(401).send('Unauthorized');
+        }
+        // To list clients
 
-    let promises = [];
+        let promises = [];
 
-    promises.push(knex("clients").select("id", "first_name", "last_name", "email", "is_super_user"));
-    promises.push(knex("client_recipes")
-        .join('recipes', 'recipes.id', '=', 'client_recipes.recipe_id')
-        .select("client_recipes.client_id", "recipes.*"));
-    promises.push(knex("recipe_steps")
-        .join('recipes', 'recipes.id', '=', 'recipe_steps.recipe_id')
-        .select("recipe_steps.*"));
-    Promise.all(promises)
-        .then((results) => {
-            let clients = results[0];
-            let recipes = results[1];
-            let recipe_steps = results[2];
+        promises.push(knex("clients").select("id", "first_name", "last_name", "email", "is_super_user"));
+        promises.push(knex("client_recipes")
+            .join('recipes', 'recipes.id', '=', 'client_recipes.recipe_id')
+            .select("client_recipes.client_id", "recipes.*"));
+        promises.push(knex("recipe_steps")
+            .join('recipes', 'recipes.id', '=', 'recipe_steps.recipe_id')
+            .select("recipe_steps.*"));
+        Promise.all(promises)
+            .then((results) => {
+                let clients = results[0];
+                let recipes = results[1];
+                let recipe_steps = results[2];
 
-            for (let client of clients) {
-                let r = recipes.filter((recipe) => {
-                    return recipe.client_id === client.id;
-                }).map((recipe) => {
-                  recipe.instructions = recipe_steps.filter((step) => {
-                    return step.recipe_id === recipe.id;
-                  }).map((step) => {
-                    return {
-                      step_number: step.step_number,
-                      instructions: step.instructions
-                    }
-                  }).sort((a, b) => {
-                      return a.step_number - b.step_number;
-                  });
-                  delete recipe.client_id;
-                  return recipe;
-                    // return {
-                    //     id: recipe.id,
-                    //     instructions:
-                    //       recipe_steps.filter((step) => {
-                    //         return step.recipe_id === recipe.id;
-                    //       }).map((step) => {
-                    //         return {
-                    //           step_number: step.step_number,
-                    //           instructions: step.instructions
-                    //         }
-                    //       }).sort((a, b) => {
-                    //           return a.step_number - b.step_number;
-                    //       }), // steps,
-                    //     name: recipe.name,
-                    //     description: recipe.description
-                    // };
-                }).sort((a, b) => {
-                    return a.id - b.id;
+                for (let client of clients) {
+                    let r = recipes.filter((recipe) => {
+                        return recipe.client_id === client.id;
+                    }).map((recipe) => {
+                      recipe.instructions = recipe_steps.filter((step) => {
+                        return step.recipe_id === recipe.id;
+                      }).map((step) => {
+                        return {
+                          step_number: step.step_number,
+                          instructions: step.instructions
+                        }
+                      }).sort((a, b) => {
+                          return a.step_number - b.step_number;
+                      });
+                      delete recipe.client_id;
+                      return recipe;
+                        // return {
+                        //     id: recipe.id,
+                        //     instructions:
+                        //       recipe_steps.filter((step) => {
+                        //         return step.recipe_id === recipe.id;
+                        //       }).map((step) => {
+                        //         return {
+                        //           step_number: step.step_number,
+                        //           instructions: step.instructions
+                        //         }
+                        //       }).sort((a, b) => {
+                        //           return a.step_number - b.step_number;
+                        //       }), // steps,
+                        //     name: recipe.name,
+                        //     description: recipe.description
+                        // };
+                    }).sort((a, b) => {
+                        return a.id - b.id;
+                    });
+
+                    client.recipes = r;
+                }
+
+                return res.json({
+                    clients: clients
                 });
-
-                client.recipes = r;
-            }
-
-            return res.json({
-                clients: clients
             });
-        });
+      });
 }
 
 function getClient(req, res) {
@@ -293,17 +277,17 @@ function getClient(req, res) {
                     description: restriction.description
                 };
             }).sort((a, b) => {
-              let nameA = a.name.toUpperCase(); // ignore upper and lowercase
-              let nameB = b.name.toUpperCase(); // ignore upper and lowercase
-              if (nameA < nameB) {
-                return -1;
-              }
-              if (nameA > nameB) {
-                return 1;
-              }
+              var nameA = a.name.toUpperCase(); // ignore upper and lowercase
+        var nameB = b.name.toUpperCase(); // ignore upper and lowercase
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
 
-              // names must be equal
-              return 0;
+        // names must be equal
+        return 0;
             });
 
             return res.json(client);
@@ -314,68 +298,63 @@ function getClient(req, res) {
 }
 
 function getRestrictions(req, res) {
-    // knex('ingredients')
-    //     .join('client_restrictions', 'ingredients.id', 'ingredient_id')
-    //     .where('client_id', req.swagger.params.user_id.value)
-    //     .then((results) => {
-    //         let result = [];
-    //
-    //         for (let i = 0; i < results.length; i++) {
-    //             result.push({
-    //                 id: results[i].ingredient_id,
-    //                 name: results[i].name
-    //             });
-    //         }
-    //
-    //         return res.json({
-    //             ingredients: result.sort((a, b) => {return a.id - b.id})
-    //         });
-    //     });
-    let promises = [];
-
-    promises.push(knex("ingredient_tags").select("ingredient_id", "tag_text"));
-
-    promises.push(knex('ingredients')
-        .select('ingredients.id', 'ingredients.name', 'ingredients.description')
-        .join('client_restrictions', 'ingredients.id', 'ingredient_id')
-        .where('client_id', req.swagger.params.user_id.value));
-
-    Promise.all(promises)
-      .then((results) => {
-        let tags = results[0];
-        let ingredients = results[1];
-
-        for(let ingredient of ingredients) {
-          ingredient.tags =
-          tags.filter((tag) => {
-            return tag.ingredient_id === ingredient.id;
-          })
-          .map((tag) => {
-            return tag.tag_text;
-          })
-          .sort();
+    jwt.verify(req.headers['token'], process.env.JWT_KEY, (err, payload) => {
+        if (err) {
+            res.set('Content-Type', 'application/json');
+            res.status(401).send('Unauthorized');
         }
+        let promises = [];
 
-        return res.json({
-            ingredients: ingredients.sort((a, b) => {return a.id - b.id})
-        });
-      });
+        promises.push(knex("ingredient_tags").select("ingredient_id", "tag_text"));
+
+        promises.push(knex('ingredients')
+            .select('ingredients.id', 'ingredients.name', 'ingredients.description')
+            .join('client_restrictions', 'ingredients.id', 'ingredient_id')
+            .where('client_id', req.swagger.params.user_id.value));
+
+        Promise.all(promises)
+          .then((results) => {
+            let tags = results[0];
+            let ingredients = results[1];
+
+            for(let ingredient of ingredients) {
+              ingredient.tags =
+              tags.filter((tag) => {
+                return tag.ingredient_id === ingredient.id;
+              })
+              .map((tag) => {
+                return tag.tag_text;
+              })
+              .sort();
+            }
+
+            return res.json({
+                ingredients: ingredients.sort((a, b) => {return a.id - b.id})
+            });
+          });
+    });
 }
 
 function addRestriction(req, res) {
-    let user_id = req.swagger.params.user_id.value;
-    let ingredient_id = req.swagger.params.ingredient.value.ingredient_id;
-    return knex.insert({
-            'client_id': user_id,
-            'ingredient_id': ingredient_id
-        })
-        .into('client_restrictions')
-        .then(() => {
-            return res.json({
-                success: 1,
-                description: 'Restriction has been added'
+    jwt.verify(req.headers['token'], process.env.JWT_KEY, (err, payload) => {
+        if (err) {
+            res.set('Content-Type', 'application/json');
+            res.status(401).send('Unauthorized');
+        }
+        let user_id = req.swagger.params.user_id.value;
+        let ingredient_id = req.swagger.params.ingredient.value.ingredient_id;
+        return knex.insert({
+                'client_id': user_id,
+                'ingredient_id': ingredient_id
+            })
+            .into('client_restrictions')
+            .then(() => {
+                return res.json({
+                    success: 1,
+                    description: 'Restriction has been added'
+                });
             });
-        });
+      });
 }
 
 function deleteRestriction(req, res) {
@@ -398,50 +377,56 @@ function deleteRestriction(req, res) {
 }
 
 function getUsersSearchResponse(req, res) {
-    // To list clients
-    let email = req.swagger.params.email.value;
-    let first_name = req.swagger.params.first_name.value;
-    let last_name = req.swagger.params.last_name.value;
-    let promises = [];
-    // promises.push(knex("clients").select("id"));
-    promises.push(knex("clients")
-        .select("id", "first_name", "last_name", "email", "is_super_user")
-        .where(`clients.first_name`, `like`, `%${first_name}%`)
-        .orWhere(`clients.last_name`, `like`, `%${last_name}%`)
-        .orWhere(`clients.email`, `like`, `%${email}%`)
-      );
-    promises.push(knex("client_recipes")
-        .join('recipes', 'recipes.id', '=', 'client_recipes.recipe_id')
-        .select("client_recipes.client_id", "recipes.*")
-      );
-    promises.push(knex("recipe_steps")
-        .join('recipes', 'recipes.id', '=', 'recipe_steps.recipe_id')
-        .select("recipe_steps.*")
-      );
-    Promise.all(promises)
-        .then((results) => {
-            let clients = results[0];
-            let recipes = results[1];
-            let instructions = results[2];
+    jwt.verify(req.headers['token'], process.env.JWT_KEY, (err, payload) => {
+        if (err) {
+            res.set('Content-Type', 'application/json');
+            res.status(401).send('Unauthorized');
+        }
+        // To list clients
+        let email = req.swagger.params.email.value;
+        let first_name = req.swagger.params.first_name.value;
+        let last_name = req.swagger.params.last_name.value;
+        let promises = [];
+        // promises.push(knex("clients").select("id"));
+        promises.push(knex("clients")
+            .select("id", "first_name", "last_name", "email", "is_super_user")
+            .where(`clients.first_name`, `like`, `%${first_name}%`)
+            .orWhere(`clients.last_name`, `like`, `%${last_name}%`)
+            .orWhere(`clients.email`, `like`, `%${email}%`)
+          );
+        promises.push(knex("client_recipes")
+            .join('recipes', 'recipes.id', '=', 'client_recipes.recipe_id')
+            .select("client_recipes.client_id", "recipes.*")
+          );
+        promises.push(knex("recipe_steps")
+            .join('recipes', 'recipes.id', '=', 'recipe_steps.recipe_id')
+            .select("recipe_steps.*")
+          );
+        Promise.all(promises)
+            .then((results) => {
+                let clients = results[0];
+                let recipes = results[1];
+                let instructions = results[2];
 
-            for (let client of clients) {
-                let r = recipes.filter((recipe) => {
-                    return recipe.client_id === client.id;
-                }).map((recipe) => {
-                    return {
-                        id: recipe.id,
-                        instructions: instructions.filter((step) => {
-                          return step.recipe_id === recipe.id
-                        }), // recipe.instructions,
-                        name: recipe.name
-                    };
-                }).sort();
+                for (let client of clients) {
+                    let r = recipes.filter((recipe) => {
+                        return recipe.client_id === client.id;
+                    }).map((recipe) => {
+                        return {
+                            id: recipe.id,
+                            instructions: instructions.filter((step) => {
+                              return step.recipe_id === recipe.id
+                            }), // recipe.instructions,
+                            name: recipe.name
+                        };
+                    }).sort();
 
-                client.recipes = r;
-            }
+                    client.recipes = r;
+                }
 
-            return res.json({
-                clients: clients
+                return res.json({
+                    clients: clients
+                });
             });
-        });
+      });
 }

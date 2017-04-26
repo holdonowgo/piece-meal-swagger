@@ -37,7 +37,7 @@ suite("recipes test", () => {
     test("GET /recipes", (done) => {
         request(server).get("/api/v1/recipes")
                        .set("Accept", "application/json")
-                       .set('token', authToken)
+                      //  .set('token', authToken)
                        .expect("Content-Type", /json/)
                        .expect((res) => {
             deleteIngredientTimestamps(res);
@@ -226,7 +226,8 @@ suite("recipes test", () => {
                                    Sprinkle salad with sesame seeds.`
                 }
             ],
-            ingredients: [1, 3]
+            ingredients: [1, 3],
+            tags: ['no-cook', 'asian', 'vegetarian', 'vegan']
         }).expect("Content-Type", /json/).expect(200, {
             id: 9,
             "ingredients": [
@@ -234,12 +235,14 @@ suite("recipes test", () => {
                     "id": 1,
                     "name": "bacon",
                     "description": "Mmmmmmmmm...Bacon!",
-                    "tags": ['meat', 'pork']
+                    "tags": ['meat', 'pork'],
+                    "active": true
                 }, {
                     "id": 3,
                     "name": "milk",
                     "description": '',
-                    "tags": ['dairy', 'vegetarian']
+                    "tags": ['dairy', 'vegetarian'],
+                    "active": true
                 }
             ],
             name: "seaweed salad",
@@ -256,14 +259,16 @@ suite("recipes test", () => {
                                    Sprinkle salad with sesame seeds.`
                 }
             ],
-            "notes": ''
+            "notes": '',
+            tags: ['asian', 'no-cook', 'vegan', 'vegetarian'],
+            active: true
         });
     });
 
     test("GET /recipes/:id", (done) => {
         request(server).get("/api/v1/recipes/1")
                        .set("Accept", "application/json")
-                       .set('token', authToken)
+                      //  .set('token', authToken)
                        .expect(200, {
             "id": 1,
             "name": "cauliflower buffalo bites",
@@ -299,10 +304,15 @@ suite("recipes test", () => {
                     "description": "",
                     "tags": ['dairy', 'vegetarian']
                 }
-            ]
+            ],
+            "tags": [],
+            "active": true
         });
 
-        request(server).get("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).expect(200, {
+        request(server).get("/api/v1/recipes/2")
+                       .set("Accept", "application/json")
+                      //  .set('token', authToken)
+                       .expect(200, {
             "id": 2,
             "name": "simple oatmeal",
             "description": '',
@@ -313,10 +323,13 @@ suite("recipes test", () => {
                   "id": 1,
                   "name": "bacon",
                   "tags": ['meat', 'pork'],
-                  "description": "Mmmmmmmmm...Bacon!"
+                  "description": "Mmmmmmmmm...Bacon!",
+                  "active": true
                 }
             ],
-            "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!"
+            "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
+            "tags": [],
+            "active": true
         }, done);
     });
 
@@ -332,10 +345,13 @@ suite("recipes test", () => {
                     "id": 1,
                     "name": "bacon",
                     "description": "Mmmmmmmmm...Bacon!",
-                    "tags": ['meat', 'pork']
+                    "tags": ['meat', 'pork'],
+                    "active": true
                 }
             ],
-            "notes": ""
+            "notes": "",
+            "active": true,
+            "tags": []
         });
 
         request(server).put("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).send({
@@ -353,7 +369,8 @@ suite("recipes test", () => {
                 }
             ],
             "ingredients": [1],
-            "notes": "Bacon Bacon BACON!"
+            "notes": "Bacon Bacon BACON!",
+            "tags": ['breakfast', 'sweet']
         }).expect("Content-Type", /json/).expect(200, {
             "id": 2,
             "name": "simple maple oatmeal",
@@ -373,10 +390,13 @@ suite("recipes test", () => {
                     "id": 1,
                     "name": "bacon",
                     "description": "Mmmmmmmmm...Bacon!",
-                    "tags": ['meat', 'pork']
+                    "tags": ['meat', 'pork'],
+                    "active": true
                 }
             ],
-            "notes": "Bacon Bacon BACON!"
+            "notes": "Bacon Bacon BACON!",
+            "tags": ['breakfast', 'sweet'],
+            "active": true
         }, done);
     });
 
@@ -529,6 +549,7 @@ suite("recipes test", () => {
                             }
                         ],
                         "notes": "",
+                        // "tags": [],
                         "active": true
                     }
                 ]
@@ -542,8 +563,38 @@ suite("recipes test", () => {
             .set('Accept', 'application/json')
             .set('Token', authToken)
             .expect('Content-Type', /json/)
-            .expect(200, {
-              "recipes": [
+            .expect(200,
+              {
+                "recipes": [
+                {
+                  "active": true,
+                  "description": "",
+                  "id": 5,
+                  "image_url": "",
+                  "ingredients": [
+                    {
+                      "active": true,
+                      "description": "",
+                      "id": 21,
+                      "name": "garlic"
+                    },
+                    {
+                      "active": true,
+                      "description": "",
+                      "id": 22,
+                      "name": "onion"
+                    },
+                    {
+                      "active": true,
+                      "description": "",
+                      "id": 23,
+                      "name": "asafoetida (powder)"
+                    }
+                  ],
+                  "instructions": [],
+                  "name": "Recipe #5",
+                  "notes": ""
+                },
                 {
                   "active": true,
                   "description": "",
@@ -590,35 +641,6 @@ suite("recipes test", () => {
                 },
                 {
                   "active": true,
-                  "description": "",
-                  "id": 5,
-                  "image_url": "",
-                  "ingredients": [
-                    {
-                      "active": true,
-                      "description": "",
-                      "id": 21,
-                      "name": "garlic"
-                    },
-                    {
-                      "active": true,
-                      "description": "",
-                      "id": 22,
-                      "name": "onion"
-                    },
-                    {
-                      "active": true,
-                      "description": "",
-                      "id": 23,
-                      "name": "asafoetida (powder)"
-                    }
-                  ],
-                  "instructions": [],
-                  "name": "Recipe #5",
-                  "notes": ""
-                },
-                {
-                  "active": true,
                   "description": "Great when making breakfast for the family!  Can be eaten cold too!",
                   "id": 3,
                   "image_url": "",
@@ -647,14 +669,21 @@ suite("recipes test", () => {
             }, done);
     });
 
-    // // test("GET /recipes/-1", (done) => {
-    // //   request(server)
-    // //     .get("/api/v1/recipes/-1")
-    // //     .set("Accept", "application/json")
-    // //     .expect("Content-Type", /plain/)
-    // //     .expect(404, "Not Found", done);
-    // // });
-    // //
+    // test("GET /recipes/-1", (done) => {
+    //   request(server)
+    //     .get("/api/v1/recipes/-1")
+    //     .set("Accept", "application/json")
+    //     .expect(401, JSON.stringify('Not Logged In'), done);
+    // });
+
+    test("GET /recipes/-1", (done) => {
+      request(server)
+        .get("/api/v1/recipes/-1")
+        .set("Accept", "application/json")
+        .set('Token', authToken)
+        .expect(404, JSON.stringify('Not Found'), done);
+    });
+
     // // test("GET /recipes/one", (done) => {
     // //   request(server)
     // //     .get("/api/v1/recipes/one")
