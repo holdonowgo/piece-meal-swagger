@@ -26,6 +26,12 @@ paths:
       description: This endpoint returns all clients available in the database
       # define the type of response for Success "200" and Error
       operationId: getClients
+      parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
       responses:
         "200":
           description: Success
@@ -408,12 +414,12 @@ paths:
       description: get the ingredients list
       # define the type of response for Success "200" and Error
       operationId: getIngredientsList
-      parameters:
-        - name: token
-          in: header
-          description: Users authentication token
-          required: true
-          type: string
+      # parameters:
+      #   - name: token
+      #     in: header
+      #     description: Users authentication token
+      #     required: true
+      #     type: string
 
       responses:
         "200":
@@ -459,11 +465,11 @@ paths:
       # define the type of response for Success "200" and Error
       operationId: getIngredient
       parameters:
-        - name: token
-          in: header
-          description: Users authentication token
-          required: true
-          type: string
+        # - name: token
+        #   in: header
+        #   description: Users authentication token
+        #   required: true
+        #   type: string
 
         - name: id
           type: integer
@@ -479,31 +485,30 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-    # put:
-    #   description: update an ingredient
-    #   # define the parameters
-    #   operationId: updateIngredient
-    #   parameters:
-    #     - name: id
-    #       description: Ingredient id
-    #       type: integer
-    #       in: path
-    #       required: true
-    #     - name: ingredient
-    #       description: Ingredient
-    #       in: body
-    #       required: true
-    #       schema:
-    #         $ref: "#/definitions/PatchIngredient"
-    #   responses:
-    #     "200":
-    #       description: Success
-    #       schema:
-    #         $ref: "#/definitions/GetIngredientResponse"
-    #     default:
-    #       description: Error
-    #       schema:
-    #         $ref: "#/definitions/ErrorResponse"
+    put:
+      description: update an ingredient
+      # define the parameters
+      operationId: updateIngredient
+      parameters:
+        - name: id
+          type: integer
+          in: path
+          required: true
+        - name: ingredient
+          description: Ingredient
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/PatchIngredient"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetIngredientResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 
     delete:
       description: delete an ingredient
@@ -536,6 +541,12 @@ paths:
     get:
       description: get the recipes list
       operationId: getRecipesList
+      # parameters:
+      #   - name: token
+      #     in: header
+      #     description: Users authentication token
+      #     required: true
+      #     type: string
       responses:
         "200":
           description: Success
@@ -577,13 +588,14 @@ paths:
     get:
       description: get a recipe
       # define the type of response for Success "200" and Error
+      # operationId: getRecipeBookshelf
       operationId: getRecipe
       parameters:
-        - name: token
-          in: header
-          description: Users authentication token
-          required: true
-          type: string
+        # - name: token
+        #   in: header
+        #   description: Users authentication token
+        #   required: true
+        #   type: string
 
         - name: id
           type: integer
@@ -620,7 +632,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Recipe"
+            $ref: "#/definitions/PostRecipe"
       responses:
         "200":
           description: Success
@@ -760,11 +772,11 @@ paths:
       description: get results from ingredient search
       operationId: searchIngredients
       parameters:
-        - name: token
-          in: header
-          description: Users authentication token
-          required: true
-          type: string
+        # - name: token
+        #   in: header
+        #   description: Users authentication token
+        #   required: true
+        #   type: string
 
         - name: text
           type: string
@@ -961,18 +973,23 @@ definitions:
         type: boolean
         description: does client have super user authorization
 
-  # PatchIngredient:
-  #   type: object
-  #   properties:
-  #     name:
-  #       type: string
-  #       description: ingredient object name
-  #     tags:
-  #       type: array
-  #       items:
-  #         type: string
-  #   required:
-  #     - name
+  PatchIngredient:
+    type: object
+    properties:
+      id:
+        description: Ingredient id
+        type: integer
+      name:
+        description: Ingredient name
+        type: string
+      description:
+        description: Ingredient description
+        type: string
+      tags:
+        description: Ingredient tags
+        type: array
+        items:
+          type: string
 
   Ingredient:
     type: object
@@ -1010,8 +1027,17 @@ definitions:
               type: integer
             name:
               type: string
-            instructions:
+            description:
               type: string
+            instructions:
+              type: array
+              items:
+                type: object
+                properties:
+                  step_number:
+                    type: integer
+                  instructions:
+                    type: string
 
   GetUsersResponse:
     required:
@@ -1104,6 +1130,12 @@ definitions:
               type: integer
             name:
               type: string
+            description:
+              type: string
+            tags:
+              type: array
+              items:
+                type: string
 
   # PostUserRestrictionResponse:
   #   type: object
@@ -1139,6 +1171,10 @@ definitions:
               type: integer
             name:
               type: string
+            tags:
+              type: array
+              items:
+                type: string
 
   Recipe:
     type: object
@@ -1147,17 +1183,38 @@ definitions:
         type: integer
       name:
         type: string
-      instructions:
+      description:
         type: string
+      notes:
+        type: string
+      active:
+        type: boolean
       ingredients:
         type: array
         items:
           type: object
-        properties:
-          id:
-            type: integer
-          name:
-            type: string
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            description:
+              type: string
+            active:
+              type: boolean
+            tags:
+              type: array
+              items:
+                type: string
+      instructions:
+        type: array
+        items:
+          type: object
+          properties:
+            step_number:
+              type: integer
+            instructions:
+              type: string
 
   PostRecipe:
     type: object
@@ -1166,12 +1223,25 @@ definitions:
         type: integer
       name:
         type: string
-      instructions:
+      description:
         type: string
+      instructions:
+        type: array
+        items:
+          type: object
+          properties:
+            step_number:
+              type: integer
+            instructions:
+              type: string
       ingredients:
         type: array
         items:
           type: integer
+      tags:
+        type: array
+        items:
+          type: string
 
   GetRecipesListResponse:
     required:
