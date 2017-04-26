@@ -3,8 +3,8 @@ info:
   version: "0.0.1"
   title: Piece-Meal App
 # during dev, should point to your local machine
-host: piecemeal-temp.herokuapp.com
-# host: localhost:10010
+# host: piecemeal-api.herokuapp.com
+host: localhost:10010
 # basePath prefixes all resource paths
 basePath: /api/v1
 #
@@ -990,6 +990,9 @@ definitions:
         type: array
         items:
           type: string
+      image_url:
+        type: string
+        description: link to image of ingredient
 
   Ingredient:
     type: object
@@ -1181,6 +1184,9 @@ definitions:
               type: array
               items:
                 type: string
+            image_url:
+              type: string
+              description: link to image of ingredient
 
   Recipe:
     type: object
@@ -1221,6 +1227,9 @@ definitions:
               type: integer
             instructions:
               type: string
+      image_url:
+        type: string
+        description: link to image of ingredient
 
   PostRecipe:
     type: object
@@ -1248,6 +1257,9 @@ definitions:
         type: array
         items:
           type: string
+      image_url:
+        type: string
+        description: link to image of ingredient
 
   GetRecipesListResponse:
     required:
@@ -1286,7 +1298,9 @@ definitions:
               type: string
       calories:
         type: integer
-          # type: integer
+      image_url:
+        type: string
+        description: link to image of ingredient
 
   # GetIngredientAlternativesResponse:
   #   required:
