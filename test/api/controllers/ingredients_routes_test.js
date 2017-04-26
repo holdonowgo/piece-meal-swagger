@@ -49,7 +49,7 @@ suite('ingredients test', () => {
         request(server)
             .get('/api/v1/ingredients')
             .set('Accept', 'application/json')
-            .set('Token', authToken)
+            // .set('Token', authToken)
             .expect('Content-Type', /json/)
             .expect(200, {
                 "ingredients": [{
@@ -251,7 +251,7 @@ suite('ingredients test', () => {
         request(server)
             .get('/api/v1/ingredients/1')
             .set('Accept', 'application/json')
-            .set('Token', authToken)
+            // .set('Token', authToken)
             .expect('Content-Type', /json/)
             .expect(200, {
                 "id": 1,
@@ -446,7 +446,7 @@ suite('ingredients test', () => {
         request(server)
             .get('/api/v1/search/ingredients?text=mi')
             .set('Accept', 'application/json')
-            .set('Token', authToken)
+            // .set('Token', authToken)
             .expect('Content-Type', /json/)
             .expect(200, {
                 "ingredients": [{

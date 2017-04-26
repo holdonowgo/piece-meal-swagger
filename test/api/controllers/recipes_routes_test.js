@@ -37,7 +37,7 @@ suite("recipes test", () => {
     test("GET /recipes", (done) => {
         request(server).get("/api/v1/recipes")
                        .set("Accept", "application/json")
-                       .set('token', authToken)
+                      //  .set('token', authToken)
                        .expect("Content-Type", /json/)
                        .expect((res) => {
             deleteIngredientTimestamps(res);
@@ -268,7 +268,7 @@ suite("recipes test", () => {
     test("GET /recipes/:id", (done) => {
         request(server).get("/api/v1/recipes/1")
                        .set("Accept", "application/json")
-                       .set('token', authToken)
+                      //  .set('token', authToken)
                        .expect(200, {
             "id": 1,
             "name": "cauliflower buffalo bites",
@@ -309,7 +309,10 @@ suite("recipes test", () => {
             "active": true
         });
 
-        request(server).get("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).expect(200, {
+        request(server).get("/api/v1/recipes/2")
+                       .set("Accept", "application/json")
+                      //  .set('token', authToken)
+                       .expect(200, {
             "id": 2,
             "name": "simple oatmeal",
             "description": '',
@@ -666,12 +669,12 @@ suite("recipes test", () => {
             }, done);
     });
 
-    test("GET /recipes/-1", (done) => {
-      request(server)
-        .get("/api/v1/recipes/-1")
-        .set("Accept", "application/json")
-        .expect(401, JSON.stringify('Not Logged In'), done);
-    });
+    // test("GET /recipes/-1", (done) => {
+    //   request(server)
+    //     .get("/api/v1/recipes/-1")
+    //     .set("Accept", "application/json")
+    //     .expect(401, JSON.stringify('Not Logged In'), done);
+    // });
 
     test("GET /recipes/-1", (done) => {
       request(server)

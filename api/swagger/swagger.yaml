@@ -414,12 +414,12 @@ paths:
       description: get the ingredients list
       # define the type of response for Success "200" and Error
       operationId: getIngredientsList
-      parameters:
-        - name: token
-          in: header
-          description: Users authentication token
-          required: true
-          type: string
+      # parameters:
+      #   - name: token
+      #     in: header
+      #     description: Users authentication token
+      #     required: true
+      #     type: string
 
       responses:
         "200":
@@ -465,11 +465,11 @@ paths:
       # define the type of response for Success "200" and Error
       operationId: getIngredient
       parameters:
-        - name: token
-          in: header
-          description: Users authentication token
-          required: true
-          type: string
+        # - name: token
+        #   in: header
+        #   description: Users authentication token
+        #   required: true
+        #   type: string
 
         - name: id
           type: integer
@@ -541,12 +541,12 @@ paths:
     get:
       description: get the recipes list
       operationId: getRecipesList
-      parameters:
-        - name: token
-          in: header
-          description: Users authentication token
-          required: true
-          type: string
+      # parameters:
+      #   - name: token
+      #     in: header
+      #     description: Users authentication token
+      #     required: true
+      #     type: string
       responses:
         "200":
           description: Success
@@ -591,11 +591,11 @@ paths:
       # operationId: getRecipeBookshelf
       operationId: getRecipe
       parameters:
-        - name: token
-          in: header
-          description: Users authentication token
-          required: true
-          type: string
+        # - name: token
+        #   in: header
+        #   description: Users authentication token
+        #   required: true
+        #   type: string
 
         - name: id
           type: integer
@@ -772,11 +772,11 @@ paths:
       description: get results from ingredient search
       operationId: searchIngredients
       parameters:
-        - name: token
-          in: header
-          description: Users authentication token
-          required: true
-          type: string
+        # - name: token
+        #   in: header
+        #   description: Users authentication token
+        #   required: true
+        #   type: string
 
         - name: text
           type: string
