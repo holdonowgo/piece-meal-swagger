@@ -3,14 +3,14 @@ info:
   version: "0.0.1"
   title: Piece-Meal App
 # during dev, should point to your local machine
-# host: piecemeal-api.herokuapp.com
-host: localhost:10010
+host: piecemeal-api.herokuapp.com
+# host: localhost:10010
 # basePath prefixes all resource paths
 basePath: /api/v1
 #
 schemes:
   # tip: remove http to make production-grade
-  - http
+  # - http
   - https
 # format of bodies a client can send (Content-Type)
 consumes:
@@ -990,6 +990,15 @@ definitions:
         type: array
         items:
           type: string
+      alternatives:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
       image_url:
         type: string
         description: link to image of ingredient
@@ -1010,6 +1019,15 @@ definitions:
         type: array
         items:
           type: string
+      alternatives:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
       image_url:
         type: string
         description: link to image of ingredient
@@ -1145,6 +1163,15 @@ definitions:
               type: array
               items:
                 type: string
+            alternatives:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
 
   # PostUserRestrictionResponse:
   #   type: object
@@ -1184,6 +1211,15 @@ definitions:
               type: array
               items:
                 type: string
+            alternatives:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
             image_url:
               type: string
               description: link to image of ingredient
