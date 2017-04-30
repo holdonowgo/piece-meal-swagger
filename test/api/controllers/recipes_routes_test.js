@@ -345,6 +345,82 @@ suite("recipes test", () => {
         }, done);
     });
 
+    test("POST /recipes/2/ratings", (done) => {
+        request(server).get("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).expect(200, {
+            "id": 2,
+            "name": "simple oatmeal",
+            "description": '',
+            "image_url": "",
+            "instructions": [],
+            "ingredients": [
+                {
+                    "id": 1,
+                    "name": "bacon",
+                    "description": "Mmmmmmmmm...Bacon!",
+                    "tags": ['meat', 'pork'],
+                    "image_url": "",
+                    "active": true
+                }
+            ],
+            "notes": "",
+            "active": true,
+            "tags": [],
+            "ratings": {"up_votes": 0, "down_votes": 0}
+        });
+
+        request(server).post("/api/v1/recipes/2/ratings").set("Accept", "application/json").set('token', authToken).send({
+            "recipe_id": 2,
+            "client_id": 1,
+            "vote": -1
+        }).expect("Content-Type", /json/).expect(200, {
+            "id": 2,
+            "name": "simple oatmeal",
+            "description": '',
+            "image_url": "",
+            "instructions": [],
+            "ingredients": [
+                {
+                    "id": 1,
+                    "name": "bacon",
+                    "description": "Mmmmmmmmm...Bacon!",
+                    "tags": ['meat', 'pork'],
+                    "image_url": "",
+                    "active": true
+                }
+            ],
+            "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
+            "tags": [],
+            "active": true,
+            "ratings": {"up_votes": 0, "down_votes": -1}
+        });
+
+        request(server).post("/api/v1/recipes/2/ratings").set("Accept", "application/json").set('token', authToken).send({
+            "recipe_id": 2,
+            "client_id": 1,
+            "vote": 1
+        }).expect("Content-Type", /json/).expect(200, {
+            "id": 2,
+            "name": "simple oatmeal",
+            "description": '',
+            "image_url": "",
+            "instructions": [],
+            "ingredients": [
+                {
+                    "id": 1,
+                    "name": "bacon",
+                    "description": "Mmmmmmmmm...Bacon!",
+                    "tags": ['meat', 'pork'],
+                    "image_url": "",
+                    "active": true
+                }
+            ],
+            "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
+            "tags": [],
+            "active": true,
+            "ratings": {"up_votes": 1, "down_votes": 0}
+        }, done);
+    });
+
     test("PUT /recipes:id", (done) => {
         request(server).get("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).expect(200, {
             "id": 2,

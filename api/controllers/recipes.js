@@ -17,6 +17,7 @@ module.exports = {
     updateRecipe: updateRecipe,
     deleteRecipe: deleteRecipe,
     searchRecipes: searchRecipes,
+    rateRecipe: rateRecipe
     // getRecipeBookshelf: getRecipeBookshelf
 };
 
@@ -164,6 +165,33 @@ function doGetRecipe(recipeId, res) {
     }).catch((err) => {
         res.status(500).json({message: err});
     });
+}
+
+function rateRecipe(req, res) {
+  jwt.verify(req.headers['token'], process.env.JWT_KEY, (err, payload) => {
+      if (err) {
+          res.set('Content-Type', 'application/json');
+          res.status(401).send('Unauthorized');
+      } else {
+        let recipe_id = req.swagger.params.recipe_id.value;
+        let vote = req.swagger.params.vote.value.vote;
+        let client_id = req.swagger.params.vote.value.client_id;
+
+        knex("recipe_votes").first().where("recipe_id", recipe_id).andWhere("client_id", client_id).then((result) => {
+            if (result) {
+                return knex("recipe_votes")
+                .where("recipe_id", recipe_id).andWhere("client_id", client_id)
+                .update({vote: vote});
+            } else {
+                return knex("recipe_votes")
+                .insert({"recipe_id": recipe_id, client_id: client_id, vote: vote});
+            }
+        })
+        .then(() => {
+          return doGetRecipe(recipe_id, res);
+        });
+      }
+  });
 }
 
 function postRecipe(req, res) {
