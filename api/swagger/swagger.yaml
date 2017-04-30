@@ -670,6 +670,46 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
+  /recipes/{recipe_id}/ratings:
+    x-swagger-router-controller: recipes
+    post:
+      description: rate a recipe
+      # define the type of response for Success "200" and Error
+      operationId: rateRecipe
+      parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
+        - name: recipe_id
+          type: integer
+          in: path
+          required: true
+
+        - name: vote
+          in: body
+          schema:
+            type: object
+            required:
+              - client_id
+              - vote
+            properties:
+              client_id:
+                type: integer
+              vote:
+                type: integer
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Recipe"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /ingredients/{id}/alternatives:
     x-swagger-router-controller: ingredients
     # get:
