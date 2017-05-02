@@ -97,7 +97,6 @@ function getIngredientsList(req, res) {
     Promise.all(promises)
         .then((results) => {
             let ingredients = results[0];
-            console.log(ingredients);
             let tags = results[1];
 
             for (let ingredient of ingredients) {
@@ -211,22 +210,27 @@ function addIngredient(req, res, next) {
                     });
                     throw new Error('Ingredient already exists!');
                 } else {
-                    return knex("ingredients").insert({
+                    return knex("ingredients")
+                      .returning('*')
+                      .insert({
                         "name": name,
                         "description": description,
                         "image_url": image_url
-                    }).returning('*');
+                      });
                 }
             })
             .then((ingredient) => {
+              console.log('WHAT THE FUCK?!?!?:', ingredient)
                 if (req.swagger.params.ingredient.value.tags) {
                     let promises = [];
                     for (let val of req.swagger.params.ingredient.value.tags) {
                         promises.push(
-                            knex("ingredient_tags").insert({
+                            knex("ingredient_tags")
+                            .returning('*')
+                            .insert({
                                 "ingredient_id": ingredient[0].id,
                                 "tag_text": val
-                            }).returning('*')
+                            })
                         );
                     }
 
@@ -255,7 +259,7 @@ function searchIngredients(req, res) {
         knex("ingredients")
         // .select("ingredients.id", "name", "active")
         .leftJoin('ingredient_tags', 'ingredients.id', 'ingredient_tags.ingredient_id')
-        .distinct("ingredients.id", "name", "image_url", "active")
+        .distinct("ingredients.id", "ingredients.name", "ingredients.image_url", "ingredients.active")
         .where('name', 'ilike', `%${text}%`)
         .orWhere('ingredient_tags.tag_text', 'ilike', `%${text}%`)
         .orderBy('ingredients.name')
