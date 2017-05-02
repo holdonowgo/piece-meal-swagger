@@ -47,6 +47,6 @@
   "scripts": {
     "start": "node app.js",
     "test": "nyc node_modules/mocha/bin/mocha",
-    "heroku-postbuild": "knex seed:run"
+    "heroku-postbuild": "knex migrate:latest, knex seed:run"
   }
 }
