@@ -140,9 +140,9 @@ function getIngredientAlternatives(req, res) {
         });
 }
 
-function getIngredient(req, res) {
+function fetchIngredient(id, res) {
   Ingredient.forge({
-      id: req.swagger.params.id.value
+      id: id
     })
     .fetch({
       withRelated: ['tags', 'alternatives']
@@ -186,6 +186,10 @@ function getIngredient(req, res) {
     });
 }
 
+function getIngredient(req, res) {
+  return fetchIngredient(req.swagger.params.id.value, res);
+}
+
 function addIngredient(req, res, next) {
     jwt.verify(req.headers['token'], process.env.JWT_KEY, (err, payload) => {
         if (err) {
@@ -220,29 +224,33 @@ function addIngredient(req, res, next) {
                 }
             })
             .then((ingredient) => {
+              id = ingredient[0].id;
               console.log('WHAT THE FUCK?!?!?:', ingredient)
                 if (req.swagger.params.ingredient.value.tags) {
                     let promises = [];
-                    for (let val of req.swagger.params.ingredient.value.tags) {
+                    console.log('req.swagger.params.ingredient.value.tags:', req.swagger.params.ingredient.value.tags);
+                    for (let tag of req.swagger.params.ingredient.value.tags) {
                         promises.push(
                             knex("ingredient_tags")
                             .returning('*')
                             .insert({
-                                "ingredient_id": ingredient[0].id,
-                                "tag_text": val
+                                "ingredient_id": id,
+                                "tag_text": tag
                             })
                         );
                     }
 
-                    ingredient[0].tags = req.swagger.params.ingredient.value.tags;
-                    return ingredient[0];
+                    // ingredient[0].tags = req.swagger.params.ingredient.value.tags;
+                    // return ingredient[0];
+                    return Promise.all(promises);
                 }
             })
-            .then((ingredient) => {
-              delete ingredient.created_at;
-              delete ingredient.updated_at;
-
-              return res.json(ingredient);
+            .then((promises) => {
+              // delete ingredient.created_at;
+              // delete ingredient.updated_at;
+              //
+              // return res.json(ingredient);
+              return fetchIngredient(id, res);
             })
             .catch((error) => {
 

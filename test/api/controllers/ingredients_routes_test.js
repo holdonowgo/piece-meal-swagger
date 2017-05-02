@@ -309,7 +309,7 @@ suite('ingredients test', () => {
             .send({
                 name: 'tuna',
                 description: '',
-                tags: ['seafood', 'fish'],
+                tags: ['fish', 'seafood'],
                 image_url: '',
             })
             .expect('Content-Type', /json/)
@@ -321,7 +321,7 @@ suite('ingredients test', () => {
                 id: 28,
                 name: 'tuna',
                 description: '',
-                tags: ['seafood', 'fish'],
+                tags: ['fish', 'seafood'],
                 active: true,
                 image_url: ''
             }, done);
