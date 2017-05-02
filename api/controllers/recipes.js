@@ -17,7 +17,8 @@ module.exports = {
     updateRecipe: updateRecipe,
     deleteRecipe: deleteRecipe,
     searchRecipes: searchRecipes,
-    rateRecipe: rateRecipe
+    rateRecipe: rateRecipe,
+    getRandomRecipes: getRandomRecipes
     // getRecipeBookshelf: getRecipeBookshelf
 };
 
@@ -82,11 +83,11 @@ function doGetRecipes(query, res) {
 
 // /recipes
 function getRecipesList(req, res) {
-    return doGetRecipes(knex("recipes"), res);
+    return doGetRecipes(knex("recipes").orderBy('recipes.name'), res);
 }
 
 function getClientRecipes(req, res) {
-    const query = knex("recipes").join('client_recipes', 'client_recipes.recipe_id', 'recipes.id').select("recipes.*").where('client_recipes.client_id', req.swagger.params.user_id.value);
+    const query = knex("recipes").join('client_recipes', 'client_recipes.recipe_id', 'recipes.id').select("recipes.*").where('client_recipes.client_id', req.swagger.params.user_id.value).orderBy('recipes.name');
     return doGetRecipes(query, res);
 }
 
@@ -350,3 +351,14 @@ function searchRecipes(req, res) {
 //           res.status(500).json({message: err});
 //       });
 // }
+
+function getRandomRecipes(req, res) {
+  return knex.raw('select * from recipes tablesample bernoulli (100) order by random() limit 10')
+  .then((result) => {
+    console.log(result);
+  })
+  let query = knex.raw('select * from recipes tablesample bernoulli (100) order by random() limit 10');
+  console.log(query.toString());
+  return doGetRecipes(query, res);
+  // return doGetRecipes(knex('recipes'), res);
+}
