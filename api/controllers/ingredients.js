@@ -92,11 +92,12 @@ function deleteIngredient(req, res) {
 function getIngredientsList(req, res) {
     // To list ingredients
     let promises = [];
-    promises.push(knex("ingredients").select("id", "name", "description", "active", "image_url"));
+    promises.push(knex("ingredients").select("id", "name", "description", "active", "image_url").orderBy('ingredients.name'));
     promises.push(knex("ingredient_tags").select("ingredient_id", "tag_text"));
     Promise.all(promises)
         .then((results) => {
             let ingredients = results[0];
+            console.log(ingredients);
             let tags = results[1];
 
             for (let ingredient of ingredients) {
@@ -109,11 +110,7 @@ function getIngredientsList(req, res) {
                 ingredient.tags = t;
             }
 
-            return res.json({
-                ingredients: ingredients.sort((a, b) => {
-                  return a.id - b.id
-                })
-            });
+            return res.json({ ingredients: ingredients });
         });
 }
 
@@ -122,6 +119,7 @@ function getIngredientAlternatives(req, res) {
         .join('ingredient_alternatives', 'ingredient_alternatives.alt_ingredient_id', 'ingredients.id')
         .select("ingredients.id", "name")
         .where("ingredient_alternatives.ingredient_id", req.swagger.params.id.value)
+        .orderBy('ingredients.name')
         .then((alternatives) => {
             for (let alternative of alternatives) {
                 let qstring = url.format({
@@ -227,7 +225,7 @@ function addIngredient(req, res, next) {
                         promises.push(
                             knex("ingredient_tags").insert({
                                 "ingredient_id": ingredient[0].id,
-                                "tag_test": val
+                                "tag_text": val
                             }).returning('*')
                         );
                     }
@@ -239,7 +237,7 @@ function addIngredient(req, res, next) {
             .then((ingredient) => {
               delete ingredient.created_at;
               delete ingredient.updated_at;
-              
+
               return res.json(ingredient);
             })
             .catch((error) => {
@@ -260,7 +258,7 @@ function searchIngredients(req, res) {
         .distinct("ingredients.id", "name", "image_url", "active")
         .where('name', 'ilike', `%${text}%`)
         .orWhere('ingredient_tags.tag_text', 'ilike', `%${text}%`)
-        .orderBy('ingredients.id')
+        .orderBy('ingredients.name')
     );
     promises.push(knex("ingredient_tags").select("ingredient_id", "tag_text"));
     Promise.all(promises)

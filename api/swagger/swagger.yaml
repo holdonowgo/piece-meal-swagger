@@ -583,6 +583,21 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
+  /random:
+    x-swagger-router-controller: recipes
+    get:
+      description: get random recipes
+      operationId: getRandomRecipes
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetRecipesListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /recipes/{id}:
     x-swagger-router-controller: recipes
     get:
