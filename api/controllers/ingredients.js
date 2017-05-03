@@ -18,7 +18,8 @@ module.exports = {
     deleteIngredient: deleteIngredient,
     searchIngredients: searchIngredients,
     getIngredientAlternatives: getIngredientAlternatives,
-    addIngredientAlternatives: addIngredientAlternatives
+    addIngredientAlternatives: addIngredientAlternatives,
+    getPieDataSet: getPieDataSet
 };
 
 function updateIngredient(req, res, next) {
@@ -225,10 +226,8 @@ function addIngredient(req, res, next) {
             })
             .then((ingredient) => {
               id = ingredient[0].id;
-              console.log('WHAT THE FUCK?!?!?:', ingredient)
                 if (req.swagger.params.ingredient.value.tags) {
                     let promises = [];
-                    console.log('req.swagger.params.ingredient.value.tags:', req.swagger.params.ingredient.value.tags);
                     for (let tag of req.swagger.params.ingredient.value.tags) {
                         promises.push(
                             knex("ingredient_tags")
@@ -356,4 +355,22 @@ function addIngredientAlternatives(req, res) {
                     });
             });
       });
+}
+
+function getPieDataSet(req, res) {
+  return knex.raw(
+    `select category, count(*) as count
+      from (
+        select ingredient_id,
+        case
+        when tag_text <> 'vegan' and tag_text <> 'vegetarian' then
+          'neither'
+        else
+        tag_text
+        end
+        as category from ingredient_tags
+      ) as sq1 group by category;`)
+      .then((data) => {
+        return res.json(data.rows)
+       });
 }

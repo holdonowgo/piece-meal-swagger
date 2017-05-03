@@ -927,6 +927,25 @@ paths:
   #           schema:
   #             $ref: "#/definitions/ErrorResponse"
 
+  /pie_chart/ingredients:
+    x-swagger-router-controller: ingredients
+    get:
+      description: get auth token
+      operationId: getPieDataSet
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                category:
+                  type: string
+                count:
+                  type: integer
+
+
   /token:
     x-swagger-router-controller: token
     post:
