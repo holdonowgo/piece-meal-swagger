@@ -331,7 +331,7 @@ function searchRecipes(req, res) {
 
 // function getRecipeBookshelf(req, res) {
 //   Recipe.forge({
-//           id: req.swagger.params.id.value
+//            id: req.swagger.params.id.value
 //       })
 //       .fetch({
 //           // withRelated: ['steps', 'tags', 'ingredients']

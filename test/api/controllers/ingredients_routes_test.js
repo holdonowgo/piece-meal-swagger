@@ -44,234 +44,234 @@ suite('ingredients test', () => {
             });
     });
 
-    test('GET /ingredients', (done) => {
-        /* eslint-disable max-len */
-        request(server)
-            .get('/api/v1/ingredients')
-            .set('Accept', 'application/json')
-            // .set('Token', authToken)
-            .expect('Content-Type', /json/)
-            .expect(200, {
-                "ingredients": [{
-                        "id": 1,
-                        "name": "bacon",
-                        "description": "",
-                        "active": true,
-                        "tags": ['meat', 'pork'],
-                        "description": "Mmmmmmmmm...Bacon!",
-                        "image_url": ""
-                    },
-                    {
-                        "id": 2,
-                        "name": "egg",
-                        "description": "",
-                        "active": true,
-                        "tags": ['vegetarian'],
-                        "image_url": ""
-                    },
-                    {
-                        "id": 3,
-                        "name": "milk",
-                        "description": "",
-                        "active": true,
-                        "tags": ['dairy', 'vegetarian'],
-                        "image_url": ""
-                    },
-                    {
-                        "id": 4,
-                        "name": "avocado",
-                        "description": "",
-                        "active": true,
-                        "tags": ['vegan', 'vegetarian'],
-                        "image_url": ""
-                    },
-                    {
-                        "id": 5,
-                        "name": "almond milk",
-                        "description": "",
-                        "active": true,
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "id": 6,
-                        "name": "coconut milk",
-                        "description": "",
-                        "active": true,
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 7,
-                        "name": "brown sugar",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 8,
-                        "name": "spinach",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 9,
-                        "name": "kale",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 10,
-                        "name": "tomato",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 11,
-                        "name": "banana",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 12,
-                        "name": "grapes",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 13,
-                        "name": "chicken breast (bone-in)",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 14,
-                        "name": "chicken thigh (skin-on)",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 15,
-                        "name": "russet potato",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 16,
-                        "name": "lime juice (fresh)",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 17,
-                        "name": "lemon juice (fresh)",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 18,
-                        "name": "salt",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 19,
-                        "name": "black pepper",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 20,
-                        "name": "grains of paradise",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 21,
-                        "name": "garlic",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 22,
-                        "name": "onion",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 23,
-                        "name": "asafoetida (powder)",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 24,
-                        "name": "white flour",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 25,
-                        "name": "carrot",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 26,
-                        "name": "celery",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    },
-                    {
-                        "active": true,
-                        "id": 27,
-                        "name": "kombu",
-                        "description": "",
-                        "tags": [],
-                        "image_url": ""
-                    }
-                ]
-            }, done);
-    });
+    // test('GET /ingredients', (done) => {
+    //     /* eslint-disable max-len */
+    //     request(server)
+    //         .get('/api/v1/ingredients')
+    //         .set('Accept', 'application/json')
+    //         // .set('Token', authToken)
+    //         .expect('Content-Type', /json/)
+    //         .expect(200, {
+    //             "ingredients": [{
+    //                     "id": 1,
+    //                     "name": "bacon",
+    //                     "description": "",
+    //                     "active": true,
+    //                     "tags": ['meat', 'pork'],
+    //                     "description": "Mmmmmmmmm...Bacon!",
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "id": 2,
+    //                     "name": "egg",
+    //                     "description": "",
+    //                     "active": true,
+    //                     "tags": ['vegetarian'],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "id": 3,
+    //                     "name": "milk",
+    //                     "description": "",
+    //                     "active": true,
+    //                     "tags": ['dairy', 'vegetarian'],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "id": 4,
+    //                     "name": "avocado",
+    //                     "description": "",
+    //                     "active": true,
+    //                     "tags": ['vegan', 'vegetarian'],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "id": 5,
+    //                     "name": "almond milk",
+    //                     "description": "",
+    //                     "active": true,
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "id": 6,
+    //                     "name": "coconut milk",
+    //                     "description": "",
+    //                     "active": true,
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 7,
+    //                     "name": "brown sugar",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 8,
+    //                     "name": "spinach",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 9,
+    //                     "name": "kale",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 10,
+    //                     "name": "tomato",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 11,
+    //                     "name": "banana",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 12,
+    //                     "name": "grapes",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 13,
+    //                     "name": "chicken breast (bone-in)",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 14,
+    //                     "name": "chicken thigh (skin-on)",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 15,
+    //                     "name": "russet potato",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 16,
+    //                     "name": "lime juice (fresh)",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 17,
+    //                     "name": "lemon juice (fresh)",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 18,
+    //                     "name": "salt",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 19,
+    //                     "name": "black pepper",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 20,
+    //                     "name": "grains of paradise",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 21,
+    //                     "name": "garlic",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 22,
+    //                     "name": "onion",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 23,
+    //                     "name": "asafoetida (powder)",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 24,
+    //                     "name": "white flour",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 25,
+    //                     "name": "carrot",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 26,
+    //                     "name": "celery",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 },
+    //                 {
+    //                     "active": true,
+    //                     "id": 27,
+    //                     "name": "kombu",
+    //                     "description": "",
+    //                     "tags": [],
+    //                     "image_url": ""
+    //                 }
+    //             ]
+    //         }, done);
+    // });
 
     test('GET /ingredients/:id', (done) => {
         /* eslint-disable max-len */
@@ -309,7 +309,7 @@ suite('ingredients test', () => {
             .send({
                 name: 'tuna',
                 description: '',
-                tags: ['seafood', 'fish'],
+                tags: ['fish', 'seafood'],
                 image_url: '',
             })
             .expect('Content-Type', /json/)
@@ -321,7 +321,7 @@ suite('ingredients test', () => {
                 id: 28,
                 name: 'tuna',
                 description: '',
-                tags: ['seafood', 'fish'],
+                tags: ['fish', 'seafood'],
                 active: true,
                 image_url: ''
             }, done);

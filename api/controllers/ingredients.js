@@ -18,7 +18,8 @@ module.exports = {
     deleteIngredient: deleteIngredient,
     searchIngredients: searchIngredients,
     getIngredientAlternatives: getIngredientAlternatives,
-    addIngredientAlternatives: addIngredientAlternatives
+    addIngredientAlternatives: addIngredientAlternatives,
+    getPieDataSet: getPieDataSet
 };
 
 function updateIngredient(req, res, next) {
@@ -97,7 +98,6 @@ function getIngredientsList(req, res) {
     Promise.all(promises)
         .then((results) => {
             let ingredients = results[0];
-            console.log(ingredients);
             let tags = results[1];
 
             for (let ingredient of ingredients) {
@@ -141,9 +141,9 @@ function getIngredientAlternatives(req, res) {
         });
 }
 
-function getIngredient(req, res) {
+function fetchIngredient(id, res) {
   Ingredient.forge({
-      id: req.swagger.params.id.value
+      id: id
     })
     .fetch({
       withRelated: ['tags', 'alternatives']
@@ -187,6 +187,10 @@ function getIngredient(req, res) {
     });
 }
 
+function getIngredient(req, res) {
+  return fetchIngredient(req.swagger.params.id.value, res);
+}
+
 function addIngredient(req, res, next) {
     jwt.verify(req.headers['token'], process.env.JWT_KEY, (err, payload) => {
         if (err) {
@@ -211,34 +215,41 @@ function addIngredient(req, res, next) {
                     });
                     throw new Error('Ingredient already exists!');
                 } else {
-                    return knex("ingredients").insert({
+                    return knex("ingredients")
+                      .returning('*')
+                      .insert({
                         "name": name,
                         "description": description,
                         "image_url": image_url
-                    }).returning('*');
+                      });
                 }
             })
             .then((ingredient) => {
+              id = ingredient[0].id;
                 if (req.swagger.params.ingredient.value.tags) {
                     let promises = [];
-                    for (let val of req.swagger.params.ingredient.value.tags) {
+                    for (let tag of req.swagger.params.ingredient.value.tags) {
                         promises.push(
-                            knex("ingredient_tags").insert({
-                                "ingredient_id": ingredient[0].id,
-                                "tag_text": val
-                            }).returning('*')
+                            knex("ingredient_tags")
+                            .returning('*')
+                            .insert({
+                                "ingredient_id": id,
+                                "tag_text": tag
+                            })
                         );
                     }
 
-                    ingredient[0].tags = req.swagger.params.ingredient.value.tags;
-                    return ingredient[0];
+                    // ingredient[0].tags = req.swagger.params.ingredient.value.tags;
+                    // return ingredient[0];
+                    return Promise.all(promises);
                 }
             })
-            .then((ingredient) => {
-              delete ingredient.created_at;
-              delete ingredient.updated_at;
-
-              return res.json(ingredient);
+            .then((promises) => {
+              // delete ingredient.created_at;
+              // delete ingredient.updated_at;
+              //
+              // return res.json(ingredient);
+              return fetchIngredient(id, res);
             })
             .catch((error) => {
 
@@ -255,7 +266,7 @@ function searchIngredients(req, res) {
         knex("ingredients")
         // .select("ingredients.id", "name", "active")
         .leftJoin('ingredient_tags', 'ingredients.id', 'ingredient_tags.ingredient_id')
-        .distinct("ingredients.id", "name", "image_url", "active")
+        .distinct("ingredients.id", "ingredients.name", "ingredients.image_url", "ingredients.active")
         .where('name', 'ilike', `%${text}%`)
         .orWhere('ingredient_tags.tag_text', 'ilike', `%${text}%`)
         .orderBy('ingredients.name')
@@ -344,4 +355,22 @@ function addIngredientAlternatives(req, res) {
                     });
             });
       });
+}
+
+function getPieDataSet(req, res) {
+  return knex.raw(
+    `select category, count(*) as count
+      from (
+        select ingredient_id,
+        case
+        when tag_text <> 'vegan' and tag_text <> 'vegetarian' then
+          'neither'
+        else
+        tag_text
+        end
+        as category from ingredient_tags
+      ) as sq1 group by category;`)
+      .then((data) => {
+        return res.json(data.rows)
+       });
 }
