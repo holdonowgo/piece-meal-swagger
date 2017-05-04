@@ -85,7 +85,7 @@ function deleteIngredient(req, res) {
                 let ingredient = result[0];
                 delete ingredient.created_at;
                 delete ingredient.updated_at;
-                return res.json(ingredient);
+                return res.status(200).json(ingredient);
             });
       });
 }
@@ -110,7 +110,7 @@ function getIngredientsList(req, res) {
                 ingredient.tags = t;
             }
 
-            return res.json({ ingredients: ingredients });
+            return res.status(200).json({ ingredients: ingredients });
         });
 }
 
@@ -137,7 +137,7 @@ function getIngredientAlternatives(req, res) {
         })
         .then((fetchResponse) => {
             alternative.calories = fetchResponse.calories;
-            return res.json(alternative);
+            return res.status(200).json(alternative);
         });
 }
 
@@ -181,7 +181,7 @@ function fetchIngredient(id, res) {
           .then((fetchResponse) => {
             ingredientObj.calories = fetchResponse.calories;
 
-            return res.json(ingredientObj);
+            return res.status(200).json(ingredientObj);
           });
         }
     });
@@ -287,7 +287,7 @@ function searchIngredients(req, res) {
                 ingredient.tags = t;
             }
 
-            return res.json({
+            return res.status(200).json({
                 ingredients: ingredients
             });
         });
@@ -351,7 +351,7 @@ function addIngredientAlternatives(req, res) {
                     .then((fetchResponse) => {
                         ingredientObj.calories = fetchResponse.calories;
 
-                        return res.json(ingredientObj);
+                        return res.status(200).json(ingredientObj);
                     });
             });
       });
@@ -371,6 +371,6 @@ function getPieDataSet(req, res) {
         as category from ingredient_tags
       ) as sq1 group by category;`)
       .then((data) => {
-        return res.json(data.rows)
+        return res.status(200).json(data.rows)
        });
 }

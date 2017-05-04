@@ -42,6 +42,21 @@ suite('part4 routes token', () => {
     //     .expect(200, 'false', done);
     // });
 
+    // // Test Facebook Auth0
+    // test('GET /token without token', (done) => {
+    //   request(server)
+    //     .get('/token')
+    //     .set('Accept', 'application/json')
+    //     .expect('Content-Type', /json/)
+    //     .expect(
+    //       200,
+    //       {
+    //         "error": "access_denied",
+    //         "error_description": "Permissions error"
+    //       }, done);
+    // });
+
+
     test('POST /token', (done) => {
         request(server)
             .post('/api/v1/token')
