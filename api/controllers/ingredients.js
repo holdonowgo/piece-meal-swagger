@@ -142,7 +142,6 @@ function getIngredientAlternatives(req, res) {
 }
 
 function fetchIngredient(id, res) {
-  console.log('id:', id, 'res:', res);
   Ingredient.forge({
       id: id
     })
@@ -169,24 +168,24 @@ function fetchIngredient(id, res) {
         delete ingredientObj.created_at;
         delete ingredientObj.updated_at;
 
-        let qstring = url.format({
-          query: {
-            app_id: process.env.EDAMAM_APP_ID,
-            app_key: process.env.EDAMAM_APP_KEY,
-            ingr: "one " + ingredientObj.name
-          }
-        });
-        console.log('before call to 3rd party');
-        return fetch('https://api.edamam.com/api/nutrition-data' + qstring)
-          .then((fetchResponse) => {
-            console.log('fetchResponse:', fetchResponse);
-            return fetchResponse.json();
-          })
-          .then((fetchResponse) => {
-            ingredientObj.calories = fetchResponse.calories;
-              console.log('ingredientObj:', ingredientObj);
-            return res.status(200).json(ingredientObj);
-          });
+        return res.status(200).json(ingredientObj);
+
+        // let qstring = url.format({
+        //   query: {
+        //     app_id: process.env.EDAMAM_APP_ID,
+        //     app_key: process.env.EDAMAM_APP_KEY,
+        //     ingr: "one " + ingredientObj.name
+        //   }
+        // });
+        // return fetch('https://api.edamam.com/api/nutrition-data' + qstring)
+        //   .then((fetchResponse) => {
+        //     return fetchResponse.json();
+        //   })
+        //   .then((fetchResponse) => {
+        //     ingredientObj.calories = fetchResponse.calories;
+        //
+        //     return res.status(200).json(ingredientObj);
+        //   });
         }
     });
 }
