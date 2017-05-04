@@ -320,8 +320,39 @@ suite('ingredients test', () => {
             .expect(200, {
                 id: 28,
                 name: 'tuna',
+                calories: 185,
                 description: '',
                 tags: ['fish', 'seafood'],
+                alternatives: [],
+                active: true,
+                image_url: ''
+            }, done);
+
+        /* eslint-enable max-len */
+    });
+
+    test('POST /ingredients only name and response', (done) => {
+        /* eslint-disable max-len */
+        request(server)
+            .post('/api/v1/ingredients')
+            .set('Accept', 'application/json')
+            .set('Token', authToken)
+            .send({
+                "name": "tuna",
+                "description": ""
+            })
+            .expect('Content-Type', /json/)
+            .expect((res) => {
+                delete res.body.createdAt;
+                delete res.body.updatedAt;
+            })
+            .expect(503, {
+                id: 28,
+                name: 'tuna',
+                calories: 185,
+                description: '',
+                tags: [],
+                alternatives: [],
                 active: true,
                 image_url: ''
             }, done);
@@ -372,8 +403,10 @@ suite('ingredients test', () => {
             .expect(200, {
                 "id": 13,
                 "name": "chicken breast (bone-in)",
+                "calories": 185,
                 "description": "",
                 "active": true,
+                "alternatives": [],
                 "tags": [],
                 "alternatives": [{
                     id: 7,
@@ -485,13 +518,7 @@ suite('ingredients test', () => {
             // .set('Token', authToken)
             .expect('Content-Type', /json/)
             .expect(200, {
-                "ingredients": [{
-                        "id": 3,
-                        "name": "milk",
-                        "tags": ['dairy', 'vegetarian'],
-                        "image_url": "",
-                        "active": true
-                    },
+                "ingredients": [
                     {
                         "id": 5,
                         "name": "almond milk",
@@ -503,6 +530,13 @@ suite('ingredients test', () => {
                         "id": 6,
                         "name": "coconut milk",
                         "tags": [],
+                        "image_url": "",
+                        "active": true
+                    },
+                    {
+                        "id": 3,
+                        "name": "milk",
+                        "tags": ['dairy', 'vegetarian'],
                         "image_url": "",
                         "active": true
                     }

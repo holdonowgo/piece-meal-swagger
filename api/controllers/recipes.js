@@ -18,7 +18,8 @@ module.exports = {
     deleteRecipe: deleteRecipe,
     searchRecipes: searchRecipes,
     rateRecipe: rateRecipe,
-    getRandomRecipes: getRandomRecipes
+    getRandomRecipes: getRandomRecipes,
+    getFavoriteRecipes: getFavoriteRecipes
     // getRecipeBookshelf: getRecipeBookshelf
 };
 
@@ -83,11 +84,25 @@ function doGetRecipes(query, res) {
 
 // /recipes
 function getRecipesList(req, res) {
-    return doGetRecipes(knex("recipes").orderBy('recipes.name'), res);
+    return doGetRecipes(knex("recipes").orderByRaw('LOWER(recipes.name)'), res);
+}
+
+function getFavoriteRecipes(req, res) {
+  console.log('req.swagger.params.user_id.value:', req.swagger.params.user_id.value);
+    return doGetRecipes(
+      knex("recipes")
+      .join("recipe_favorites", function () {
+        this
+          .on('recipe_favorites.recipe_id', 'recipes.id')
+          .on('recipe_favorites.client_id', req.swagger.params.user_id.value);
+      })
+      .select("recipes.*")
+      // .orderBy('recipes.id'), res);
+      .orderByRaw('LOWER(recipes.name) ASC'), res);
 }
 
 function getClientRecipes(req, res) {
-    const query = knex("recipes").join('client_recipes', 'client_recipes.recipe_id', 'recipes.id').select("recipes.*").where('client_recipes.client_id', req.swagger.params.user_id.value).orderBy('recipes.name');
+    const query = knex("recipes").join('client_recipes', 'client_recipes.recipe_id', 'recipes.id').select("recipes.*").where('client_recipes.client_id', req.swagger.params.user_id.value).orderByRaw('LOWER(recipes.name)');
     return doGetRecipes(query, res);
 }
 
@@ -232,7 +247,7 @@ function postRecipe(req, res) {
             return knex('recipe_steps').insert(data).returning("*");
         }).then(() => { // insert instructions
             let data = tags.map((tag) => {
-                return { recipe_id: recipe.id, tag_text: tag };
+                return { recipe_id: recipe.id, tag_text: tag.toLowerCase() };
             });
             return knex('recipe_tags').insert(data).returning("*");
         }).then(() => { // return new recipe
@@ -279,7 +294,7 @@ function updateRecipe(req, res) {
             // to insert into the recipe_steps table
 
             let data = recipe.tags.map((tag) => {
-                return {recipe_id: recipe.id, tag_text: tag};
+                return {recipe_id: recipe.id, tag_text: tag.toLowerCase()};
             });
 
             return knex('recipe_tags').insert(data).returning("*");
@@ -355,7 +370,7 @@ function searchRecipes(req, res) {
 function getRandomRecipes(req, res) {
   return knex.raw('select * from recipes tablesample bernoulli (100) order by random() limit 10')
   .then((result) => {
-    console.log(result);
+    // console.log(result);
   })
   let query = knex.raw('select * from recipes tablesample bernoulli (100) order by random() limit 10');
   console.log(query.toString());

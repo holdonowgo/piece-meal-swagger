@@ -34,187 +34,305 @@ suite("recipes test", () => {
         });
     });
 
-    test("GET /random", (done) => {
-        request(server).get("/api/v1/random")
+    // test("GET /random", (done) => {
+    //     request(server).get("/api/v1/random")
+    //                    .set("Accept", "application/json")
+    //                   //  .set('token', authToken)
+    //                    .expect("Content-Type", /json/)
+    //                    .expect((res) => {
+    //         deleteIngredientTimestamps(res);
+    //     }).expect(200, {
+    //         "recipes": [
+    //             {
+    //                 "active": true,
+    //                 "id": 1,
+    //                 "image_url": "",
+    //                 "ingredients": [
+    //                     {
+    //                         "active": true,
+    //                         "id": 1,
+    //                         "name": "bacon",
+    //                         // "tags": ['meat', 'pork'],
+    //                         "description": "Mmmmmmmmm...Bacon!",
+    //                         "image_url": ""
+    //                     }, {
+    //                         "active": true,
+    //                         "id": 3,
+    //                         "name": "milk",
+    //                         "description": "",
+    //                         "image_url": "",
+    //                         // "tags": ['dairy', 'vegetarian']
+    //                     }
+    //                 ],
+    //                 name: "cauliflower buffalo bites",
+    //                 description: '',
+    //                 "image_url": "",
+    //                 instructions: [
+    //                     {
+    //                         "instructions": "do step one",
+    //                         "step_number": 1
+    //                     }, {
+    //                         "instructions": "do step two",
+    //                         "step_number": 2
+    //                     }, {
+    //                         "instructions": "do step three",
+    //                         "step_number": 3
+    //                     }, {
+    //                         "instructions": "do step four",
+    //                         "step_number": 4
+    //                     }, {
+    //                         "instructions": "do step five",
+    //                         "step_number": 5
+    //                     }
+    //                 ],
+    //                 "notes": "" // "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
+    //             }, {
+    //                 "active": true,
+    //                 "id": 2,
+    //                 "name": "simple oatmeal",
+    //                 "description": '',
+    //                 "image_url": "",
+    //                 "instructions": [], //"1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
+    //                 "ingredients": [
+    //                     {
+    //                         "id": 1,
+    //                         "name": "bacon",
+    //                         "active": true,
+    //                         // "tags": ['meat', 'pork'],
+    //                         "description": "Mmmmmmmmm...Bacon!",
+    //                         "image_url": ""
+    //                     }
+    //                 ],
+    //                 "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!"
+    //             }, {
+    //                 "active": true,
+    //                 "id": 3,
+    //                 "name": "cheese omelette",
+    //                 "description": "Great when making breakfast for the family!  Can be eaten cold too!",
+    //                 "image_url": "",
+    //                 "instructions": [
+    //                     {
+    //                         "instructions": "Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.",
+    //                         "step_number": 1
+    //                     }, {
+    //                         "instructions": "Place a small non-stick frying pan on a low heat to warm up.",
+    //                         "step_number": 2
+    //                     }
+    //                 ],
+    //                 "ingredients": [
+    //                     {
+    //                         "id": 1,
+    //                         "name": "bacon",
+    //                         "active": true,
+    //                         // "tags": ['meat', 'pork'],
+    //                         "description": "Mmmmmmmmm...Bacon!",
+    //                         "image_url": ""
+    //                     }
+    //                 ],
+    //                 "notes": ""
+    //             }, {
+    //                 "active": true,
+    //                 "id": 4,
+    //                 "ingredients": [
+    //                     {
+    //                         "active": true,
+    //                         "id": 17,
+    //                         "name": "lemon juice (fresh)",
+    //                         "description": "",
+    //                         // "tags": [],
+    //                         "image_url": ""
+    //                     }, {
+    //                         "active": true,
+    //                         "id": 18,
+    //                         "name": "salt",
+    //                         "description": "",
+    //                         // "tags": [],
+    //                         "image_url": ""
+    //                     }
+    //                 ],
+    //                 "image_url": "",
+    //                 "instructions": [], // "This is how we do it.",
+    //                 "name": "Recipe #4",
+    //                 "description": '',
+    //                 "notes": ""
+    //             }, {
+    //                 "active": true,
+    //                 "id": 5,
+    //                 "ingredients": [
+    //                     {
+    //                         "active": true,
+    //                         "id": 21,
+    //                         "name": "garlic",
+    //                         "description": "",
+    //                         // "tags": [],
+    //                         "image_url": ""
+    //                     }, {
+    //                         "active": true,
+    //                         "id": 22,
+    //                         "name": "onion",
+    //                         "description": "",
+    //                         // "tags": [],
+    //                         "image_url": ""
+    //                     }, {
+    //                         "active": true,
+    //                         "id": 23,
+    //                         "name": "asafoetida (powder)",
+    //                         "description": "",
+    //                         // "tags": [],
+    //                         "image_url": ""
+    //                     }
+    //                 ],
+    //                 "image_url": "",
+    //                 "instructions": [], // "It's Friday night.",
+    //                 "name": "Recipe #5",
+    //                 "description": '',
+    //                 "notes": ""
+    //             }, {
+    //                 "active": true,
+    //                 "id": 6,
+    //                 "image_url": "",
+    //                 "ingredients": [],
+    //                 "instructions": [], // "And I'm feelin' right.",
+    //                 "name": "Recipe #6",
+    //                 "description": '',
+    //                 "notes": ""
+    //             }, {
+    //                 "active": true,
+    //                 "id": 7,
+    //                 "image_url": "",
+    //                 "ingredients": [],
+    //                 "instructions": [], // "The party's over on the west side.",
+    //                 "name": "Recipe #7",
+    //                 "description": '',
+    //                 "notes": ""
+    //             }, {
+    //                 "active": true,
+    //                 "id": 8,
+    //                 "image_url": "",
+    //                 "ingredients": [],
+    //                 "instructions": [], // "So I creep...",
+    //                 "name": "Recipe #8",
+    //                 "description": '',
+    //                 "notes": ""
+    //             }
+    //         ]
+    //     }, done);
+    // });
+
+    test("GET /recipes/1/favorites", (done) => {
+        request(server).get("/api/v1/recipes/1/favorites")
                        .set("Accept", "application/json")
-                      //  .set('token', authToken)
+                       .set('token', authToken)
                        .expect("Content-Type", /json/)
                        .expect((res) => {
             deleteIngredientTimestamps(res);
         }).expect(200, {
             "recipes": [
-                {
-                    "active": true,
-                    "id": 1,
-                    "image_url": "",
-                    "ingredients": [
-                        {
-                            "active": true,
-                            "id": 1,
-                            "name": "bacon",
-                            // "tags": ['meat', 'pork'],
-                            "description": "Mmmmmmmmm...Bacon!",
-                            "image_url": ""
-                        }, {
-                            "active": true,
-                            "id": 3,
-                            "name": "milk",
-                            "description": "",
-                            "image_url": "",
-                            // "tags": ['dairy', 'vegetarian']
-                        }
-                    ],
-                    name: "cauliflower buffalo bites",
-                    description: '',
-                    "image_url": "",
-                    instructions: [
-                        {
-                            "instructions": "do step one",
-                            "step_number": 1
-                        }, {
-                            "instructions": "do step two",
-                            "step_number": 2
-                        }, {
-                            "instructions": "do step three",
-                            "step_number": 3
-                        }, {
-                            "instructions": "do step four",
-                            "step_number": 4
-                        }, {
-                            "instructions": "do step five",
-                            "step_number": 5
-                        }
-                    ],
-                    "notes": "" // "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
-                }, {
-                    "active": true,
-                    "id": 2,
-                    "name": "simple oatmeal",
-                    "description": '',
-                    "image_url": "",
-                    "instructions": [], //"1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
-                    "ingredients": [
-                        {
-                            "id": 1,
-                            "name": "bacon",
-                            "active": true,
-                            // "tags": ['meat', 'pork'],
-                            "description": "Mmmmmmmmm...Bacon!",
-                            "image_url": ""
-                        }
-                    ],
-                    "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!"
-                }, {
-                    "active": true,
-                    "id": 3,
-                    "name": "cheese omelette",
-                    "description": "Great when making breakfast for the family!  Can be eaten cold too!",
-                    "image_url": "",
-                    "instructions": [
-                        {
-                            "instructions": "Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.",
-                            "step_number": 1
-                        }, {
-                            "instructions": "Place a small non-stick frying pan on a low heat to warm up.",
-                            "step_number": 2
-                        }
-                    ],
-                    "ingredients": [
-                        {
-                            "id": 1,
-                            "name": "bacon",
-                            "active": true,
-                            // "tags": ['meat', 'pork'],
-                            "description": "Mmmmmmmmm...Bacon!",
-                            "image_url": ""
-                        }
-                    ],
-                    "notes": ""
-                }, {
-                    "active": true,
-                    "id": 4,
-                    "ingredients": [
-                        {
-                            "active": true,
-                            "id": 17,
-                            "name": "lemon juice (fresh)",
-                            "description": "",
-                            // "tags": [],
-                            "image_url": ""
-                        }, {
-                            "active": true,
-                            "id": 18,
-                            "name": "salt",
-                            "description": "",
-                            // "tags": [],
-                            "image_url": ""
-                        }
-                    ],
-                    "image_url": "",
-                    "instructions": [], // "This is how we do it.",
-                    "name": "Recipe #4",
-                    "description": '',
-                    "notes": ""
-                }, {
-                    "active": true,
-                    "id": 5,
-                    "ingredients": [
-                        {
-                            "active": true,
-                            "id": 21,
-                            "name": "garlic",
-                            "description": "",
-                            // "tags": [],
-                            "image_url": ""
-                        }, {
-                            "active": true,
-                            "id": 22,
-                            "name": "onion",
-                            "description": "",
-                            // "tags": [],
-                            "image_url": ""
-                        }, {
-                            "active": true,
-                            "id": 23,
-                            "name": "asafoetida (powder)",
-                            "description": "",
-                            // "tags": [],
-                            "image_url": ""
-                        }
-                    ],
-                    "image_url": "",
-                    "instructions": [], // "It's Friday night.",
-                    "name": "Recipe #5",
-                    "description": '',
-                    "notes": ""
-                }, {
-                    "active": true,
-                    "id": 6,
-                    "image_url": "",
-                    "ingredients": [],
-                    "instructions": [], // "And I'm feelin' right.",
-                    "name": "Recipe #6",
-                    "description": '',
-                    "notes": ""
-                }, {
-                    "active": true,
-                    "id": 7,
-                    "image_url": "",
-                    "ingredients": [],
-                    "instructions": [], // "The party's over on the west side.",
-                    "name": "Recipe #7",
-                    "description": '',
-                    "notes": ""
-                }, {
-                    "active": true,
-                    "id": 8,
-                    "image_url": "",
-                    "ingredients": [],
-                    "instructions": [], // "So I creep...",
-                    "name": "Recipe #8",
-                    "description": '',
-                    "notes": ""
-                }
+
+                  {
+                      "active": true,
+                      "id": 1,
+                      "image_url": "",
+                      "ingredients": [
+                          {
+                              "active": true,
+                              "id": 1,
+                              "name": "bacon",
+                              // "tags": ['meat', 'pork'],
+                              "description": "Mmmmmmmmm...Bacon!",
+                              "image_url": ""
+                          }, {
+                              "active": true,
+                              "id": 3,
+                              "name": "milk",
+                              "description": "",
+                              "image_url": "",
+                              // "tags": ['dairy', 'vegetarian']
+                          }
+                      ],
+                      "name": "cauliflower buffalo bites",
+                      "description": '',
+                      "image_url": "",
+                      "instructions": [
+                          {
+                              "instructions": "do step one",
+                              "step_number": 1
+                          }, {
+                              "instructions": "do step two",
+                              "step_number": 2
+                          }, {
+                              "instructions": "do step three",
+                              "step_number": 3
+                          }, {
+                              "instructions": "do step four",
+                              "step_number": 4
+                          }, {
+                              "instructions": "do step five",
+                              "step_number": 5
+                          }
+                      ],
+                      "notes": "" // "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
+                  },
+                  {
+                      "active": true,
+                      "id": 3,
+                      "name": "cheese omelette",
+                      "description": "Great when making breakfast for the family!  Can be eaten cold too!",
+                      "image_url": "",
+                      "instructions": [
+                          {
+                              "instructions": "Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.",
+                              "step_number": 1
+                          }, {
+                              "instructions": "Place a small non-stick frying pan on a low heat to warm up.",
+                              "step_number": 2
+                          }
+                      ],
+                      "ingredients": [
+                          {
+                              "id": 1,
+                              "name": "bacon",
+                              "active": true,
+                              // "tags": ['meat', 'pork'],
+                              "description": "Mmmmmmmmm...Bacon!",
+                              "image_url": ""
+                          }
+                      ],
+                      "notes": ""
+                  },
+                  {
+                      "active": true,
+                      "id": 5,
+                      "ingredients": [
+                          {
+                              "active": true,
+                              "id": 21,
+                              "name": "garlic",
+                              "description": "",
+                              // "tags": [],
+                              "image_url": ""
+                          }, {
+                              "active": true,
+                              "id": 22,
+                              "name": "onion",
+                              "description": "",
+                              // "tags": [],
+                              "image_url": ""
+                          }, {
+                              "active": true,
+                              "id": 23,
+                              "name": "asafoetida (powder)",
+                              "description": "",
+                              // "tags": [],
+                              "image_url": ""
+                          }
+                      ],
+                      "image_url": "",
+                      "instructions": [], // "It's Friday night.",
+                      "name": "Recipe #5",
+                      "description": '',
+                      "notes": ""
+                  }
             ]
         }, done);
     });
@@ -249,10 +367,10 @@ suite("recipes test", () => {
                             // "tags": ['dairy', 'vegetarian']
                         }
                     ],
-                    name: "cauliflower buffalo bites",
-                    description: '',
+                    "name": "cauliflower buffalo bites",
+                    "description": '',
                     "image_url": "",
-                    instructions: [
+                    "instructions": [
                         {
                             "instructions": "do step one",
                             "step_number": 1
@@ -271,25 +389,8 @@ suite("recipes test", () => {
                         }
                     ],
                     "notes": "" // "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
-                }, {
-                    "active": true,
-                    "id": 2,
-                    "name": "simple oatmeal",
-                    "description": '',
-                    "image_url": "",
-                    "instructions": [], //"1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
-                    "ingredients": [
-                        {
-                            "id": 1,
-                            "name": "bacon",
-                            "active": true,
-                            // "tags": ['meat', 'pork'],
-                            "description": "Mmmmmmmmm...Bacon!",
-                            "image_url": ""
-                        }
-                    ],
-                    "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!"
-                }, {
+                },
+                {
                     "active": true,
                     "id": 3,
                     "name": "cheese omelette",
@@ -315,7 +416,8 @@ suite("recipes test", () => {
                         }
                     ],
                     "notes": ""
-                }, {
+                },
+                {
                     "active": true,
                     "id": 4,
                     "ingredients": [
@@ -340,7 +442,8 @@ suite("recipes test", () => {
                     "name": "Recipe #4",
                     "description": '',
                     "notes": ""
-                }, {
+                },
+                {
                     "active": true,
                     "id": 5,
                     "ingredients": [
@@ -372,7 +475,8 @@ suite("recipes test", () => {
                     "name": "Recipe #5",
                     "description": '',
                     "notes": ""
-                }, {
+                },
+                {
                     "active": true,
                     "id": 6,
                     "image_url": "",
@@ -381,7 +485,8 @@ suite("recipes test", () => {
                     "name": "Recipe #6",
                     "description": '',
                     "notes": ""
-                }, {
+                },
+                {
                     "active": true,
                     "id": 7,
                     "image_url": "",
@@ -390,7 +495,8 @@ suite("recipes test", () => {
                     "name": "Recipe #7",
                     "description": '',
                     "notes": ""
-                }, {
+                },
+                {
                     "active": true,
                     "id": 8,
                     "image_url": "",
@@ -399,6 +505,25 @@ suite("recipes test", () => {
                     "name": "Recipe #8",
                     "description": '',
                     "notes": ""
+                },
+                {
+                    "active": true,
+                    "id": 2,
+                    "name": "simple oatmeal",
+                    "description": '',
+                    "image_url": "",
+                    "instructions": [], //"1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
+                    "ingredients": [
+                        {
+                            "id": 1,
+                            "name": "bacon",
+                            "active": true,
+                            // "tags": ['meat', 'pork'],
+                            "description": "Mmmmmmmmm...Bacon!",
+                            "image_url": ""
+                        }
+                    ],
+                    "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!"
                 }
             ]
         }, done);
@@ -530,81 +655,81 @@ suite("recipes test", () => {
         }, done);
     });
 
-    test("POST /recipes/2/ratings", (done) => {
-        request(server).get("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).expect(200, {
-            "id": 2,
-            "name": "simple oatmeal",
-            "description": '',
-            "image_url": "",
-            "instructions": [],
-            "ingredients": [
-                {
-                    "id": 1,
-                    "name": "bacon",
-                    "description": "Mmmmmmmmm...Bacon!",
-                    "tags": ['meat', 'pork'],
-                    "image_url": "",
-                    "active": true
-                }
-            ],
-            "notes": "",
-            "active": true,
-            "tags": [],
-            "ratings": {"up_votes": 0, "down_votes": 0}
-        });
-
-        request(server).post("/api/v1/recipes/2/ratings").set("Accept", "application/json").set('token', authToken).send({
-            "recipe_id": 2,
-            "client_id": 1,
-            "vote": -1
-        }).expect("Content-Type", /json/).expect(200, {
-            "id": 2,
-            "name": "simple oatmeal",
-            "description": '',
-            "image_url": "",
-            "instructions": [],
-            "ingredients": [
-                {
-                    "id": 1,
-                    "name": "bacon",
-                    "description": "Mmmmmmmmm...Bacon!",
-                    "tags": ['meat', 'pork'],
-                    "image_url": "",
-                    "active": true
-                }
-            ],
-            "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
-            "tags": [],
-            "active": true,
-            "ratings": {"up_votes": 0, "down_votes": -1}
-        });
-
-        request(server).post("/api/v1/recipes/2/ratings").set("Accept", "application/json").set('token', authToken).send({
-            "recipe_id": 2,
-            "client_id": 1,
-            "vote": 1
-        }).expect("Content-Type", /json/).expect(200, {
-            "id": 2,
-            "name": "simple oatmeal",
-            "description": '',
-            "image_url": "",
-            "instructions": [],
-            "ingredients": [
-                {
-                    "id": 1,
-                    "name": "bacon",
-                    "description": "Mmmmmmmmm...Bacon!",
-                    "tags": ['meat', 'pork'],
-                    "image_url": "",
-                    "active": true
-                }
-            ],
-            "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
-            "tags": [],
-            "active": true,
-            "ratings": {"up_votes": 1, "down_votes": 0}
-        }, done);
-    });
+    // test("POST /recipes/2/ratings", (done) => {
+    //     request(server).get("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).expect(200, {
+    //         "id": 2,
+    //         "name": "simple oatmeal",
+    //         "description": '',
+    //         "image_url": "",
+    //         "instructions": [],
+    //         "ingredients": [
+    //             {
+    //                 "id": 1,
+    //                 "name": "bacon",
+    //                 "description": "Mmmmmmmmm...Bacon!",
+    //                 "tags": ['meat', 'pork'],
+    //                 "image_url": "",
+    //                 "active": true
+    //             }
+    //         ],
+    //         "notes": "",
+    //         "active": true,
+    //         "tags": [],
+    //         "ratings": {"up_votes": 0, "down_votes": 0}
+    //     });
+    //
+    //     request(server).post("/api/v1/recipes/2/ratings").set("Accept", "application/json").set('token', authToken).send({
+    //         "recipe_id": 2,
+    //         "client_id": 1,
+    //         "vote": -1
+    //     }).expect("Content-Type", /json/).expect(200, {
+    //         "id": 2,
+    //         "name": "simple oatmeal",
+    //         "description": '',
+    //         "image_url": "",
+    //         "instructions": [],
+    //         "ingredients": [
+    //             {
+    //                 "id": 1,
+    //                 "name": "bacon",
+    //                 "description": "Mmmmmmmmm...Bacon!",
+    //                 "tags": ['meat', 'pork'],
+    //                 "image_url": "",
+    //                 "active": true
+    //             }
+    //         ],
+    //         "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
+    //         "tags": [],
+    //         "active": true,
+    //         "ratings": {"up_votes": 0, "down_votes": -1}
+    //     });
+    //
+    //     request(server).post("/api/v1/recipes/2/ratings").set("Accept", "application/json").set('token', authToken).send({
+    //         "recipe_id": 2,
+    //         "client_id": 1,
+    //         "vote": 1
+    //     }).expect("Content-Type", /json/).expect(200, {
+    //         "id": 2,
+    //         "name": "simple oatmeal",
+    //         "description": '',
+    //         "image_url": "",
+    //         "instructions": [],
+    //         "ingredients": [
+    //             {
+    //                 "id": 1,
+    //                 "name": "bacon",
+    //                 "description": "Mmmmmmmmm...Bacon!",
+    //                 "tags": ['meat', 'pork'],
+    //                 "image_url": "",
+    //                 "active": true
+    //             }
+    //         ],
+    //         "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
+    //         "tags": [],
+    //         "active": true,
+    //         "ratings": {"up_votes": 1, "down_votes": 0}
+    //     }, done);
+    // });
 
     test("PUT /recipes:id", (done) => {
         request(server).get("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).expect(200, {
@@ -731,24 +856,6 @@ suite("recipes test", () => {
                     "notes": "",
                     "active": true
                 }, {
-                    "id": 2,
-                    "name": "simple oatmeal",
-                    "description": '',
-                    "image_url": "",
-                    "instructions": [], // "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
-                    "ingredients": [
-                        {
-                            "id": 1,
-                            "name": "bacon",
-                            "active": true,
-                            // "tags": ['meat', 'pork'],
-                            "description": "Mmmmmmmmm...Bacon!",
-                            "image_url": ""
-                        }
-                    ],
-                    "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
-                    "active": true
-                }, {
                     "id": 3,
                     "name": "cheese omelette",
                     "description": 'Great when making breakfast for the family!  Can be eaten cold too!',
@@ -773,6 +880,24 @@ suite("recipes test", () => {
                         }
                     ],
                     "notes": "",
+                    "active": true
+                }, {
+                    "id": 2,
+                    "name": "simple oatmeal",
+                    "description": '',
+                    "image_url": "",
+                    "instructions": [], // "1.Place 3/4 cup of the rolled oats into a blender and process until a flour.2.Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil.",
+                    "ingredients": [
+                        {
+                            "id": 1,
+                            "name": "bacon",
+                            "active": true,
+                            // "tags": ['meat', 'pork'],
+                            "description": "Mmmmmmmmm...Bacon!",
+                            "image_url": ""
+                        }
+                    ],
+                    "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
                     "active": true
                 }
             ]

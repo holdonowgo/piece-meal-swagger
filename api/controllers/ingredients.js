@@ -93,7 +93,7 @@ function deleteIngredient(req, res) {
 function getIngredientsList(req, res) {
     // To list ingredients
     let promises = [];
-    promises.push(knex("ingredients").select("id", "name", "description", "active", "image_url").orderBy('ingredients.name'));
+    promises.push(knex("ingredients").select("id", "name", "description", "active", "image_url").where('active', 1).orderBy('ingredients.name'));
     promises.push(knex("ingredient_tags").select("ingredient_id", "tag_text"));
     Promise.all(promises)
         .then((results) => {
@@ -145,6 +145,7 @@ function fetchIngredient(id, res) {
   Ingredient.forge({
       id: id
     })
+    .where('active', '=', 1)
     .fetch({
       withRelated: ['tags', 'alternatives']
     })
@@ -215,6 +216,7 @@ function addIngredient(req, res, next) {
                     });
                     throw new Error('Ingredient already exists!');
                 } else {
+                  console.log('before insert');
                     return knex("ingredients")
                       .returning('*')
                       .insert({
@@ -225,6 +227,7 @@ function addIngredient(req, res, next) {
                 }
             })
             .then((ingredient) => {
+              console.log('after insert');
               id = ingredient[0].id;
                 if (req.swagger.params.ingredient.value.tags) {
                     let promises = [];
@@ -243,8 +246,10 @@ function addIngredient(req, res, next) {
                     // return ingredient[0];
                     return Promise.all(promises);
                 }
+                console.log('after tags');
             })
             .then((promises) => {
+              console.log('before fetchIngredient');
               // delete ingredient.created_at;
               // delete ingredient.updated_at;
               //
@@ -252,7 +257,7 @@ function addIngredient(req, res, next) {
               return fetchIngredient(id, res);
             })
             .catch((error) => {
-
+              console.error(error);
             });
       });
 }
@@ -267,7 +272,8 @@ function searchIngredients(req, res) {
         // .select("ingredients.id", "name", "active")
         .leftJoin('ingredient_tags', 'ingredients.id', 'ingredient_tags.ingredient_id')
         .distinct("ingredients.id", "ingredients.name", "ingredients.image_url", "ingredients.active")
-        .where('name', 'ilike', `%${text}%`)
+        .where('active', 1)
+        .andWhere('name', 'ilike', `%${text}%`)
         .orWhere('ingredient_tags.tag_text', 'ilike', `%${text}%`)
         .orderBy('ingredients.name')
     );
