@@ -992,6 +992,44 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
+  /tokenOAuth:
+    x-swagger-router-controller: token
+    post:
+      description: get auth token
+      operationId: postTokenOAuth
+      parameters:
+        - name: credentials
+          description: Client credentials
+          in: body
+          required: true
+          schema:
+            type: object
+            required:
+              - idToken
+            properties:
+              idToken:
+                description: token from Auth0
+                type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: object
+            required:
+              - id
+              - token
+            properties:
+              id:
+                description: client's user id
+                type: number
+              token:
+                description: client's auth token
+                type: string
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
 
   /swagger:
     x-swagger-pipe: swagger_raw
