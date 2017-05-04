@@ -77,7 +77,7 @@ function doGetRecipes(query, res) {
             recipes[i].instructions = promiseResults[i];
         }
 
-        return res.json({recipes: recipes});
+        return res.status(200).json({recipes: recipes});
     });
 }
 
@@ -99,7 +99,7 @@ function addClientRecipe(req, res) {
         }
 
         return knex("client_recipes").insert({client_id: req.swagger.params.user_id.value, recipe_id: req.swagger.params.request.value.recipe_id}).then(() => {
-            res.json({success: 1, description: "Added"});
+            res.status(200).json({success: 1, description: "Added"});
         });
   });
 }
@@ -162,7 +162,7 @@ function doGetRecipe(recipeId, res) {
             recipe.ingredients[i].tags = result[i].map(tag => tag.tag_text);
         }
 
-        return res.json(recipe);
+        return res.status(200).json(recipe);
     }).catch((err) => {
         res.status(500).json({message: err});
     });
@@ -309,7 +309,7 @@ function deleteRecipe(req, res) {
         knex('recipes').where('id', id).update({active: false}).then(() => {
             return knex('recipes').select('id', 'name', 'active').first().where('id', id);
         }).then((recipe) => {
-            return res.json(recipe)
+            return res.status(200).json(recipe)
         });
   });
 }
