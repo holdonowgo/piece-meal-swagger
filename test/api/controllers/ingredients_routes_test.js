@@ -346,7 +346,7 @@ suite('ingredients test', () => {
                 delete res.body.createdAt;
                 delete res.body.updatedAt;
             })
-            .expect(503, {
+            .expect(200, {
                 id: 28,
                 name: 'tuna',
                 calories: 185,
