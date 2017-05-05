@@ -214,15 +214,31 @@ function getClient(req, res) {
             return res.sendStatus(404);
         }
 
+        console.log('recieps:', recipes);
         client["recipes"] = recipes.map((recipe) => {
             return {
                 id: recipe.id,
                 name: recipe.name,
+                description: recipe.description,
+                notes: recipe.notes,
+                image_url: recipe.image_url,
                 instructions: instructions.filter((step) => {
                     return step.recipe_id === recipe.id;
-                }) // recipe.instructions
+                })
             };
-        }).sort();
+        }).sort((a, b) => {
+            let nameA = a.name.toUpperCase(); // ignore upper and lowercase
+            let nameB = b.name.toUpperCase(); // ignore upper and lowercase
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+
+            // names must be equal
+            return 0;
+        });
 
         client.restrictions = restrictions.map((restriction) => {
             return {id: restriction.id, name: restriction.name, description: restriction.description};

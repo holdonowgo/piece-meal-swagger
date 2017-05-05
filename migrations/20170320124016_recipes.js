@@ -6,6 +6,8 @@ exports.up = function(knex, Promise) {
     table.string('notes').defaultTo('');
     table.string('image_url').defaultTo('');
     table.boolean('active').notNullable().defaultTo(true);
+    table.timestamp('created_at').notNullable().defaultTo(knex.raw('now()'));
+    table.timestamp('updated_at').notNullable().defaultTo(knex.raw('now()'));
   });
 };
 

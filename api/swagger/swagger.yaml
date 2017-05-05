@@ -685,6 +685,32 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
+  /recipes/{user_id}/favorites:
+    x-swagger-router-controller: recipes
+    get:
+      description: get client's favorite recipes
+      operationId: getFavoriteRecipes
+      parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
+        - name: user_id
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetRecipesListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /recipes/{recipe_id}/ratings:
     x-swagger-router-controller: recipes
     post:
