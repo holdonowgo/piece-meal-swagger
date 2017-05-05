@@ -5,7 +5,8 @@ const bcrypt = require('bcrypt-as-promised');
 const jwt = require('jsonwebtoken');
 
 module.exports = {
-    postToken
+    postToken,
+    postTokenOAuth
 }
 
 // function postToken(req, res) {
@@ -26,6 +27,60 @@ module.exports = {
 //         }
 //     });
 // }
+
+const finishLogin = (client, res) => {
+  const claim = {
+      userId: client.id
+  };
+
+  const token = jwt.sign(claim, process.env.JWT_KEY, {
+      expiresIn: '7 days'
+  });
+
+  client.token = token;
+
+  delete client.first_name;
+  delete client.last_name;
+  delete client.hashed_password;
+  delete client.created_at;
+  delete client.updated_at;
+
+  res.set('Token', token);
+  res.set('Content-Type', 'application/json');
+  res.status(200).json(client);
+}
+
+function postTokenOAuth(req, res) {
+  const idToken = req.swagger.params.credentials.value.idToken;
+  console.log("post token ouath", idToken);
+  //jwt.verify(idToken, process.env.AUTH0_JWT_KEY, (err, payload) => {
+  // if (err) {
+  //     res.set('Content-Type', 'application/json');
+  //     res.status(401).send('Unauthorized');
+  // }
+  const decoded = jwt.decode(idToken);
+  console.log("decoded", decoded.email);
+  knex('clients')
+      .where('email', decoded.email)
+      .first()
+      .then((client) => {
+        if (client === undefined) {
+          // no account yet, make an account
+          let client = {
+              first_name: "tmp first name",
+              last_name: "tmp last name",
+              email: decoded.email,
+              hashed_password: ""
+          };
+          console.log("inserting new client");
+          return knex('clients').insert(client, '*').returning('*');
+        }
+        return client;
+      }).then((client) => {
+        console.log("found client!", client)
+        return finishLogin(client, res);
+      })
+}
 
 function postToken(req, res) {
     knex('clients')
@@ -49,25 +104,7 @@ function postToken(req, res) {
                 .first();
         })
         .then((client) => {
-            const claim = {
-                userId: client.id
-            };
-
-            const token = jwt.sign(claim, process.env.JWT_KEY, {
-                expiresIn: '7 days'
-            });
-
-            client.token = token;
-
-            delete client.first_name;
-            delete client.last_name;
-            delete client.hashed_password;
-            delete client.created_at;
-            delete client.updated_at;
-
-            res.set('Token', token);
-            res.set('Content-Type', 'application/json');
-            res.status(200).json(client);
+          return finishLogin(client, res);
         })
         .catch((err) => {
             res.status(400).json({
