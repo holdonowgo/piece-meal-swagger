@@ -58,7 +58,7 @@ function updateIngredient(req, res, next) {
               })
               .then((result) => {
                 let data = tags.map((tag) => {
-                  return { "ingredient_id": id, "tag_text": tag };
+                  return { "ingredient_id": id, "tag_text": tag.toLowerCase() };
                 })
                 return knex('ingredient_tags').insert(data).returning("*");
               })
@@ -93,7 +93,10 @@ function deleteIngredient(req, res) {
 function getIngredientsList(req, res) {
     // To list ingredients
     let promises = [];
-    promises.push(knex("ingredients").select("id", "name", "description", "active", "image_url").where('active', 1).orderBy('ingredients.name'));
+    promises.push(knex("ingredients")
+                  .select("id", "name", "description", "active", "image_url")
+                  .where('active', 1)
+                  .orderBy('ingredients.name'));
     promises.push(knex("ingredient_tags").select("ingredient_id", "tag_text"));
     Promise.all(promises)
         .then((results) => {
@@ -205,61 +208,54 @@ function addIngredient(req, res, next) {
         let description = req.swagger.params.ingredient.value.description;
         let image_url = req.swagger.params.ingredient.value.image_url;
 
-        var id;
+        let id;
+
         knex("ingredients")
             .first().where("name", name)
             .then((result) => {
                 if (result) {
                     delete result.created_at;
                     delete result.updated_at;
-                    res.status(400).json({
+                    return res.status(400).json({
                         message: 'Ingredient already exists!',
                         ingredient: result
                     });
-                    throw new Error('Ingredient already exists!');
+                    // throw new Error('Ingredient already exists!');
                 } else {
-                  console.log('before insert');
                     return knex("ingredients")
                       .returning('*')
                       .insert({
                         "name": name,
                         "description": description,
                         "image_url": image_url
-                      });
-                }
-            })
-            .then((ingredient) => {
-              console.log('after insert');
-              id = ingredient[0].id;
-                if (req.swagger.params.ingredient.value.tags) {
-                    let promises = [];
-                    for (let tag of req.swagger.params.ingredient.value.tags) {
-                        promises.push(
-                            knex("ingredient_tags")
-                            .returning('*')
-                            .insert({
-                                "ingredient_id": id,
-                                "tag_text": tag
-                            })
-                        );
-                    }
+                      })
+                      .then((ingredient) => {
+                        id = ingredient[0].id;
+                          if (req.swagger.params.ingredient.value.tags) {
+                              let promises = [];
+                              for (let tag of req.swagger.params.ingredient.value.tags) {
+                                  promises.push(
+                                      knex("ingredient_tags")
+                                      .returning('*')
+                                      .insert({
+                                          "ingredient_id": id,
+                                          "tag_text": tag.toLowerCase()
+                                      })
+                                  );
+                              }
 
-                    // ingredient[0].tags = req.swagger.params.ingredient.value.tags;
-                    // return ingredient[0];
-                    return Promise.all(promises);
-                }
-                console.log('after tags');
-            })
-            .then((promises) => {
-              console.log('before fetchIngredient');
-              // delete ingredient.created_at;
-              // delete ingredient.updated_at;
-              //
-              // return res.json(ingredient);
-              return fetchIngredient(id, res);
-            })
-            .catch((error) => {
-              console.error(error);
+                              // ingredient[0].tags = req.swagger.params.ingredient.value.tags;
+                              // return ingredient[0];
+                              return Promise.all(promises);
+                          }
+                      })
+                      .then((promises) => {
+                        return fetchIngredient(id, res);
+                      })
+                      .catch((error) => {
+                        console.error(error);
+                      })
+                    }
             });
       });
 }
@@ -352,15 +348,16 @@ function addIngredientAlternatives(req, res) {
                         ingr: "one " + ingredientObj.name
                     }
                 });
-                fetch('https://api.edamam.com/api/nutrition-data' + qstring)
-                    .then((fetchResponse) => {
-                        return fetchResponse.json();
-                    })
-                    .then((fetchResponse) => {
-                        ingredientObj.calories = fetchResponse.calories;
-
-                        return res.status(200).json(ingredientObj);
-                    });
+                // fetch('https://api.edamam.com/api/nutrition-data' + qstring)
+                //     .then((fetchResponse) => {
+                //         return fetchResponse.json();
+                //     })
+                //     .then((fetchResponse) => {
+                //         ingredientObj.calories = fetchResponse.calories;
+                //
+                //         return res.status(200).json(ingredientObj);
+                //     });
+                return res.status(200).json(ingredientObj);
             });
       });
 }

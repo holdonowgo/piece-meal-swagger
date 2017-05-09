@@ -22,6 +22,7 @@ const knex = require('../../../knex');
 const server = require('../../../app');
 const should = require('should');
 const authToken = process.env.AUTH_TOKEN;
+const description = `Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.`;
 
 suite('ingredients test', () => {
     before((done) => {
@@ -293,7 +294,7 @@ suite('ingredients test', () => {
                     id: 3,
                     name: 'milk'
                 }],
-                "calories": 120,
+                // "calories": 120,
                 "image_url": ""
             }, done);
 
@@ -308,7 +309,7 @@ suite('ingredients test', () => {
             .set('Token', authToken)
             .send({
                 name: 'tuna',
-                description: '',
+                description: description,
                 tags: ['fish', 'seafood'],
                 image_url: '',
             })
@@ -320,8 +321,8 @@ suite('ingredients test', () => {
             .expect(200, {
                 id: 28,
                 name: 'tuna',
-                calories: 185,
-                description: '',
+                // calories: 185,
+                description: description,
                 tags: ['fish', 'seafood'],
                 alternatives: [],
                 active: true,
@@ -349,8 +350,8 @@ suite('ingredients test', () => {
             .expect(200, {
                 id: 28,
                 name: 'tuna',
-                calories: 185,
-                description: '',
+                // calories: 185,
+                description: "",
                 tags: [],
                 alternatives: [],
                 active: true,
@@ -378,7 +379,7 @@ suite('ingredients test', () => {
                     active: true,
                     id: 21,
                     name: 'garlic',
-                    description: "",
+                    description: description,
                     "image_url": ""
                 }
             }, done);
@@ -403,8 +404,8 @@ suite('ingredients test', () => {
             .expect(200, {
                 "id": 13,
                 "name": "chicken breast (bone-in)",
-                "calories": 185,
-                "description": "",
+                // "calories": 185,
+                "description": description,
                 "active": true,
                 "alternatives": [],
                 "tags": [],
@@ -418,7 +419,7 @@ suite('ingredients test', () => {
                     id: 12,
                     name: 'grapes'
                 }],
-                calories: 299,
+                // calories: 299,
                 "image_url": ""
             }, done);
         // .end(function(err, res) {
@@ -480,7 +481,7 @@ suite('ingredients test', () => {
                     "name": "milk"
                   }
                 ],
-                "calories": 120,
+                // "calories": 120,
                 tags: ['meat', 'pork'],
                 active: true,
                 "image_url": ""

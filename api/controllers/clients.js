@@ -214,7 +214,6 @@ function getClient(req, res) {
             return res.sendStatus(404);
         }
 
-        console.log('recieps:', recipes);
         client["recipes"] = recipes.map((recipe) => {
             return {
                 id: recipe.id,
@@ -357,7 +356,9 @@ function getUsersSearchResponse(req, res) {
                         instructions: instructions.filter((step) => {
                             return step.recipe_id === recipe.id
                         }), // recipe.instructions,
-                        name: recipe.name
+                        name: recipe.name,
+                        description: recipe.description,
+                        notes: recipe.notes
                     };
                 }).sort();
 
