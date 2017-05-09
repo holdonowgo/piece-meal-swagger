@@ -157,20 +157,20 @@ function doGetRecipe(recipeId, res) {
             // res.set('Content-Type', 'application/json');
             // res.sendStatus(404);
             // return;
-            res.status(404).json('Not Found');
+            return res.status(404).json('Not Found');
+        } else {
+          recipe.ingredients = ingredients;
+
+          recipe.instructions = instructions;
+
+          recipe.tags = tags.map((tag) => {
+              return tag.tag_text;
+          })
+
+          let proms = recipe.ingredients.map(ingredient => getIngredientTagsQuery(ingredient.id));
+
+          return Promise.all(proms);
         }
-
-        recipe.ingredients = ingredients;
-
-        recipe.instructions = instructions;
-
-        recipe.tags = tags.map((tag) => {
-            return tag.tag_text;
-        })
-
-        let proms = recipe.ingredients.map(ingredient => getIngredientTagsQuery(ingredient.id));
-
-        return Promise.all(proms);
     }).then((result) => {
 
         for (let i = 0; i < recipe.ingredients.length; i++) {
@@ -230,7 +230,7 @@ function postRecipe(req, res) {
         let tags = req.swagger.params.recipe.value.tags;
         knex("recipes").first().where("name", name).then((result) => {
             if (result) {
-                res.status(400).json("Recipe already exists!");
+                return res.status(400).json("Recipe already exists!");
             } else {
                 return knex("recipes").insert({"name": name, description: description}).returning("*");
             }
@@ -270,7 +270,7 @@ function updateRecipe(req, res) {
             return knex("recipes").first().where("name", recipe.name);
         }).then((result) => {
             if (result) {
-                res.status(400).json("Recipe already exists!");
+                return res.status(400).json("Recipe already exists!");
             } else {
                 return knex("recipes").insert({"id": id, "name": recipe.name, description: recipe.description, notes: recipe.notes}).returning("*");
             }
