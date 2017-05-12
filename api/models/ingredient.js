@@ -22,12 +22,12 @@ let Ingredient = bookshelf.Model.extend({
 
     recipes: function() {
       return this.belongsToMany(Recipe,
-      'recipe_ingredients',
+      'ingredients_recipes',
       'recipes.id',
-      'recipe_ingredients.recipe_id');
+      'ingredients_recipes.recipe_id');
     },
 
-    // recipe_ingredients: function() {
+    // ingredients_recipes: function() {
     //   return this.belongsToMany(RecipeIngredient);
     // }
 });

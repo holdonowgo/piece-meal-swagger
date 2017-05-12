@@ -4,7 +4,7 @@ const Ingredients = require('../models/ingredient.js').Ingredients;
 
 
 let RecipeIngredient = bookshelf.Model.extend({
-  tableName: 'recipe_ingredients',
+  tableName: 'ingredients_recipes',
   hasTimestamps: false,
   // idAttribute : ['recipe_id', 'ingredient_id']
 

@@ -120,11 +120,11 @@ function addClientRecipe(req, res) {
 }
 
 function getIngredientsQuery(recipeId) {
-    return knex("recipe_ingredients").join("ingredients", "ingredients.id", "recipe_ingredients.ingredient_id").select("ingredients.id", "ingredients.name", "ingredients.description", "ingredients.active", "ingredients.image_url").orderBy('id').where("recipe_ingredients.recipe_id", recipeId);
+    return knex("ingredients_recipes").join("ingredients", "ingredients.id", "ingredients_recipes.ingredient_id").select("ingredients.id", "ingredients.name", "ingredients.description", "ingredients.active", "ingredients.image_url").orderBy('id').where("ingredients_recipes.recipe_id", recipeId);
 }
 
 function getIngredientTagsQuery(ingredientId) {
-    return knex("ingredient_tags").where("ingredient_tags.ingredient_id", ingredientId).orderBy('tag_text');
+    return knex("ingredients_tags").where("ingredients_tags.ingredient_id", ingredientId).orderBy('tag_text');
 }
 
 function getRecipeStepsQuery(recipeId) {
@@ -225,7 +225,7 @@ function postRecipe(req, res) {
         // to insert into the recipe_steps table
         let instructions = req.swagger.params.recipe.value.instructions;
 
-        //to insert into recipe_ingredients table
+        //to insert into ingredients_recipes table
         let ingredients = req.swagger.params.recipe.value.ingredients;
         let tags = req.swagger.params.recipe.value.tags;
         knex("recipes").first().where("name", name).then((result) => {
@@ -239,7 +239,7 @@ function postRecipe(req, res) {
             let data = ingredients.map((value) => {
                 return {recipe_id: recipe.id, ingredient_id: value};
             });
-            return knex('recipe_ingredients').insert(data).returning("*");
+            return knex('ingredients_recipes').insert(data).returning("*");
         }).then(() => { // insert instructions
             let data = instructions.map((step) => {
                 return {recipe_id: recipe.id, step_number: step.step_number, instructions: step.instructions};
@@ -275,13 +275,13 @@ function updateRecipe(req, res) {
                 return knex("recipes").insert({"id": id, "name": recipe.name, description: recipe.description, notes: recipe.notes}).returning("*");
             }
         }).then((recipes) => {
-            //to insert into recipe_ingredients table
+            //to insert into ingredients_recipes table
 
             let data = recipe.ingredients.map((value) => {
                 return {recipe_id: recipe.id, ingredient_id: value};
             });
 
-            return knex('recipe_ingredients').insert(data).returning("*");
+            return knex('ingredients_recipes').insert(data).returning("*");
         }).then(() => {
             // to insert into the recipe_steps table
 
@@ -333,14 +333,14 @@ function searchRecipes(req, res) {
     // To list clients
     // let text = req.swagger.params.text.value;
     return doGetRecipes(knex("recipes")
-    .join('recipe_ingredients', 'recipes.id', 'recipe_ingredients.recipe_id')
-    .leftJoin('ingredient_tags', 'recipe_ingredients.ingredient_id', 'ingredient_tags.ingredient_id')
-    .leftJoin('ingredients', 'recipe_ingredients.ingredient_id', 'ingredients.id')
+    .join('ingredients_recipes', 'recipes.id', 'ingredients_recipes.recipe_id')
+    .leftJoin('ingredients_tags', 'ingredients_recipes.ingredient_id', 'ingredients_tags.ingredient_id')
+    .leftJoin('ingredients', 'ingredients_recipes.ingredient_id', 'ingredients.id')
     .distinct('recipes.*')
     .where('recipes.name', 'ilike', `%${req.swagger.params.text.value}%`)
     .orWhere('recipes.description', 'ilike', `%${req.swagger.params.text.value}%`)
     .orWhere('ingredients.name', 'ilike', `%${req.swagger.params.text.value}%`)
-    .orWhere('ingredient_tags.tag_text', 'ilike', `%${req.swagger.params.text.value}%`)
+    .orWhere('ingredients_tags.tag_text', 'ilike', `%${req.swagger.params.text.value}%`)
     .orderBy('recipes.name'), res);
 }
 

@@ -30,13 +30,13 @@ const data = [{
 
 exports.seed = function(knex, Promise) {
     // Deletes ALL existing entries
-    return knex('ingredient_tags').del()
+    return knex('ingredients_tags').del()
         .then(function() {
             //then insert the data
-            return knex('ingredient_tags').insert(data);
+            return knex('ingredients_tags').insert(data);
         })
         .then(function() {
             //update id to the maximum id using raw SQL
-            return knex.raw("SELECT setval('ingredient_tags_id_seq', (SELECT MAX(id) from ingredient_tags));");
+            return knex.raw("SELECT setval('ingredients_tags_id_seq', (SELECT MAX(id) from ingredients_tags));");
         });
 };

@@ -78,19 +78,19 @@ function crossCheckRecipe(req, res) {
 
         promises.push(knex("ingredients").select('client_restrictions.ingredient_id', 'ingredients.name', 'ingredients.description').join('client_restrictions', 'ingredients.id', 'client_restrictions.ingredient_id').where("client_restrictions.client_id", req.swagger.params.user_id.value));
 
-        promises.push(knex.select('ingredients.id', 'ingredients.name', 'ingredients.description').from('ingredients').join('recipe_ingredients', function() {
-            this.on('recipe_ingredients.ingredient_id', 'ingredients.id').andOn('recipe_ingredients.recipe_id', req.swagger.params.recipe_id.value);
+        promises.push(knex.select('ingredients.id', 'ingredients.name', 'ingredients.description').from('ingredients').join('ingredients_recipes', function() {
+            this.on('ingredients_recipes.ingredient_id', 'ingredients.id').andOn('ingredients_recipes.recipe_id', req.swagger.params.recipe_id.value);
         }));
         Promise.all(promises).then((results) => {
             let restrictions = results[0];
-            let recipe_ingredients = results[1];
+            let ingredients_recipes = results[1];
             let result = {
                 is_safe: true,
                 forbidden: []
             };
 
             for (let restriction of restrictions) {
-                let found = recipe_ingredients.some(function(ingredient) {
+                let found = ingredients_recipes.some(function(ingredient) {
                     return ingredient.id === restriction.ingredient_id;
                 });
                 if (found) {
@@ -274,7 +274,7 @@ function getRestrictions(req, res) {
         }
         let promises = [];
 
-        promises.push(knex("ingredient_tags").select("ingredient_id", "tag_text"));
+        promises.push(knex("ingredients_tags").select("ingredient_id", "tag_text"));
 
         promises.push(knex('ingredients').select('ingredients.id', 'ingredients.name', 'ingredients.description').join('client_restrictions', 'ingredients.id', 'ingredient_id').where('client_id', req.swagger.params.user_id.value));
 

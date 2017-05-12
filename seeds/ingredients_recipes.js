@@ -38,12 +38,12 @@ const data = [{
 
 exports.seed = function(knex, Promise) {
   // Deletes ALL existing entries
-  return knex('recipe_ingredients').del()
+  return knex('ingredients_recipes').del()
     .then(function() {
       // Inserts seed entries
-      return knex('recipe_ingredients').insert(data);
+      return knex('ingredients_recipes').insert(data);
     })
     .then(function() {
-      return knex.raw("SELECT setval('recipe_ingredients_id_seq', (SELECT MAX(id) from recipe_ingredients));");
+      return knex.raw("SELECT setval('ingredients_recipes_id_seq', (SELECT MAX(id) from ingredients_recipes));");
     });
 };

@@ -16,12 +16,12 @@ let Recipe = bookshelf.Model.extend({
     // ingredients: function() {
     //     return this.belongsToMany(
     //       Ingredient,
-    //       'recipe_ingredients',
+    //       'ingredients_recipes',
     //       'ingredient_id',
     //       'recipe_id');
     // },
 
-    // recipe_ingredients: function () {
+    // ingredients_recipes: function () {
     //   return this.hasMany('RecipeIngredient');
     // },
     //
@@ -31,12 +31,12 @@ let Recipe = bookshelf.Model.extend({
 
     ingredients: function() {
       return this.belongsToMany(Ingredient,
-      'recipe_ingredients',
+      'ingredients_recipes',
       'ingredients.id',
-      'recipe_ingredients.ingredient_id');
+      'ingredients_recipes.ingredient_id');
     },
 
-    // recipe_ingredients: function() {
+    // ingredients_recipes: function() {
     //   return this.hasMany(RecipeIngredient);
     // },
 

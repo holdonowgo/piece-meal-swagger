@@ -54,13 +54,13 @@ function updateIngredient(req, res, next) {
                 }
               })
               .then((result) => {
-                return knex('ingredient_tags').where('ingredient_id', id).del();
+                return knex('ingredients_tags').where('ingredient_id', id).del();
               })
               .then((result) => {
                 let data = tags.map((tag) => {
                   return { "ingredient_id": id, "tag_text": tag.toLowerCase() };
                 })
-                return knex('ingredient_tags').insert(data).returning("*");
+                return knex('ingredients_tags').insert(data).returning("*");
               })
               .then((result) => {
                   return getIngredient(req, res);
@@ -97,7 +97,7 @@ function getIngredientsList(req, res) {
                   .select("id", "name", "description", "active", "image_url")
                   .where('active', 1)
                   .orderBy('ingredients.name'));
-    promises.push(knex("ingredient_tags").select("ingredient_id", "tag_text"));
+    promises.push(knex("ingredients_tags").select("ingredient_id", "tag_text"));
     Promise.all(promises)
         .then((results) => {
             let ingredients = results[0];
@@ -235,7 +235,7 @@ function addIngredient(req, res, next) {
                               let promises = [];
                               for (let tag of req.swagger.params.ingredient.value.tags) {
                                   promises.push(
-                                      knex("ingredient_tags")
+                                      knex("ingredients_tags")
                                       .returning('*')
                                       .insert({
                                           "ingredient_id": id,
@@ -268,14 +268,14 @@ function searchIngredients(req, res) {
     promises.push(
         knex("ingredients")
         // .select("ingredients.id", "name", "active")
-        .leftJoin('ingredient_tags', 'ingredients.id', 'ingredient_tags.ingredient_id')
+        .leftJoin('ingredients_tags', 'ingredients.id', 'ingredients_tags.ingredient_id')
         .distinct("ingredients.id", "ingredients.name", "ingredients.image_url", "ingredients.active")
         .where('active', 1)
         .andWhere('name', 'ilike', `%${text}%`)
-        .orWhere('ingredient_tags.tag_text', 'ilike', `%${text}%`)
+        .orWhere('ingredients_tags.tag_text', 'ilike', `%${text}%`)
         .orderBy('ingredients.name')
     );
-    promises.push(knex("ingredient_tags").select("ingredient_id", "tag_text"));
+    promises.push(knex("ingredients_tags").select("ingredient_id", "tag_text"));
     Promise.all(promises)
         .then((results) => {
             let ingredients = results[0];
@@ -373,7 +373,7 @@ function getPieDataSet(req, res) {
         else
         tag_text
         end
-        as category from ingredient_tags
+        as category from ingredients_tags
       ) as sq1 group by category;`)
       .then((data) => {
         return res.status(200).json(data.rows)
