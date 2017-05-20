@@ -2,7 +2,8 @@
 const knex = require('../../knex');
 const bookshelf = require('../../bookshelf');
 const jwt = require('jsonwebtoken');
-// const Client = require('../models/client.js').Client;
+const Client = require('../models/client.js').Client;
+const Ingredient = require('../models/ingredient.js').Ingredient;
 
 module.exports = {
     getClient: getClient,
@@ -132,7 +133,7 @@ function getClients(req, res) {
         let promises = [];
 
         promises.push(knex("clients").select("id", "first_name", "last_name", "email", "is_super_user"));
-        promises.push(knex("client_recipes").join('recipes', 'recipes.id', '=', 'client_recipes.recipe_id').select("client_recipes.client_id", "recipes.*"));
+        promises.push(knex("clients_recipes").join('recipes', 'recipes.id', '=', 'clients_recipes.recipe_id').select("clients_recipes.client_id", "recipes.*"));
         promises.push(knex("recipe_steps").join('recipes', 'recipes.id', '=', 'recipe_steps.recipe_id').select("recipe_steps.*"));
         promises.push(knex("recipe_favorites").select("recipe_favorites.*"));
 
@@ -195,75 +196,97 @@ function getClients(req, res) {
 function getClient(req, res) {
     // To list clients
 
-    let promises = [];
-    promises.push(knex("clients").select("id", "first_name", "last_name", "email", "is_super_user").first().where("id", req.swagger.params.user_id.value));
-    promises.push(knex("client_recipes").join('recipes', 'recipes.id', '=', 'client_recipes.recipe_id').select("client_recipes.client_id", "recipes.*").where("client_recipes.client_id", req.swagger.params.user_id.value));
-    promises.push(knex("recipe_steps").join('recipes', 'recipes.id', '=', 'recipe_steps.recipe_id').select("recipe_steps.*"));
-    promises.push(knex("client_restrictions").join('ingredients', 'ingredients.id', 'client_restrictions.ingredient_id').select("client_restrictions.client_id", "ingredients.*").where("client_restrictions.client_id", req.swagger.params.user_id.value));
-    promises.push(knex("recipe_favorites").select("recipe_favorites.recipe_id").where("recipe_favorites.client_id", req.swagger.params.user_id.value));
-
-    Promise.all(promises).then((results) => {
-        let client = results[0];
-        let recipes = results[1];
-        let instructions = results[2];
-        let restrictions = results[3];
-        let favorite_recipes = results[4];
-
-        if (!client) {
-            res.set('Content-Type', 'application/json')
-            return res.sendStatus(404);
-        }
-
-        client["recipes"] = recipes.map((recipe) => {
-            return {
-                id: recipe.id,
-                name: recipe.name,
-                description: recipe.description,
-                notes: recipe.notes,
-                image_url: recipe.image_url,
-                instructions: instructions.filter((step) => {
-                    return step.recipe_id === recipe.id;
-                })
-            };
-        }).sort((a, b) => {
-            let nameA = a.name.toUpperCase(); // ignore upper and lowercase
-            let nameB = b.name.toUpperCase(); // ignore upper and lowercase
-            if (nameA < nameB) {
-                return -1;
-            }
-            if (nameA > nameB) {
-                return 1;
-            }
-
-            // names must be equal
-            return 0;
+    Client.forge({
+            // id: req.swagger.params.user_id.value
+            id: 2
+        })
+        .fetch({
+            withRelated: [
+              { recipes: function(query) { query.orderBy('name'); }},
+              { 'recipes.ingredients': function(query) { query.orderBy('name'); }},
+              { 'recipes.ingredients.tags': function(query) { query.orderBy('tag_text'); }},
+              { 'recipes.ingredients.alternatives': function(query) { query.orderBy('name'); }},
+              { 'recipes.instructions': function(query) { query.orderBy('step_number'); }},
+              { 'recipes.tags': function(query) { query.orderBy('tag_text'); }},
+              'recipes.votes',
+              { restrictions: function(query) { query.orderBy('name'); }}
+            ]
+        })
+        .then((client) => {
+          return res.json(client.toJSON());
+        }).catch((err) => {
+          return res.sendStatus(500);
         });
 
-        client.restrictions = restrictions.map((restriction) => {
-            return {id: restriction.id, name: restriction.name, description: restriction.description};
-        }).sort((a, b) => {
-            let nameA = a.name.toUpperCase(); // ignore upper and lowercase
-            let nameB = b.name.toUpperCase(); // ignore upper and lowercase
-            if (nameA < nameB) {
-                return -1;
-            }
-            if (nameA > nameB) {
-                return 1;
-            }
-
-            // names must be equal
-            return 0;
-        });
-
-        client.favorites = {};
-        client.favorites.recipes = favorite_recipes.map((recipe) => {
-            return recipe.recipe_id;
-        });
-
-        return res.json(client);
-    }).catch((err) => {
-        return res.sendStatus(500);
-    });
+    // let promises = [];
+    // promises.push(knex("clients").select("id", "first_name", "last_name", "email", "is_super_user").first().where("id", req.swagger.params.user_id.value));
+    // promises.push(knex("clients_recipes").join('recipes', 'recipes.id', '=', 'clients_recipes.recipe_id').select("clients_recipes.client_id", "recipes.*").where("clients_recipes.client_id", req.swagger.params.user_id.value));
+    // promises.push(knex("recipe_steps").join('recipes', 'recipes.id', '=', 'recipe_steps.recipe_id').select("recipe_steps.*"));
+    // promises.push(knex("client_restrictions").join('ingredients', 'ingredients.id', 'client_restrictions.ingredient_id').select("client_restrictions.client_id", "ingredients.*").where("client_restrictions.client_id", req.swagger.params.user_id.value));
+    // promises.push(knex("recipe_favorites").select("recipe_favorites.recipe_id").where("recipe_favorites.client_id", req.swagger.params.user_id.value));
+    //
+    // Promise.all(promises).then((results) => {
+    //     let client = results[0];
+    //     let recipes = results[1];
+    //     let instructions = results[2];
+    //     let restrictions = results[3];
+    //     let favorite_recipes = results[4];
+    //
+    //     if (!client) {
+    //         res.set('Content-Type', 'application/json')
+    //         return res.sendStatus(404);
+    //     }
+    //
+    //     client["recipes"] = recipes.map((recipe) => {
+    //         return {
+    //             id: recipe.id,
+    //             name: recipe.name,
+    //             description: recipe.description,
+    //             notes: recipe.notes,
+    //             image_url: recipe.image_url,
+    //             instructions: instructions.filter((step) => {
+    //                 return step.recipe_id === recipe.id;
+    //             })
+    //         };
+    //     }).sort((a, b) => {
+    //         let nameA = a.name.toUpperCase(); // ignore upper and lowercase
+    //         let nameB = b.name.toUpperCase(); // ignore upper and lowercase
+    //         if (nameA < nameB) {
+    //             return -1;
+    //         }
+    //         if (nameA > nameB) {
+    //             return 1;
+    //         }
+    //
+    //         // names must be equal
+    //         return 0;
+    //     });
+    //
+    //     client.restrictions = restrictions.map((restriction) => {
+    //         return {id: restriction.id, name: restriction.name, description: restriction.description};
+    //     }).sort((a, b) => {
+    //         let nameA = a.name.toUpperCase(); // ignore upper and lowercase
+    //         let nameB = b.name.toUpperCase(); // ignore upper and lowercase
+    //         if (nameA < nameB) {
+    //             return -1;
+    //         }
+    //         if (nameA > nameB) {
+    //             return 1;
+    //         }
+    //
+    //         // names must be equal
+    //         return 0;
+    //     });
+    //
+    //     client.favorites = {};
+    //     client.favorites.recipes = favorite_recipes.map((recipe) => {
+    //         return recipe.recipe_id;
+    //     });
+    //
+    //     return res.json(client);
+    // }).catch((err) => {
+    //     return res.sendStatus(500);
+    // });
 }
 
 function getRestrictions(req, res) {
@@ -340,7 +363,7 @@ function getUsersSearchResponse(req, res) {
         let promises = [];
         // promises.push(knex("clients").select("id"));
         promises.push(knex("clients").select("id", "first_name", "last_name", "email", "is_super_user").where(`clients.first_name`, `like`, `%${first_name}%`).orWhere(`clients.last_name`, `like`, `%${last_name}%`).orWhere(`clients.email`, `like`, `%${email}%`));
-        promises.push(knex("client_recipes").join('recipes', 'recipes.id', '=', 'client_recipes.recipe_id').select("client_recipes.client_id", "recipes.*"));
+        promises.push(knex("clients_recipes").join('recipes', 'recipes.id', '=', 'clients_recipes.recipe_id').select("clients_recipes.client_id", "recipes.*"));
         promises.push(knex("recipe_steps").join('recipes', 'recipes.id', '=', 'recipe_steps.recipe_id').select("recipe_steps.*"));
         Promise.all(promises).then((results) => {
             let clients = results[0];

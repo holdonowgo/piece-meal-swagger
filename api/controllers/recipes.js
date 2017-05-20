@@ -102,7 +102,7 @@ function getFavoriteRecipes(req, res) {
 }
 
 function getClientRecipes(req, res) {
-    const query = knex("recipes").join('client_recipes', 'client_recipes.recipe_id', 'recipes.id').select("recipes.*").where('client_recipes.client_id', req.swagger.params.user_id.value).orderByRaw('LOWER(recipes.name)');
+    const query = knex("recipes").join('clients_recipes', 'clients_recipes.recipe_id', 'recipes.id').select("recipes.*").where('clients_recipes.client_id', req.swagger.params.user_id.value).orderByRaw('LOWER(recipes.name)');
     return doGetRecipes(query, res);
 }
 
@@ -113,7 +113,7 @@ function addClientRecipe(req, res) {
             res.status(401).send('Unauthorized');
         }
 
-        return knex("client_recipes").insert({client_id: req.swagger.params.user_id.value, recipe_id: req.swagger.params.request.value.recipe_id}).then(() => {
+        return knex("clients_recipes").insert({client_id: req.swagger.params.user_id.value, recipe_id: req.swagger.params.request.value.recipe_id}).then(() => {
             res.status(200).json({success: 1, description: "Added"});
         });
   });
@@ -132,7 +132,7 @@ function getRecipeStepsQuery(recipeId) {
 }
 
 function getRecipeTagsQuery(recipeId) {
-    return knex("recipe_tags").join("recipes", "recipes.id", "recipe_tags.recipe_id").select("recipe_tags.tag_text").orderBy('tag_text').where("recipe_tags.recipe_id", recipeId);
+    return knex("recipes_tags").join("recipes", "recipes.id", "recipes_tags.recipe_id").select("recipes_tags.tag_text").orderBy('tag_text').where("recipes_tags.recipe_id", recipeId);
 }
 
 function getRecipe(req, res) {
@@ -193,13 +193,13 @@ function rateRecipe(req, res) {
         let vote = req.swagger.params.vote.value.vote;
         let client_id = req.swagger.params.vote.value.client_id;
 
-        knex("recipe_votes").first().where("recipe_id", recipe_id).andWhere("client_id", client_id).then((result) => {
+        knex("recipes_votes").first().where("recipe_id", recipe_id).andWhere("client_id", client_id).then((result) => {
             if (result) {
-                return knex("recipe_votes")
+                return knex("recipes_votes")
                 .where("recipe_id", recipe_id).andWhere("client_id", client_id)
                 .update({vote: vote});
             } else {
-                return knex("recipe_votes")
+                return knex("recipes_votes")
                 .insert({"recipe_id": recipe_id, client_id: client_id, vote: vote});
             }
         })
@@ -249,7 +249,7 @@ function postRecipe(req, res) {
             let data = tags.map((tag) => {
                 return { recipe_id: recipe.id, tag_text: tag.toLowerCase() };
             });
-            return knex('recipe_tags').insert(data).returning("*");
+            return knex('recipes_tags').insert(data).returning("*");
         }).then(() => { // return new recipe
             return doGetRecipe(recipe.id, res);
         });
@@ -297,7 +297,7 @@ function updateRecipe(req, res) {
                 return {recipe_id: recipe.id, tag_text: tag.toLowerCase()};
             });
 
-            return knex('recipe_tags').insert(data).returning("*");
+            return knex('recipes_tags').insert(data).returning("*");
         }).then(() => { // return updated recipe
             return doGetRecipe(recipe.id, res);
         }).catch((err) => {

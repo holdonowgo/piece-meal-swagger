@@ -311,6 +311,9 @@ suite('ingredients test', () => {
                 name: 'tuna',
                 description: description,
                 tags: ['fish', 'seafood'],
+                alternatives: [
+                  {'alt_ingredient_id': 1, 'ratio': '1:2'}
+                ],
                 image_url: '',
             })
             .expect('Content-Type', /json/)
@@ -340,7 +343,9 @@ suite('ingredients test', () => {
             .set('Token', authToken)
             .send({
                 "name": "tuna",
-                "description": ""
+                "description": "",
+                tags: [],
+                alternatives: []
             })
             .expect('Content-Type', /json/)
             .expect((res) => {
@@ -370,6 +375,7 @@ suite('ingredients test', () => {
             .send({
                 name: 'garlic',
                 tags: [],
+                alternatives: [],
                 active: true
             })
             .expect('Content-Type', /json/)

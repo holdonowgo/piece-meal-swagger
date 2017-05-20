@@ -3,12 +3,13 @@ const knex = require('../../knex');
 const bookshelf = require('../../bookshelf');
 const Ingredient = require('../models/ingredient.js').Ingredient;
 const Ingredients = require('../models/ingredient.js').Ingredients;
-const IngredientTag = require('../models/ingredient.js').IngredientTag;
-const IngredientTags = require('../models/ingredient.js').IngredientTags;
+const IngredientTag = require('../models/ingredient_tag.js').IngredientTag;
+const IngredientTags = require('../models/ingredient_tag.js').IngredientTags;
 const bcrypt = require('bcrypt-as-promised');
 const jwt = require('jsonwebtoken');
 const fetch = require('node-fetch');
 const url = require('url');
+const Promise = require('bluebird');
 
 module.exports = {
     getIngredient: getIngredient,
@@ -194,7 +195,43 @@ function fetchIngredient(id, res) {
 }
 
 function getIngredient(req, res) {
-  return fetchIngredient(req.swagger.params.id.value, res);
+  // return fetchIngredient(req.swagger.params.id.value, res);
+
+  bookshelf.transaction((t) => {
+    return new Ingredient({name: 'New Ingredient'})
+      .save(null, {transacting: t})
+      .tap(function(model) {
+        return Promise.map([
+          {tag_text: 'first tag'},
+          {tag_text: 'second tag'},
+          {tag_text: 'third tag'}
+        ], (info) => {
+          // Some validation could take place here.
+          return new IngredientTag(info).save({'ingredient_id': model.id}, {transacting: t});
+        });
+      });
+  }).then((ingredient) => {
+    console.log(ingredient.related('tags').pluck('tag_text'));
+  }).catch((err) => {
+    console.error(err);
+  });
+
+  // new Ingredient({name: 'New Ingredient'}).save().then(function(model) {
+  //   console.log('model:', model.toJSON());
+  // });
+  // new IngredientTag({ingredient_id: 1, tag_text: 'New Ingredient'}).save().then(function(model) {
+  //   console.log('model:', model.toJSON());
+  // });
+
+  Ingredient.forge({
+          id: req.swagger.params.id.value
+      })
+      .fetch({
+          withRelated: ['alternatives', 'tags']
+      })
+      .then((ingredient) => {
+        return res.status(200).json(ingredient);
+      });
 }
 
 function addIngredient(req, res, next) {
