@@ -17,6 +17,21 @@ let Ingredient = bookshelf.Model.extend({
     //       }
     //     }
     // },
+    initialize: function () {
+      this.on('saved', function (model, attributes, options) {
+        // console.log('model:', model);
+        // console.log('attributes:', attributes);
+        // console.log('options:', options);
+        if (options.withRelated) {
+          if (!Array.isArray(options.withRelated)) options.withRelated = [options.withRelated];
+          return Promise.map(options.withRelated, function (name) {
+            if (model.related(name).hasChanged()) {
+              return model.related(name).save();
+            }
+          });
+        }
+      });
+    },
 
     tags: function() {
         return this.hasMany(IngredientTag);

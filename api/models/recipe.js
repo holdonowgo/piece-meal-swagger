@@ -13,7 +13,7 @@ const Clients = require('../models/client.js').Clients;
 let Recipe = bookshelf.Model.extend({
     tableName: 'recipes',
     idAttribute: 'id',
-    visible: ['name', 'description', 'prep_time', 'cook_time', 'notes', 'image_url', 'ingredients', 'instructions', 'tags', 'votes'],
+    visible: ['id', 'active', 'name', 'description', 'prep_time', 'cook_time', 'notes', 'image_url', 'ingredients', 'instructions', 'tags', 'votes'],
     hasTimestamps: true,
 
     clients: function() {
@@ -67,7 +67,23 @@ let Recipe = bookshelf.Model.extend({
 });
 
 let Recipes = bookshelf.Collection.extend({
-    model: Recipe
+    model: Recipe,
+
+    // comparator: true,
+    //
+    // initialize: function () {
+    //   this.on('fetchAll', collection.sort, collection);
+    // },
+    // sort: function () {
+    //   this.models.sort(this.sorter);
+    // },
+    // sorter: function ($1, $2) {
+    //   // if ($1.get('name').toLowerCase() < $2.get('name').toLowerCase()) return -1;
+    //   // if ($1.get('name').toLowerCase() > $2.get('name').toLowerCase()) return 1;
+    //   if ($1.get('name') < $2.get('name')) return -1;
+    //   if ($1.get('name') > $2.get('name')) return 1;
+    //   return 0;
+    // }
 });
 
 module.exports = {

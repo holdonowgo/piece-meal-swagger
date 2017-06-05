@@ -19,8 +19,8 @@ module.exports = {
     searchRecipes: searchRecipes,
     rateRecipe: rateRecipe,
     getRandomRecipes: getRandomRecipes,
-    getFavoriteRecipes: getFavoriteRecipes
-    // getRecipeBookshelf: getRecipeBookshelf
+    getFavoriteRecipes: getFavoriteRecipes,
+    getRecipeBookshelf: getRecipeBookshelf
 };
 
 function doGetRecipes(query, res) {
@@ -84,7 +84,8 @@ function doGetRecipes(query, res) {
 
 // /recipes
 function getRecipesList(req, res) {
-    return doGetRecipes(knex("recipes").orderByRaw('LOWER(recipes.name)'), res);
+    // return doGetRecipes(knex("recipes").orderByRaw('LOWER(recipes.name)'), res);
+    return fetchRecipes(res);
 }
 
 function getFavoriteRecipes(req, res) {
@@ -251,7 +252,8 @@ function postRecipe(req, res) {
             });
             return knex('recipes_tags').insert(data).returning("*");
         }).then(() => { // return new recipe
-            return doGetRecipe(recipe.id, res);
+            // return doGetRecipe(recipe.id, res);
+            return fetchRecipe(recipe.id, res);
         });
   });
 }
@@ -344,28 +346,137 @@ function searchRecipes(req, res) {
     .orderBy('recipes.name'), res);
 }
 
-// function getRecipeBookshelf(req, res) {
-//   Recipe.forge({
-//            id: req.swagger.params.id.value
-//       })
-//       .fetch({
-//           // withRelated: ['steps', 'tags', 'ingredients']
-//           withRelated: ['instructions', 'tags']
-//       })
-//       .then((recipe) => {
-//           let recipeObj = recipe.serialize();
-//           recipeObj.tags = recipeObj.instructions.map((value) => {
-//               return value.instructions;
-//           }).sort();
-//
-//           delete recipeObj.created_at;
-//           delete recipeObj.updated_at;
-//
-//           return res.json(recipeObj);
-//       }).catch((err) => {
-//           res.status(500).json({message: err});
-//       });
-// }
+function fetchRecipe(id, res) {
+  Recipe.forge({
+           id: id
+      })
+      .fetch({
+          // withRelated: ['steps', 'tags', 'ingredients']
+          withRelated: [
+            // 'instructions',
+            { instructions: (query) => { query.orderBy('step_number'); }},
+            'tags',
+            // { tags: (query) => { query.column('tag_text'); }},
+            'ingredients',
+            'ingredients.alternatives',
+            'ingredients.tags',
+            // { 'ingredients.tags': (query) => { query.column('tag_text'); }}
+          ]
+      })
+      .then((recipe) => {
+        if(!recipe) {
+          res.status(404).json('Not Found');
+        } else {
+          let recipeObj = recipe.serialize();
+          // recipeObj.instructions = recipeObj.instructions.map((instruction) => {
+          //     return instruction.instructions;
+          // }).sort();
+          recipeObj.tags = recipeObj.tags.map((tag) => {
+              return tag.tag_text;
+          }).sort();
+          for(let ingredient of recipeObj.ingredients) {
+            ingredient.tags = ingredient.tags.map(tag => tag.tag_text).sort();
+          }
+
+          delete recipeObj.created_at;
+          delete recipeObj.updated_at;
+
+          return res.json(recipeObj);
+        }
+      }).catch((err) => {
+          res.status(500).json({message: err});
+      });
+}
+
+function fetchRecipes(res) {
+  // Recipes.forge()
+  //     .fetchAll({
+  new Recipes().query('orderBy', 'name', 'asc').fetch({
+          // withRelated: ['steps', 'tags', 'ingredients']
+          withRelated: [
+            // 'instructions',
+            { instructions: (query) => { query.orderBy('step_number'); }},
+            'tags',
+            // { tags: (query) => { query.column('tag_text'); }},
+            'ingredients',
+            'ingredients.alternatives',
+            'ingredients.tags',
+            // { 'ingredients.tags': (query) => { query.column('tag_text'); }}
+          ]
+      })
+      .then((recipes) => {
+        if(!recipes) {
+          res.status(404).json('Not Found');
+        } else {
+          let recipeObjs = recipes.serialize();
+
+          recipeObjs.sort((a, b) => {
+            if(a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+            if(b.name.toLowerCase() > a.name.toLowerCase()) return -1;
+            return 0;
+          })
+
+          for(let recipeObj of recipeObjs) {
+            recipeObj.tags = recipeObj.tags.map((tag) => {
+                return tag.tag_text;
+            }).sort();
+
+            for(let ingredient of recipeObj.ingredients) {
+              ingredient.tags = ingredient.tags.map(tag => tag.tag_text).sort();
+            }
+
+            delete recipeObj.created_at;
+            delete recipeObj.updated_at;
+          }
+
+          return res.json({ recipes: recipeObjs });
+        }
+      }).catch((err) => {
+          res.status(500).json({message: err});
+      });
+}
+
+function getRecipeBookshelf(req, res) {
+  Recipe.forge({
+           id: req.swagger.params.id.value
+      })
+      .fetch({
+          // withRelated: ['steps', 'tags', 'ingredients']
+          withRelated: [
+            // 'instructions',
+            { instructions: (query) => { query.orderBy('step_number'); }},
+            'tags',
+            // { tags: (query) => { query.column('tag_text'); }},
+            'ingredients',
+            'ingredients.alternatives',
+            'ingredients.tags',
+            // { 'ingredients.tags': (query) => { query.column('tag_text'); }}
+          ]
+      })
+      .then((recipe) => {
+        if(!recipe) {
+          res.status(404).json('Not Found');
+        } else {
+          let recipeObj = recipe.serialize();
+          // recipeObj.instructions = recipeObj.instructions.map((instruction) => {
+          //     return instruction.instructions;
+          // }).sort();
+          recipeObj.tags = recipeObj.tags.map((tag) => {
+              return tag.tag_text;
+          }).sort();
+          for(let ingredient of recipeObj.ingredients) {
+            ingredient.tags = ingredient.tags.map(tag => tag.tag_text).sort();
+          }
+
+          delete recipeObj.created_at;
+          delete recipeObj.updated_at;
+
+          return res.json(recipeObj);
+        }
+      }).catch((err) => {
+          res.status(500).json({message: err});
+      });
+}
 
 function getRandomRecipes(req, res) {
   return knex.raw('select * from recipes tablesample bernoulli (100) order by random() limit 10')

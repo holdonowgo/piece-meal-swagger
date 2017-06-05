@@ -6,7 +6,7 @@ const Ingredients = require('../models/ingredient.js').Ingredients;
 let AlternativeIngredient = bookshelf.Model.extend({
   tableName: 'ingredient_alternatives',
   hasTimestamps: false,
-  // idAttribute : ['recipe_id', 'ingredient_id']
+  idAttribute : ['alt_ingredient_id', 'ingredient_id']
 
   // recipe: function() {
   //     return this.belongsTo(Recipe);

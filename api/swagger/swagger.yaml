@@ -3,8 +3,8 @@ info:
   version: "0.0.1"
   title: Piece-Meal App
 # during dev, should point to your local machine
-host: piecemeal-api.herokuapp.com
-# host: localhost:10010
+# host: piecemeal-api.herokuapp.com
+host: localhost:10010
 # basePath prefixes all resource paths
 basePath: /api/v1
 #
@@ -603,8 +603,8 @@ paths:
     get:
       description: get a recipe
       # define the type of response for Success "200" and Error
-      # operationId: getRecipeBookshelf
-      operationId: getRecipe
+      operationId: getRecipeBookshelf
+      # operationId: getRecipe
       parameters:
         # - name: token
         #   in: header

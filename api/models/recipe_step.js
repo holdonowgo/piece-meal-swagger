@@ -7,6 +7,7 @@ const RecipeIngredient = require('../models/recipe_ingredient.js').RecipeIngredi
 
 let RecipeStep = bookshelf.Model.extend({
     tableName: 'recipe_steps',
+    hidden: ['id', 'recipe_id'],
     hasTimestamps: false,
 
     // recipe: function() {

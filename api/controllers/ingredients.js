@@ -5,6 +5,8 @@ const Ingredient = require('../models/ingredient.js').Ingredient;
 const Ingredients = require('../models/ingredient.js').Ingredients;
 const IngredientTag = require('../models/ingredient_tag.js').IngredientTag;
 const IngredientTags = require('../models/ingredient_tag.js').IngredientTags;
+const AlternativeIngredient = require('../models/ingredients_ingredients.js').AlternativeIngredient;
+const AlternativeIngredients = require('../models/ingredients_ingredients.js').AlternativeIngredients;
 const bcrypt = require('bcrypt-as-promised');
 const jwt = require('jsonwebtoken');
 const fetch = require('node-fetch');
@@ -36,59 +38,94 @@ function updateIngredient(req, res, next) {
         let tags = req.swagger.params.ingredient.value.tags;
         let image_url = req.swagger.params.ingredient.value.image_url;
 
-        Ingredient.forge({
-            id: req.swagger.params.id.value
-          })
-          .fetch()
-          .then((ingredient) => {
-            if(!ingredient) {
-              res.status(404).json('Not Found');
-            } else {
-              return knex('ingredients')
-                  .where('id', id)
-                  .update({
-                      name: name,
-                      description: description,
-                      image_url: image_url
-                  })
-                  .returning('*');
-                }
+        new Ingredient({id: id})
+        .save({name: name, description: description, image_url: image_url}, {patch: true})
+        .then(function(model) {
+          return Ingredient.forge({
+                  id: req.swagger.params.id.value
               })
-              .then((result) => {
-                return knex('ingredients_tags').where('ingredient_id', id).del();
+              .fetch({
+                  withRelated: ['alternatives', 'tags']
               })
-              .then((result) => {
-                let data = tags.map((tag) => {
-                  return { "ingredient_id": id, "tag_text": tag.toLowerCase() };
-                })
-                return knex('ingredients_tags').insert(data).returning("*");
-              })
-              .then((result) => {
-                  return getIngredient(req, res);
-              });
+        })
+        .then((ingredient) => {
+          return res.status(200).json(ingredient);
+        });
+        // return res.status(200).send(model.toJSON());
+
+        // Ingredient.forge({
+        //     id: req.swagger.params.id.value
+        //   })
+        //   .fetch()
+        //   .then((ingredient) => {
+        //     if(!ingredient) {
+        //       res.status(404).json('Not Found');
+        //     } else {
+        //       return knex('ingredients')
+        //           .where('id', id)
+        //           .update({
+        //               name: name,
+        //               description: description,
+        //               image_url: image_url
+        //           })
+        //           .returning('*');
+        //         }
+        //       })
+        //       .then((result) => {
+        //         return knex('ingredients_tags').where('ingredient_id', id).del();
+        //       })
+        //       .then((result) => {
+        //         let data = tags.map((tag) => {
+        //           return { "ingredient_id": id, "tag_text": tag.toLowerCase() };
+        //         })
+        //         return knex('ingredients_tags').insert(data).returning("*");
+        //       })
+        //       .then((result) => {
+        //           return getIngredient(req, res);
+        //       });
         });
 }
 
 function deleteIngredient(req, res) {
-    jwt.verify(req.headers['token'], process.env.JWT_KEY, (err, payload) => {
-        if (err) {
-            res.set('Content-Type', 'application/json');
-            res.status(401).send('Unauthorized');
-        }
+  new Ingredient({id: req.swagger.params.id.value})
+  .destroy()
+  .then(function(model) {
+    return res.status(200).json(model);
+  });
+  // Ingredient.forge({id: req.swagger.params.id.value}).fetch().destroy().then((item) => {
+  //   return getIngredient(req, res);
+  // });
 
-        knex('ingredients')
-            .where('id', req.swagger.params.id.value)
-            .update({
-                active: false
-            })
-            .returning('*')
-            .then((result) => {
-                let ingredient = result[0];
-                delete ingredient.created_at;
-                delete ingredient.updated_at;
-                return res.status(200).json(ingredient);
-            });
-      });
+  // Ingredient.forge({id: req.swagger.params.id.value}).fetch({
+  //   withRelated:['tags', 'alternatives']
+  //   }).then(function (item) {
+  //     return item.related('tags').invokeThen('destroy').then(function () {
+  //       return item.destroy().then(function () {
+  //         console.log('destroyed!');
+  //         return res.status(200).json(item);
+  //       });
+  //     });
+  //   });
+
+    // jwt.verify(req.headers['token'], process.env.JWT_KEY, (err, payload) => {
+    //     if (err) {
+    //         res.set('Content-Type', 'application/json');
+    //         res.status(401).send('Unauthorized');
+    //     }
+    //
+    //     knex('ingredients')
+    //         .where('id', req.swagger.params.id.value)
+    //         .update({
+    //             active: false
+    //         })
+    //         .returning('*')
+    //         .then((result) => {
+    //             let ingredient = result[0];
+    //             delete ingredient.created_at;
+    //             delete ingredient.updated_at;
+    //             return res.status(200).json(ingredient);
+    //         });
+    //   });
 }
 
 function getIngredientsList(req, res) {
@@ -211,11 +248,10 @@ function getIngredient(req, res) {
         });
       });
   }).then((ingredient) => {
-    console.log(ingredient.related('tags').pluck('tag_text'));
+    // console.log(ingredient.related('tags').pluck('tag_text'));
   }).catch((err) => {
     console.error(err);
   });
-
   // new Ingredient({name: 'New Ingredient'}).save().then(function(model) {
   //   console.log('model:', model.toJSON());
   // });
@@ -244,56 +280,88 @@ function addIngredient(req, res, next) {
         let name = req.swagger.params.ingredient.value.name;
         let description = req.swagger.params.ingredient.value.description;
         let image_url = req.swagger.params.ingredient.value.image_url;
+        let alternatives = req.swagger.params.ingredient.value.alternatives;
+        let tags = req.swagger.params.ingredient.value.tags;
 
-        let id;
-
-        knex("ingredients")
-            .first().where("name", name)
-            .then((result) => {
-                if (result) {
-                    delete result.created_at;
-                    delete result.updated_at;
-                    return res.status(400).json({
-                        message: 'Ingredient already exists!',
-                        ingredient: result
-                    });
-                    // throw new Error('Ingredient already exists!');
-                } else {
-                    return knex("ingredients")
-                      .returning('*')
-                      .insert({
-                        "name": name,
-                        "description": description,
-                        "image_url": image_url
-                      })
-                      .then((ingredient) => {
-                        id = ingredient[0].id;
-                          if (req.swagger.params.ingredient.value.tags) {
-                              let promises = [];
-                              for (let tag of req.swagger.params.ingredient.value.tags) {
-                                  promises.push(
-                                      knex("ingredients_tags")
-                                      .returning('*')
-                                      .insert({
-                                          "ingredient_id": id,
-                                          "tag_text": tag.toLowerCase()
-                                      })
-                                  );
-                              }
-
-                              // ingredient[0].tags = req.swagger.params.ingredient.value.tags;
-                              // return ingredient[0];
-                              return Promise.all(promises);
-                          }
-                      })
-                      .then((promises) => {
-                        return fetchIngredient(id, res);
-                      })
-                      .catch((error) => {
-                        console.error(error);
-                      })
-                    }
+        bookshelf.transaction((t) => {
+          return new Ingredient({name: name, description: description, image_url: image_url})
+            .save(null, {transacting: t})
+            .tap(function(model) {
+              let newTags = tags.map((tag) => {
+                return {tag_text: tag}
+              })
+              return Promise.map(newTags, (info) => {
+                // Some validation could take place here.
+                return new IngredientTag(info).save({'ingredient_id': model.id}, {transacting: t});
+              });
+            })
+            .tap(function(model) {
+              let newAlts = alternatives.map((altIngredient) => {
+                // console.log('altIngredient.alt_ingredient_id:', altIngredient.alt_ingredient_id);
+                return {'alt_ingredient_id': altIngredient.alt_ingredient_id, 'ratio': altIngredient.ratio }
+              })
+              return Promise.map(newAlts, (info) => {
+                // Some validation could take place here.
+                // console.log('model.id:', model.id);
+                return new AlternativeIngredient(info).save({'ingredient_id': model.id}, {transacting: t});
+              });
             });
+        }).then((ingredient) => {
+          // console.log(ingredient.related('tags').pluck('tag_text'));
+          return fetchIngredient(ingredient.id, res);
+        }).catch((err) => {
+          console.error(err);
+        });
+
+        // let id;
+        //
+        // knex("ingredients")
+        //     .first().where("name", name)
+        //     .then((result) => {
+        //         if (result) {
+        //             delete result.created_at;
+        //             delete result.updated_at;
+        //             return res.status(400).json({
+        //                 message: 'Ingredient already exists!',
+        //                 ingredient: result
+        //             });
+        //             // throw new Error('Ingredient already exists!');
+        //         } else {
+        //             return knex("ingredients")
+        //               .returning('*')
+        //               .insert({
+        //                 "name": name,
+        //                 "description": description,
+        //                 "image_url": image_url
+        //               })
+        //               .then((ingredient) => {
+        //                 id = ingredient[0].id;
+        //                   if (req.swagger.params.ingredient.value.tags) {
+        //                       let promises = [];
+        //                       for (let tag of req.swagger.params.ingredient.value.tags) {
+        //                           promises.push(
+        //                               knex("ingredients_tags")
+        //                               .returning('*')
+        //                               .insert({
+        //                                   "ingredient_id": id,
+        //                                   "tag_text": tag.toLowerCase()
+        //                               })
+        //                           );
+        //                       }
+        //
+        //                       // ingredient[0].tags = req.swagger.params.ingredient.value.tags;
+        //                       // return ingredient[0];
+        //                       return Promise.all(promises);
+        //                   }
+        //               })
+        //               .then((promises) => {
+        //                 return fetchIngredient(id, res);
+        //               })
+        //               .catch((error) => {
+        //                 console.error(error);
+        //               })
+        //             }
+        //     });
       });
 }
 
