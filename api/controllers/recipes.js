@@ -85,7 +85,7 @@ function doGetRecipes(query, res) {
 // /recipes
 function getRecipesList(req, res) {
     // return doGetRecipes(knex("recipes").orderByRaw('LOWER(recipes.name)'), res);
-    return fetchRecipes(res);
+    return fetchRecipes(new Recipes().query('orderBy', 'name', 'asc'), res);
 }
 
 function getFavoriteRecipes(req, res) {
@@ -103,8 +103,15 @@ function getFavoriteRecipes(req, res) {
 }
 
 function getClientRecipes(req, res) {
-    const query = knex("recipes").join('clients_recipes', 'clients_recipes.recipe_id', 'recipes.id').select("recipes.*").where('clients_recipes.client_id', req.swagger.params.user_id.value).orderByRaw('LOWER(recipes.name)');
-    return doGetRecipes(query, res);
+
+    const query = Recipes.query((qb) => {
+      qb.innerJoin('clients_recipes', 'recipes.id', 'clients_recipes.recipe_id');
+      qb.where('clients_recipes.client_id', req.swagger.params.user_id.value);
+    });
+    return fetchRecipes(query, res);
+
+    // const query = knex("recipes").join('clients_recipes', 'clients_recipes.recipe_id', 'recipes.id').select("recipes.*").where('clients_recipes.client_id', req.swagger.params.user_id.value).orderByRaw('LOWER(recipes.name)');
+    // return doGetRecipes(query, res);
 }
 
 function addClientRecipe(req, res) {
@@ -388,10 +395,10 @@ function fetchRecipe(id, res) {
       });
 }
 
-function fetchRecipes(res) {
+function fetchRecipes(query, res) {
   // Recipes.forge()
   //     .fetchAll({
-  new Recipes().query('orderBy', 'name', 'asc').fetch({
+  query.fetch({
           // withRelated: ['steps', 'tags', 'ingredients']
           withRelated: [
             // 'instructions',

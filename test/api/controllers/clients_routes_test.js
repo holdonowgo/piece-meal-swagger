@@ -278,26 +278,92 @@ suite('clients tests', () => {
             "is_super_user": true,
             "recipes": [
                 {
+                    "active": true,
+                    "cook_time": null,
                     "id": 5,
                     "instructions": [],
                     "name": "Recipe #5",
                     "description": description_5,
                     "image_url": "",
-                    "notes": notes
-                }, {
+                    "ingredients": [
+                        {
+                          "active": true,
+                          "alternatives": [],
+                          "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                          "id": 23,
+                          "image_url": "",
+                          "name": "asafoetida (powder)",
+                          "tags": []
+                        },
+                        {
+                          "active": true,
+                          "alternatives": [],
+                          "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                          "id": 21,
+                          "image_url": "",
+                          "name": "garlic",
+                          "tags": []
+                        },
+                        {
+                          "active": true,
+                          "alternatives": [],
+                          "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                          "id": 22,
+                          "image_url": "",
+                          "name": "onion",
+                          "tags": []
+                        }
+                      ],
+                    "notes": notes,
+                    "prep_time": null,
+                    "tags": [],
+                    "votes": [
+                      {
+                        "client_id": 4,
+                        "recipe_id": 5,
+                        "vote": 1
+                      }
+                    ]
+                },
+                {
+                    "active": true,
+                    "cook_time": null,
                     "id": 6,
                     "instructions": [],
                     "name": "Recipe #6",
                     "description": description_6,
                     "image_url": "",
-                    "notes": notes
-                }, {
+                    "ingredients": [],
+                    "notes": notes,
+                    "prep_time": null,
+                    "tags": [],
+                    "votes": [
+                      {
+                        "client_id": 4,
+                        "recipe_id": 6,
+                        "vote": -1
+                      }
+                    ]
+                },
+                {
+                    "active": true,
+                    "cook_time": null,
                     "id": 7,
                     "instructions": [],
                     "name": "Recipe #7",
                     "description": description_7,
                     "image_url": "",
-                    "notes": notes
+                    "ingredients": [],
+                    "notes": notes,
+                    "prep_time": null,
+                    "tags": [],
+                    "votes": [
+                      {
+                        "client_id": 4,
+                        "recipe_id": 7,
+                        "vote": 1
+                      }
+                    ]
                 }
             ],
             "restrictions": [
@@ -336,10 +402,7 @@ suite('clients tests', () => {
                   "id": 24,
                   "name": "white flour"
                 }
-              ],
-              "favorites": {
-                "recipes": [ 7, 6 ]
-              }
+              ]
         }, done);
 
         /* eslint-enable max-len */

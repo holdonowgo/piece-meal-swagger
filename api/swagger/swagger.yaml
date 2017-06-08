@@ -685,7 +685,7 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
-  /recipes/{user_id}/favorites:
+  /clients/{user_id}/recipes/favorites:
     x-swagger-router-controller: recipes
     get:
       description: get client's favorite recipes

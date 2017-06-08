@@ -246,117 +246,127 @@ suite("recipes test", () => {
   //     }, done);
   // });
 
-  // test("GET /recipes/1/favorites", (done) => {
-  //   request(server).get("/api/v1/recipes/1/favorites").set("Accept", "application/json").set('token', authToken).expect("Content-Type", /json/).expect((res) => {
-  //     deleteIngredientTimestamps(res);
-  //   }).expect(200, {
-  //     "recipes": [
-  //
-  //       {
-  //         "active": true,
-  //         "id": 1,
-  //         "image_url": "",
-  //         "ingredients": [
-  //           {
-  //             "active": true,
-  //             "id": 1,
-  //             "name": "bacon",
-  //             // "tags": ['meat', 'pork'],
-  //             "description": "Mmmmmmmmm...Bacon!",
-  //             "image_url": ""
-  //           }, {
-  //             "active": true,
-  //             "id": 3,
-  //             "name": "milk",
-  //             "description": description,
-  //             "image_url": "",
-  //             // "tags": ['dairy', 'vegetarian']
-  //           }
-  //         ],
-  //         "name": "cauliflower buffalo bites",
-  //         "description": description_1,
-  //         "image_url": "",
-  //         "instructions": [
-  //           {
-  //             "instructions": "do step one",
-  //             "step_number": 1
-  //           }, {
-  //             "instructions": "do step two",
-  //             "step_number": 2
-  //           }, {
-  //             "instructions": "do step three",
-  //             "step_number": 3
-  //           }, {
-  //             "instructions": "do step four",
-  //             "step_number": 4
-  //           }, {
-  //             "instructions": "do step five",
-  //             "step_number": 5
-  //           }
-  //         ],
-  //         "notes": notes
-  //       }, {
-  //         "active": true,
-  //         "id": 3,
-  //         "name": "cheese omelette",
-  //         "description": "Great when making breakfast for the family!  Can be eaten cold too!",
-  //         "image_url": "",
-  //         "instructions": [
-  //           {
-  //             "instructions": "Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.",
-  //             "step_number": 1
-  //           }, {
-  //             "instructions": "Place a small non-stick frying pan on a low heat to warm up.",
-  //             "step_number": 2
-  //           }
-  //         ],
-  //         "ingredients": [
-  //           {
-  //             "id": 1,
-  //             "name": "bacon",
-  //             "active": true,
-  //             // "tags": ['meat', 'pork'],
-  //             "description": "Mmmmmmmmm...Bacon!",
-  //             "image_url": ""
-  //           }
-  //         ],
-  //         "notes": notes
-  //       }, {
-  //         "active": true,
-  //         "id": 5,
-  //         "ingredients": [
-  //           {
-  //             "active": true,
-  //             "id": 21,
-  //             "name": "garlic",
-  //             "description": description,
-  //             // "tags": [],
-  //             "image_url": ""
-  //           }, {
-  //             "active": true,
-  //             "id": 22,
-  //             "name": "onion",
-  //             "description": description,
-  //             // "tags": [],
-  //             "image_url": ""
-  //           }, {
-  //             "active": true,
-  //             "id": 23,
-  //             "name": "asafoetida (powder)",
-  //             "description": description,
-  //             // "tags": [],
-  //             "image_url": ""
-  //           }
-  //         ],
-  //         "image_url": "",
-  //         "instructions": [],
-  //         "name": "Recipe #5",
-  //         "description": description_5,
-  //         "notes": notes
-  //       }
-  //     ]
-  //   }, done);
-  // });
+  test("GET /clients/1/recipes/favorites", (done) => {
+    request(server).get("/api/v1/clients/1/recipes/favorites")
+    .set("Accept", "application/json")
+    .set('token', authToken)
+    .expect("Content-Type", /json/)
+    .expect((res) => {
+      deleteRecipeTimestamps(res);
+      deleteIngredientTimestamps(res);
+    }).expect(200, {
+      "recipes": [
+        {
+          "active": true,
+          "cook_time": null,
+          "id": 1,
+          "image_url": "",
+          "ingredients": [
+            {
+              "active": true,
+              "id": 1,
+              "name": "bacon",
+              // "tags": ['meat', 'pork'],
+              "description": "Mmmmmmmmm...Bacon!",
+              "image_url": ""
+            }, {
+              "active": true,
+              "id": 3,
+              "name": "milk",
+              "description": description,
+              "image_url": "",
+              // "tags": ['dairy', 'vegetarian']
+            }
+          ],
+          "name": "cauliflower buffalo bites",
+          "description": description_1,
+          "image_url": "",
+          "instructions": [
+            {
+              "instructions": "do step one",
+              "step_number": 1
+            }, {
+              "instructions": "do step two",
+              "step_number": 2
+            }, {
+              "instructions": "do step three",
+              "step_number": 3
+            }, {
+              "instructions": "do step four",
+              "step_number": 4
+            }, {
+              "instructions": "do step five",
+              "step_number": 5
+            }
+          ],
+          "notes": notes,
+          "prep_time": null
+        }, {
+          "active": true,
+          "cook_time": null,
+          "id": 3,
+          "name": "cheese omelette",
+          "description": "Great when making breakfast for the family!  Can be eaten cold too!",
+          "image_url": "",
+          "instructions": [
+            {
+              "instructions": "Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.",
+              "step_number": 1
+            }, {
+              "instructions": "Place a small non-stick frying pan on a low heat to warm up.",
+              "step_number": 2
+            }
+          ],
+          "ingredients": [
+            {
+              "id": 1,
+              "name": "bacon",
+              "active": true,
+              // "tags": ['meat', 'pork'],
+              "description": "Mmmmmmmmm...Bacon!",
+              "image_url": ""
+            }
+          ],
+          "notes": notes,
+          "prep_time": null
+        }, {
+          "active": true,
+          "cook_time": null,
+          "id": 5,
+          "ingredients": [
+            {
+              "active": true,
+              "id": 21,
+              "name": "garlic",
+              "description": description,
+              // "tags": [],
+              "image_url": ""
+            }, {
+              "active": true,
+              "id": 22,
+              "name": "onion",
+              "description": description,
+              // "tags": [],
+              "image_url": ""
+            }, {
+              "active": true,
+              "id": 23,
+              "name": "asafoetida (powder)",
+              "description": description,
+              // "tags": [],
+              "image_url": ""
+            }
+          ],
+          "image_url": "",
+          "instructions": [],
+          "name": "Recipe #5",
+          "description": description_5,
+          "notes": notes,
+          "prep_time": null
+        }
+      ]
+    }, done);
+  });
 
   test("GET /recipes", (done) => {
     request(server).get("/api/v1/recipes").set("Accept", "application/json")
@@ -940,409 +950,550 @@ suite("recipes test", () => {
   //     }, done);
   // });
 
-  // test("PUT /recipes:id", (done) => {
-  //   request(server).get("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).expect(200, {
-  //     "id": 2,
-  //     "name": "simple oatmeal",
-  //     "description": '',
-  //     "image_url": "",
-  //     "instructions": [],
-  //     "ingredients": [
-  //       {
-  //         "id": 1,
-  //         "name": "bacon",
-  //         "description": "Mmmmmmmmm...Bacon!",
-  //         "tags": [
-  //           'meat', 'pork'
-  //         ],
-  //         "image_url": "",
-  //         "active": true
-  //       }
-  //     ],
-  //     "notes": "",
-  //     "active": true,
-  //     "tags": []
-  //   });
-  //
-  //   request(server).put("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).send({
-  //     "id": 2,
-  //     "name": "simple maple oatmeal",
-  //     "description": 'A delicious winter time breakfast.  Try it with crumbled bacon!',
-  //     "image_url": "",
-  //     "instructions": [
-  //       {
-  //         step_number: 1,
-  //         instructions: "Place 3/4 cup of the rolled oats into a blender and process until a flour."
-  //       }, {
-  //         step_number: 2,
-  //         instructions: "Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil."
-  //       }
-  //     ],
-  //     "ingredients": [1],
-  //     "notes": "Bacon Bacon BACON!",
-  //     "tags": ['breakfast', 'sweet']
-  //   }).expect("Content-Type", /json/).expect(200, {
-  //     "id": 2,
-  //     "name": "simple maple oatmeal",
-  //     "description": 'A delicious winter time breakfast.  Try it with crumbled bacon!',
-  //     "image_url": "",
-  //     "instructions": [
-  //       {
-  //         step_number: 1,
-  //         instructions: "Place 3/4 cup of the rolled oats into a blender and process until a flour."
-  //       }, {
-  //         step_number: 2,
-  //         instructions: "Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil."
-  //       }
-  //     ],
-  //     "ingredients": [
-  //       {
-  //         "id": 1,
-  //         "name": "bacon",
-  //         "description": "Mmmmmmmmm...Bacon!",
-  //         "tags": [
-  //           'meat', 'pork'
-  //         ],
-  //         "image_url": "",
-  //         "active": true
-  //       }
-  //     ],
-  //     "notes": "Bacon Bacon BACON!",
-  //     "tags": [
-  //       'breakfast', 'sweet'
-  //     ],
-  //     "active": true
-  //   }, done);
-  // });
-  //
-  // test("DELETE /recipes/:id", (done) => {
-  //   request(server).del("/api/v1/recipes/1").set("Accept", "application/json").set('token', authToken).expect("Content-Type", /json/).expect(200, {
-  //     id: 1,
-  //     name: "cauliflower buffalo bites",
-  //     active: false, // "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
-  //   }, done);
-  // });
-  //
-  // test("GET /clients/1/recipes", (done) => {
-  //   request(server).get("/api/v1/clients/1/recipes").set("Accept", "application/json").set('token', authToken).expect((res) => {
-  //     deleteIngredientTimestamps(res);
-  //   }).expect(200, {
-  //     "recipes": [
-  //       {
-  //         "id": 1,
-  //         "name": "cauliflower buffalo bites",
-  //         "description": description_1,
-  //         "image_url": "",
-  //         instructions: [
-  //           {
-  //             "instructions": "do step one",
-  //             "step_number": 1
-  //           }, {
-  //             "instructions": "do step two",
-  //             "step_number": 2
-  //           }, {
-  //             "instructions": "do step three",
-  //             "step_number": 3
-  //           }, {
-  //             "instructions": "do step four",
-  //             "step_number": 4
-  //           }, {
-  //             "instructions": "do step five",
-  //             "step_number": 5
-  //           }
-  //         ],
-  //         "ingredients": [
-  //           {
-  //             "id": 1,
-  //             "name": "bacon",
-  //             "active": true,
-  //             // "tags": ['meat', 'pork'],
-  //             "description": "Mmmmmmmmm...Bacon!",
-  //             "image_url": ""
-  //           }, {
-  //             "id": 3,
-  //             "name": "milk",
-  //             "active": true,
-  //             // "tags": ['dairy', 'vegetarian'],
-  //             "description": description,
-  //             "image_url": ""
-  //           }
-  //         ],
-  //         "notes": notes,
-  //         "active": true
-  //       }, {
-  //         "id": 3,
-  //         "name": "cheese omelette",
-  //         "description": 'Great when making breakfast for the family!  Can be eaten cold too!',
-  //         "image_url": "",
-  //         "instructions": [
-  //           {
-  //             "instructions": "Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.",
-  //             "step_number": 1
-  //           }, {
-  //             "instructions": "Place a small non-stick frying pan on a low heat to warm up.",
-  //             "step_number": 2
-  //           }
-  //         ],
-  //         "ingredients": [
-  //           {
-  //             "id": 1,
-  //             "name": "bacon",
-  //             "active": true,
-  //             // "tags": ['meat', 'pork'],
-  //             "description": "Mmmmmmmmm...Bacon!",
-  //             "image_url": ""
-  //           }
-  //         ],
-  //         "notes": notes,
-  //         "active": true
-  //       }, {
-  //         "id": 2,
-  //         "name": "simple oatmeal",
-  //         "description": description_2,
-  //         "image_url": "",
-  //         "instructions": [],
-  //         "ingredients": [
-  //           {
-  //             "id": 1,
-  //             "name": "bacon",
-  //             "active": true,
-  //             // "tags": ['meat', 'pork'],
-  //             "description": "Mmmmmmmmm...Bacon!",
-  //             "image_url": ""
-  //           }
-  //         ],
-  //         "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
-  //         "active": true
-  //       }
-  //     ]
-  //   }, done);
-  // });
-  //
-  // test("POST /clients/2/recipes", () => {
-  //   return request(server).post("/api/v1/clients/2/recipes").set("Accept", "application/json").set('token', authToken).send({recipe_id: 1}).expect(200, {
-  //     success: 1,
-  //     description: "Added"
-  //   }).then(() => {
-  //     // check that it was actually added.
-  //     return request(server).get("/api/v1/clients/2/recipes").set("Accept", "application/json").set('token', authToken).expect((res) => {
-  //       deleteIngredientTimestamps(res);
-  //     }).expect(200, {
-  //       "recipes": [
-  //         {
-  //           "id": 1,
-  //           "name": "cauliflower buffalo bites",
-  //           "description": description_1,
-  //           "image_url": "",
-  //           instructions: [
-  //             {
-  //               "instructions": "do step one",
-  //               "step_number": 1
-  //             }, {
-  //               "instructions": "do step two",
-  //               "step_number": 2
-  //             }, {
-  //               "instructions": "do step three",
-  //               "step_number": 3
-  //             }, {
-  //               "instructions": "do step four",
-  //               "step_number": 4
-  //             }, {
-  //               "instructions": "do step five",
-  //               "step_number": 5
-  //             }
-  //           ],
-  //           "ingredients": [
-  //             {
-  //               "id": 1,
-  //               "name": "bacon",
-  //               "active": true,
-  //               // "tags": ['meat', 'pork'],
-  //               "description": "Mmmmmmmmm...Bacon!",
-  //               "image_url": ""
-  //             }, {
-  //               "id": 3,
-  //               "name": "milk",
-  //               "active": true,
-  //               // "tags": ['dairy', 'vegetarian'],
-  //               "description": description,
-  //               "image_url": ""
-  //             }
-  //           ],
-  //           "notes": notes,
-  //           // "tags": [],
-  //           "active": true
-  //         }
-  //       ]
-  //     });
-  //   });
-  // });
-  //
-  // test('GET /search/recipes/?text=mi', (done) => {
-  //   request(server).get('/api/v1/search/recipes?text=d').set('Accept', 'application/json').set('Token', authToken).expect('Content-Type', /json/).expect(200, {
-  //     "recipes": [
-  //       {
-  //         "active": true,
-  //         "id": 4,
-  //         "ingredients": [
-  //           {
-  //             "active": true,
-  //             "id": 17,
-  //             "name": "lemon juice (fresh)",
-  //             "description": description,
-  //             // "tags": [],
-  //             "image_url": ""
-  //           }, {
-  //             "active": true,
-  //             "id": 18,
-  //             "name": "salt",
-  //             "description": description,
-  //             // "tags": [],
-  //             "image_url": ""
-  //           }
-  //         ],
-  //         "image_url": "",
-  //         "instructions": [],
-  //         "name": "Recipe #4",
-  //         "description": description_4,
-  //         "notes": notes
-  //       }, {
-  //         "active": true,
-  //         "description": description_5,
-  //         "id": 5,
-  //         "image_url": "",
-  //         "ingredients": [
-  //           {
-  //             "active": true,
-  //             "description": description,
-  //             "id": 21,
-  //             "name": "garlic",
-  //             "image_url": ""
-  //           }, {
-  //             "active": true,
-  //             "description": description,
-  //             "id": 22,
-  //             "name": "onion",
-  //             "image_url": ""
-  //           }, {
-  //             "active": true,
-  //             "description": description,
-  //             "id": 23,
-  //             "name": "asafoetida (powder)",
-  //             "image_url": ""
-  //           }
-  //         ],
-  //         "instructions": [],
-  //         "name": "Recipe #5",
-  //         "notes": notes
-  //       }, {
-  //         "active": true,
-  //         "description": description_1,
-  //         "id": 1,
-  //         "image_url": "",
-  //         "ingredients": [
-  //           {
-  //             "active": true,
-  //             "description": "Mmmmmmmmm...Bacon!",
-  //             "id": 1,
-  //             "name": "bacon",
-  //             "image_url": ""
-  //           }, {
-  //             "active": true,
-  //             "description": description,
-  //             "id": 3,
-  //             "name": "milk",
-  //             "image_url": ""
-  //           }
-  //         ],
-  //         "instructions": [
-  //           {
-  //             "instructions": "do step one",
-  //             "step_number": 1
-  //           }, {
-  //             "instructions": "do step two",
-  //             "step_number": 2
-  //           }, {
-  //             "instructions": "do step three",
-  //             "step_number": 3
-  //           }, {
-  //             "instructions": "do step four",
-  //             "step_number": 4
-  //           }, {
-  //             "instructions": "do step five",
-  //             "step_number": 5
-  //           }
-  //         ],
-  //         "name": "cauliflower buffalo bites",
-  //         "notes": notes
-  //       }, {
-  //         "active": true,
-  //         "description": "Great when making breakfast for the family!  Can be eaten cold too!",
-  //         "id": 3,
-  //         "image_url": "",
-  //         "ingredients": [
-  //           {
-  //             "active": true,
-  //             "description": "Mmmmmmmmm...Bacon!",
-  //             "id": 1,
-  //             "name": "bacon",
-  //             "image_url": ""
-  //           }
-  //         ],
-  //         "instructions": [
-  //           {
-  //             "instructions": "Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.",
-  //             "step_number": 1
-  //           }, {
-  //             "instructions": "Place a small non-stick frying pan on a low heat to warm up.",
-  //             "step_number": 2
-  //           }
-  //         ],
-  //         "name": "cheese omelette",
-  //         "notes": notes
-  //       }, {
-  //         "active": true,
-  //         "id": 2,
-  //         "name": "simple oatmeal",
-  //         "description": description_2,
-  //         "image_url": "",
-  //         "instructions": [],
-  //         "ingredients": [
-  //           {
-  //             "id": 1,
-  //             "name": "bacon",
-  //             "active": true,
-  //             // "tags": ['meat', 'pork'],
-  //             "description": "Mmmmmmmmm...Bacon!",
-  //             "image_url": ""
-  //           }
-  //         ],
-  //         "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!"
-  //       }
-  //     ]
-  //   }, done);
-  // });
-  //
-  // test("GET /recipes/-1", (done) => {
-  //   request(server).get("/api/v1/recipes/-1").set("Accept", "application/json").expect(404, JSON.stringify('Not Found'), done);
-  // });
-  //
-  // test("GET /recipes/-1", (done) => {
-  //   request(server).get("/api/v1/recipes/-1").set("Accept", "application/json").set('Token', authToken).expect(404, JSON.stringify('Not Found'), done);
-  // });
-  //
-  // test("GET /recipes/one", (done) => {
-  //   request(server).get("/api/v1/recipes/one").set("Accept", "application/json")
-  //   // .set('Token', authToken)
-  //     .expect(400, JSON.stringify({
-  //     "message": "Request validation failed: Parameter (id) is not a valid integer: one",
-  //     "code": "INVALID_TYPE",
-  //     "failedValidation": true,
-  //     "path": [
-  //       "paths", "/recipes/{id}", "get", "parameters", "0"
-  //     ],
-  //     "paramName": "id"
-  //   }), done);
-  // });
+  test("PUT /recipes:id", (done) => {
+    request(server).get("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).expect(200, {
+      "id": 2,
+      "name": "simple oatmeal",
+      "description": '',
+      "image_url": "",
+      "instructions": [],
+      "ingredients": [
+        {
+          "id": 1,
+          "name": "bacon",
+          "description": "Mmmmmmmmm...Bacon!",
+          "tags": [
+            'meat', 'pork'
+          ],
+          "image_url": "",
+          "active": true
+        }
+      ],
+      "notes": "",
+      "active": true,
+      "tags": []
+    });
+
+    request(server).put("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).send({
+      "id": 2,
+      "name": "simple maple oatmeal",
+      "description": 'A delicious winter time breakfast.  Try it with crumbled bacon!',
+      "image_url": "",
+      "instructions": [
+        {
+          step_number: 1,
+          instructions: "Place 3/4 cup of the rolled oats into a blender and process until a flour."
+        }, {
+          step_number: 2,
+          instructions: "Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil."
+        }
+      ],
+      "ingredients": [1],
+      "notes": "Bacon Bacon BACON!",
+      "tags": ['breakfast', 'sweet']
+    }).expect("Content-Type", /json/).expect(200, {
+      "id": 2,
+      "name": "simple maple oatmeal",
+      "description": 'A delicious winter time breakfast.  Try it with crumbled bacon!',
+      "image_url": "",
+      "instructions": [
+        {
+          step_number: 1,
+          instructions: "Place 3/4 cup of the rolled oats into a blender and process until a flour."
+        }, {
+          step_number: 2,
+          instructions: "Add all rolled oats, water, cinnamon and vanilla to pan and bring to a boil."
+        }
+      ],
+      "ingredients": [
+        {
+          "id": 1,
+          "name": "bacon",
+          "description": "Mmmmmmmmm...Bacon!",
+          "tags": [
+            'meat', 'pork'
+          ],
+          "image_url": "",
+          "active": true
+        }
+      ],
+      "notes": "Bacon Bacon BACON!",
+      "tags": [
+        'breakfast', 'sweet'
+      ],
+      "active": true
+    }, done);
+  });
+
+  test("DELETE /recipes/:id", (done) => {
+    request(server).del("/api/v1/recipes/1").set("Accept", "application/json").set('token', authToken).expect("Content-Type", /json/).expect(200, {
+      id: 1,
+      name: "cauliflower buffalo bites",
+      active: false, // "1.Preheat oven to 450F.2.In a small bowl, combine brown rice flour, water, garlic powder and salt. Mix thoroughly with a whisk."
+    }, done);
+  });
+
+  test("GET /clients/1/recipes", (done) => {
+    request(server).get("/api/v1/clients/1/recipes").set("Accept", "application/json").set('token', authToken).expect((res) => {
+      deleteRecipeTimestamps(res);
+      deleteIngredientTimestamps(res);
+    }).expect(200, {
+      "recipes": [
+        {
+          "cook_time": null,
+          "id": 1,
+          "name": "cauliflower buffalo bites",
+          "description": description_1,
+          "image_url": "",
+          instructions: [
+            {
+              "instructions": "do step one",
+              "step_number": 1
+            }, {
+              "instructions": "do step two",
+              "step_number": 2
+            }, {
+              "instructions": "do step three",
+              "step_number": 3
+            }, {
+              "instructions": "do step four",
+              "step_number": 4
+            }, {
+              "instructions": "do step five",
+              "step_number": 5
+            }
+          ],
+          "ingredients": [
+            {
+              "id": 1,
+              "name": "bacon",
+              "active": true,
+              // "tags": ['meat', 'pork'],
+              "description": "Mmmmmmmmm...Bacon!",
+              "image_url": "",
+              "alternatives": [
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 2,
+                  "image_url": "",
+                  "name": "egg"
+                },
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 3,
+                  "image_url": "",
+                  "name": "milk"
+                },
+              ],
+              "tags": [
+                "meat",
+                "pork"
+              ]
+            }, {
+              "id": 3,
+              "name": "milk",
+              "active": true,
+              // "tags": ['dairy', 'vegetarian'],
+              "description": description,
+              "image_url": "",
+              "alternatives": [
+                 {
+                   "active": true,
+                   "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                   "id": 5,
+                   "image_url": "",
+                   "name": "almond milk"
+                 },
+                 {
+                   "active": true,
+                   "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                   "id": 6,
+                   "image_url": "",
+                   "name": "coconut milk"
+                 }
+               ],
+               "tags": ["dairy", "vegetarian"]
+            }
+          ],
+          "notes": notes,
+          "prep_time": null,
+          "active": true,
+          "tags": ["vegan", "vegetarian"]
+        }, {
+          "cook_time": null,
+          "id": 3,
+          "name": "cheese omelette",
+          "description": 'Great when making breakfast for the family!  Can be eaten cold too!',
+          "image_url": "",
+          "instructions": [
+            {
+              "instructions": "Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.",
+              "step_number": 1
+            }, {
+              "instructions": "Place a small non-stick frying pan on a low heat to warm up.",
+              "step_number": 2
+            }
+          ],
+          "ingredients": [
+            {
+              "id": 1,
+              "name": "bacon",
+              "active": true,
+              // "tags": ['meat', 'pork'],
+              "description": "Mmmmmmmmm...Bacon!",
+              "image_url": "",
+              "alternatives": [
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 2,
+                  "image_url": "",
+                  "name": "egg"
+                },
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 3,
+                  "image_url": "",
+                  "name": "milk"
+                }
+              ],
+              "tags": ["meat", "pork"]
+            }
+          ],
+          "notes": notes,
+          "prep_time": null,
+          "active": true,
+          "tags": ["dairy", "vegetarian"]
+        }, {
+          "cook_time": null,
+          "id": 2,
+          "name": "simple oatmeal",
+          "description": description_2,
+          "image_url": "",
+          "instructions": [],
+          "ingredients": [
+            {
+              "id": 1,
+              "name": "bacon",
+              "active": true,
+              // "tags": ['meat', 'pork'],
+              "description": "Mmmmmmmmm...Bacon!",
+              "image_url": "",
+              "alternatives": [
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 2,
+                  "image_url": "",
+                  "name": "egg"
+                },
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 3,
+                  "image_url": "",
+                  "name": "milk"
+                }
+              ],
+              "tags": ["meat", "pork"]
+            }
+          ],
+          "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
+          "prep_time": null,
+          "active": true,
+          "tags": ["vegetarian"]
+        }
+      ]
+    }, done);
+  });
+
+  test("POST /clients/2/recipes", () => {
+    return request(server).post("/api/v1/clients/2/recipes").set("Accept", "application/json").set('token', authToken).send({recipe_id: 1}).expect(200, {
+      success: 1,
+      description: "Added"
+    }).then(() => {
+      // check that it was actually added.
+      return request(server).get("/api/v1/clients/2/recipes")
+      .set("Accept", "application/json")
+      .set('token', authToken)
+      .expect((res) => {
+        deleteRecipeTimestamps(res);
+        deleteIngredientTimestamps(res);
+      }).expect(200, {
+        "recipes": [
+          {
+            "cook_time": null,
+            "id": 1,
+            "name": "cauliflower buffalo bites",
+            "description": description_1,
+            "image_url": "",
+            "instructions": [
+              {
+                "instructions": "do step one",
+                "step_number": 1
+              }, {
+                "instructions": "do step two",
+                "step_number": 2
+              }, {
+                "instructions": "do step three",
+                "step_number": 3
+              }, {
+                "instructions": "do step four",
+                "step_number": 4
+              }, {
+                "instructions": "do step five",
+                "step_number": 5
+              }
+            ],
+            "ingredients": [
+              {
+                "id": 1,
+                "name": "bacon",
+                "active": true,
+                "tags": ['meat', 'pork'],
+                "description": "Mmmmmmmmm...Bacon!",
+                "image_url": "",
+                "alternatives": [
+                  {
+                    "active": true,
+                    "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                    "id": 2,
+                    "image_url": "",
+                    "name": "egg"
+                  },
+                  {
+                    "active": true,
+                    "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                    "id": 3,
+                    "image_url": "",
+                    "name": "milk"
+                  }
+                ]
+              }, {
+                "id": 3,
+                "name": "milk",
+                "active": true,
+                "tags": ['dairy', 'vegetarian'],
+                "description": description,
+                "image_url": "",
+                "alternatives": [
+                  {
+                    "active": true,
+                    "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                    "id": 5,
+                    "image_url": "",
+                    "name": "almond milk"
+                  },
+                  {
+                    "active": true,
+                    "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                    "id": 6,
+                    "image_url": "",
+                    "name": "coconut milk"
+                  }
+                ]
+              }
+            ],
+            "notes": notes,
+            "tags": ["vegan", "vegetarian"],
+            "prep_time": null,
+            "active": true
+          }
+        ]
+      });
+    });
+  });
+
+  test('GET /search/recipes/?text=mi', (done) => {
+    request(server).get('/api/v1/search/recipes?text=d')
+    .set('Accept', 'application/json')
+    .set('Token', authToken)
+    .expect('Content-Type', /json/)
+    .expect((res) => {
+      deleteRecipeTimestamps(res);
+    }).expect(200, {
+      "recipes": [
+        {
+          "active": true,
+          "cook_time": null,
+          "description": description_4,
+          "id": 4,
+          "ingredients": [
+            {
+              "active": true,
+              "id": 17,
+              "name": "lemon juice (fresh)",
+              "description": description,
+              // "tags": [],
+              "image_url": ""
+            }, {
+              "active": true,
+              "id": 18,
+              "name": "salt",
+              "description": description,
+              // "tags": [],
+              "image_url": ""
+            }
+          ],
+          "image_url": "",
+          "instructions": [],
+          "name": "Recipe #4",
+          "notes": notes,
+          "prep_time": null
+        }, {
+          "active": true,
+          "cook_time": null,
+          "description": description_5,
+          "id": 5,
+          "image_url": "",
+          "ingredients": [
+            {
+              "active": true,
+              "description": description,
+              "id": 21,
+              "name": "garlic",
+              "image_url": ""
+            }, {
+              "active": true,
+              "description": description,
+              "id": 22,
+              "name": "onion",
+              "image_url": ""
+            }, {
+              "active": true,
+              "description": description,
+              "id": 23,
+              "name": "asafoetida (powder)",
+              "image_url": ""
+            }
+          ],
+          "instructions": [],
+          "name": "Recipe #5",
+          "notes": notes,
+          "prep_time": null
+        }, {
+          "active": true,
+          "cook_time": null,
+          "description": description_1,
+          "id": 1,
+          "image_url": "",
+          "ingredients": [
+            {
+              "active": true,
+              "description": "Mmmmmmmmm...Bacon!",
+              "id": 1,
+              "name": "bacon",
+              "image_url": ""
+            }, {
+              "active": true,
+              "description": description,
+              "id": 3,
+              "name": "milk",
+              "image_url": ""
+            }
+          ],
+          "instructions": [
+            {
+              "instructions": "do step one",
+              "step_number": 1
+            }, {
+              "instructions": "do step two",
+              "step_number": 2
+            }, {
+              "instructions": "do step three",
+              "step_number": 3
+            }, {
+              "instructions": "do step four",
+              "step_number": 4
+            }, {
+              "instructions": "do step five",
+              "step_number": 5
+            }
+          ],
+          "name": "cauliflower buffalo bites",
+          "notes": notes,
+          "prep_time": null
+        }, {
+          "active": true,
+          "cook_time": null,
+          "description": "Great when making breakfast for the family!  Can be eaten cold too!",
+          "id": 3,
+          "image_url": "",
+          "ingredients": [
+            {
+              "active": true,
+              "description": "Mmmmmmmmm...Bacon!",
+              "id": 1,
+              "name": "bacon",
+              "image_url": ""
+            }
+          ],
+          "instructions": [
+            {
+              "instructions": "Crack the eggs into a mixing bowl, season with a pinch of sea salt and black pepper, then beat well with a fork until fully combined.",
+              "step_number": 1
+            }, {
+              "instructions": "Place a small non-stick frying pan on a low heat to warm up.",
+              "step_number": 2
+            }
+          ],
+          "name": "cheese omelette",
+          "notes": notes,
+          "prep_time": null
+        }, {
+          "active": true,
+          "cook_time": null,
+          "description": description_2,
+          "id": 2,
+          "image_url": "",
+          "instructions": [],
+          "ingredients": [
+            {
+              "id": 1,
+              "name": "bacon",
+              "active": true,
+              // "tags": ['meat', 'pork'],
+              "description": "Mmmmmmmmm...Bacon!",
+              "image_url": ""
+            }
+          ],
+          "name": "simple oatmeal",
+          "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
+          "prep_time": null
+        }
+      ]
+    }, done);
+  });
+
+  test("GET /recipes/-1", (done) => {
+    request(server).get("/api/v1/recipes/-1")
+    .set("Accept", "application/json")
+    .expect(404, JSON.stringify('Not Found'), done);
+  });
+
+  test("GET /recipes/-1", (done) => {
+    request(server).get("/api/v1/recipes/-1")
+    .set("Accept", "application/json")
+    .set('Token', authToken)
+    .expect(404, JSON.stringify('Not Found'), done);
+  });
+
+test("GET /recipes/one", (done) => {
+    request(server).get("/api/v1/recipes/one")
+    .set("Accept", "application/json")
+    // .set('Token', authToken)
+      .expect(400, JSON.stringify({
+      "message": "Request validation failed: Parameter (id) is not a valid integer: one",
+      "code": "INVALID_TYPE",
+      "failedValidation": true,
+      "path": [
+        "paths", "/recipes/{id}", "get", "parameters", "0"
+      ],
+      "paramName": "id"
+    }), done);
+  });
 
 });

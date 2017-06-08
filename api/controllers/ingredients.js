@@ -258,7 +258,6 @@ function getIngredient(req, res) {
   // new IngredientTag({ingredient_id: 1, tag_text: 'New Ingredient'}).save().then(function(model) {
   //   console.log('model:', model.toJSON());
   // });
-
   Ingredient.forge({
           id: req.swagger.params.id.value
       })
@@ -266,8 +265,19 @@ function getIngredient(req, res) {
           withRelated: ['alternatives', 'tags']
       })
       .then((ingredient) => {
-        return res.status(200).json(ingredient);
+        let ingredientObj = ingredient.serialize();
+
+        ingredientObj.tags = mapTags(ingredientObj.tags);
+
+        delete ingredientObj.created_at;
+        delete ingredientObj.updated_at;
+
+        return res.status(200).json(ingredientObj);
       });
+}
+
+function mapTags(tags) {
+  return tags.map(tag => tag.tag_text).sort();
 }
 
 function addIngredient(req, res, next) {

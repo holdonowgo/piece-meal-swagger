@@ -197,19 +197,20 @@ function getClient(req, res) {
     // To list clients
 
     Client.forge({
-            // id: req.swagger.params.user_id.value
-            id: 2
+            id: req.swagger.params.user_id.value
+            // id: 2
         })
         .fetch({
             withRelated: [
-              { recipes: function(query) { query.orderBy('name'); }},
+              { 'recipes': function(query) { query.orderBy('name'); }},
+              // { 'favorite_recipes': function(query) { query.orderBy('name'); }},
               { 'recipes.ingredients': function(query) { query.orderBy('name'); }},
               { 'recipes.ingredients.tags': function(query) { query.orderBy('tag_text'); }},
               { 'recipes.ingredients.alternatives': function(query) { query.orderBy('name'); }},
               { 'recipes.instructions': function(query) { query.orderBy('step_number'); }},
               { 'recipes.tags': function(query) { query.orderBy('tag_text'); }},
               'recipes.votes',
-              { restrictions: function(query) { query.orderBy('name'); }}
+              { restrictions: function(query) { query.columns('description', 'id', 'name'); query.orderBy('name'); }}
             ]
         })
         .then((client) => {
