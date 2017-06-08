@@ -35,8 +35,6 @@ function doGetRecipes(query, res) {
         // 'promiseResults' is an array of arrays of ingredients
         for (var i = 0; i < recipes.length; i++) {
             recipes[i].ingredients = promiseResults[i].map((ingredient) => {
-                delete ingredient.created_at;
-                delete ingredient.updated_at;
                 return ingredient;
             });
         }
@@ -89,7 +87,6 @@ function getRecipesList(req, res) {
 }
 
 function getFavoriteRecipes(req, res) {
-  console.log('req.swagger.params.user_id.value:', req.swagger.params.user_id.value);
     return doGetRecipes(
       knex("recipes")
       .join("recipe_favorites", function () {
@@ -385,9 +382,6 @@ function fetchRecipe(id, res) {
             ingredient.tags = ingredient.tags.map(tag => tag.tag_text).sort();
           }
 
-          delete recipeObj.created_at;
-          delete recipeObj.updated_at;
-
           return res.json(recipeObj);
         }
       }).catch((err) => {
@@ -431,9 +425,6 @@ function fetchRecipes(query, res) {
             for(let ingredient of recipeObj.ingredients) {
               ingredient.tags = ingredient.tags.map(tag => tag.tag_text).sort();
             }
-
-            delete recipeObj.created_at;
-            delete recipeObj.updated_at;
           }
 
           return res.json({ recipes: recipeObjs });
@@ -474,9 +465,6 @@ function getRecipeBookshelf(req, res) {
           for(let ingredient of recipeObj.ingredients) {
             ingredient.tags = ingredient.tags.map(tag => tag.tag_text).sort();
           }
-
-          delete recipeObj.created_at;
-          delete recipeObj.updated_at;
 
           return res.json(recipeObj);
         }

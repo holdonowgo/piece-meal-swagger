@@ -49,7 +49,12 @@ function updateIngredient(req, res, next) {
               })
         })
         .then((ingredient) => {
-          return res.status(200).json(ingredient);
+          let ingredientObj = ingredient.serialize();
+          ingredientObj.tags = mapTags(ingredientObj.tags);
+          // ingredientObj.alternatives = mapAlts(ingredientObj.alternatives);
+
+
+          return res.status(200).send(ingredientObj);
         });
         // return res.status(200).send(model.toJSON());
 
@@ -87,25 +92,22 @@ function updateIngredient(req, res, next) {
 }
 
 function deleteIngredient(req, res) {
-  new Ingredient({id: req.swagger.params.id.value})
-  .destroy()
-  .then(function(model) {
-    return res.status(200).json(model);
-  });
-  // Ingredient.forge({id: req.swagger.params.id.value}).fetch().destroy().then((item) => {
-  //   return getIngredient(req, res);
-  // });
+    new Ingredient({
+        id: req.swagger.params.id.value
+    })
+    .destroy()
+    .then(function(model) {
+        return res.status(200).json(model);
+    });
 
-  // Ingredient.forge({id: req.swagger.params.id.value}).fetch({
-  //   withRelated:['tags', 'alternatives']
-  //   }).then(function (item) {
-  //     return item.related('tags').invokeThen('destroy').then(function () {
-  //       return item.destroy().then(function () {
-  //         console.log('destroyed!');
-  //         return res.status(200).json(item);
-  //       });
-  //     });
-  //   });
+    // Ingredient.forge({
+    //   id: req.swagger.params.id.value
+    // }).destroy().then((model) => {
+    //   return res.status(200).json(model);
+    // })
+    // .catch((err) => {
+    //   console.error(err);
+    // });
 
     // jwt.verify(req.headers['token'], process.env.JWT_KEY, (err, payload) => {
     //     if (err) {
@@ -122,7 +124,7 @@ function deleteIngredient(req, res) {
     //         .then((result) => {
     //             let ingredient = result[0];
     //             delete ingredient.created_at;
-    //             delete ingredient.updated_at;
+    //             deleteingredient.updated_at;
     //             return res.status(200).json(ingredient);
     //         });
     //   });
@@ -195,19 +197,8 @@ function fetchIngredient(id, res) {
         res.status(404).json('Not Found');
       } else {
         let ingredientObj = ingredient.serialize();
-        ingredientObj.tags = ingredientObj.tags.map((value) => {
-          return value.tag_text;
-        }).sort();
 
-        ingredientObj.alternatives = ingredientObj.alternatives.map((value) => {
-          return {
-            id: value.id,
-            name: value.name
-          };
-        }).sort();
-
-        delete ingredientObj.created_at;
-        delete ingredientObj.updated_at;
+        ingredientObj.tags = mapTags(ingredientObj.tags);
 
         return res.status(200).json(ingredientObj);
 
@@ -269,9 +260,6 @@ function getIngredient(req, res) {
 
         ingredientObj.tags = mapTags(ingredientObj.tags);
 
-        delete ingredientObj.created_at;
-        delete ingredientObj.updated_at;
-
         return res.status(200).json(ingredientObj);
       });
 }
@@ -288,6 +276,16 @@ function addIngredient(req, res, next) {
         }
 
         let name = req.swagger.params.ingredient.value.name;
+
+        Ingredient.forge({ name: name }).fetch().then((result) => {
+          if(result) {
+            return res.status(400).json({
+                message: 'Ingredient already exists!',
+                ingredient: result
+            });
+          }
+        });
+
         let description = req.swagger.params.ingredient.value.description;
         let image_url = req.swagger.params.ingredient.value.image_url;
         let alternatives = req.swagger.params.ingredient.value.alternatives;
@@ -415,6 +413,7 @@ function searchIngredients(req, res) {
 function addIngredientAlternatives(req, res) {
     jwt.verify(req.headers['token'], process.env.JWT_KEY, (err, payload) => {
         if (err) {
+          console.log('HELLO');
             res.set('Content-Type', 'application/json');
             res.status(401).send('Unauthorized');
         }
@@ -442,27 +441,16 @@ function addIngredientAlternatives(req, res) {
             })
             .then((ingredient) => {
                 let ingredientObj = ingredient.serialize();
-                ingredientObj.tags = ingredientObj.tags.map((value) => {
-                    return value.tag_text;
-                }).sort();
 
-                ingredientObj.alternatives = ingredientObj.alternatives.map((value) => {
-                    return {
-                        id: value.id,
-                        name: value.name
-                    };
-                }).sort();
+                ingredientObj.tags = mapTags(ingredientObj.tags);
 
-                delete ingredientObj.created_at;
-                delete ingredientObj.updated_at;
-
-                let qstring = url.format({
-                    query: {
-                        app_id: process.env.EDAMAM_APP_ID,
-                        app_key: process.env.EDAMAM_APP_KEY,
-                        ingr: "one " + ingredientObj.name
-                    }
-                });
+                // let qstring = url.format({
+                //     query: {
+                //         app_id: process.env.EDAMAM_APP_ID,
+                //         app_key: process.env.EDAMAM_APP_KEY,
+                //         ingr: "one " + ingredientObj.name
+                //     }
+                // });
                 // fetch('https://api.edamam.com/api/nutrition-data' + qstring)
                 //     .then((fetchResponse) => {
                 //         return fetchResponse.json();
@@ -472,10 +460,20 @@ function addIngredientAlternatives(req, res) {
                 //
                 //         return res.status(200).json(ingredientObj);
                 //     });
+
                 return res.status(200).json(ingredientObj);
             });
       });
 }
+
+// function mapAlts(alts) {
+//   return alts.map((value) => {
+//       return {
+//           id: value.id,
+//           name: value.name
+//       };
+//   }).sort();
+// }
 
 function getPieDataSet(req, res) {
   return knex.raw(
