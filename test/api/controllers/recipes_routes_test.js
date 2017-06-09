@@ -8,19 +8,25 @@ const knex = require("../../../knex");
 const server = require("../../../app");
 const authToken = process.env.AUTH_TOKEN;
 
-const deleteRecipeTimestamps = function(res) {
+const deleteRecipesTimestamps = function(res) {
   for (let recipe of res.body.recipes) {
     delete recipe.created_at;
     delete recipe.updated_at;
-  }
-};
 
-const deleteIngredientTimestamps = function(res) {
-  for (let recipe of res.body.recipes) {
     for (let ingredient of recipe.ingredients) {
       delete ingredient.created_at;
       delete ingredient.updated_at;
     }
+  }
+};
+
+const deleteRecipeTimestamps = function(res) {
+  delete res.body.created_at;
+  delete res.body.updated_at;
+
+  for (let ingredient of res.body.ingredients) {
+    delete ingredient.created_at;
+    delete ingredient.updated_at;
   }
 };
 
@@ -252,8 +258,7 @@ suite("recipes test", () => {
     .set('token', authToken)
     .expect("Content-Type", /json/)
     .expect((res) => {
-      deleteRecipeTimestamps(res);
-      deleteIngredientTimestamps(res);
+      deleteRecipesTimestamps(res);
     }).expect(200, {
       "recipes": [
         {
@@ -372,8 +377,7 @@ suite("recipes test", () => {
     request(server).get("/api/v1/recipes").set("Accept", "application/json")
     //  .set('token', authToken)
     .expect("Content-Type", /json/).expect((res) => {
-      deleteRecipeTimestamps(res);
-      deleteIngredientTimestamps(res);
+      deleteRecipesTimestamps(res);
     }).expect(200, {
       "recipes": [
         {
@@ -671,7 +675,10 @@ suite("recipes test", () => {
         1, 3
       ],
       tags: ['no-cook', 'asian', 'vegetarian', 'vegan']
-    }).expect("Content-Type", /json/).expect(200, {
+    }).expect("Content-Type", /json/)
+      .expect((res) => {
+        deleteRecipeTimestamps(res);
+    }).expect(200, {
       id: 9,
       "ingredients": [
         {
@@ -751,6 +758,9 @@ suite("recipes test", () => {
   test("GET /recipes/:id", (done) => {
     request(server).get("/api/v1/recipes/1").set("Accept", "application/json")
     //  .set('token', authToken)
+      .expect((res) => {
+        deleteRecipeTimestamps(res);
+      })
       .expect(200, {
       "id": 1,
       "name": "cauliflower buffalo bites",
@@ -828,127 +838,131 @@ suite("recipes test", () => {
       "notes": notes,
       "prep_time": null,
       "tags": ['vegan', 'vegetarian'],
+      "active": true,
+      'lol': false
+    });
+
+    request(server).get("/api/v1/recipes/2").set("Accept", "application/json")
+    //  .set('token', authToken)
+      .expect((res) => {
+        deleteRecipeTimestamps(res);
+      })
+      .expect(200, {
+      "id": 2,
+      "name": "simple oatmeal",
+      "cook_time": null,
+      "description": description_2,
+      "image_url": "",
+      "instructions": [],
+      "ingredients": [
+        {
+          "id": 1,
+          "name": "bacon",
+          "tags": [
+            'meat', 'pork'
+          ],
+          "description": "Mmmmmmmmm...Bacon!",
+          "image_url": "",
+          "active": true,
+          "alternatives": [
+            {
+              "active": true,
+              "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+              "id": 2,
+              "image_url": "",
+              "name": "egg"
+            }, {
+              "active": true,
+              "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+              "id": 3,
+              "image_url": "",
+              "name": "milk"
+            }
+          ]
+        }
+      ],
+      "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
+      "prep_time": null,
+      "tags": ['vegetarian'],
       "active": true
     }, done);
-
-    // request(server).get("/api/v1/recipes/2").set("Accept", "application/json")
-    // //  .set('token', authToken)
-    //   .expect(200, {
-    //   "id": 2,
-    //   "name": "simple oatmeal",
-    //   "cook_time": null,
-    //   "description": description_2,
-    //   "image_url": "",
-    //   "instructions": [],
-    //   "ingredients": [
-    //     {
-    //       "id": 1,
-    //       "name": "bacon",
-    //       "tags": [
-    //         'meat', 'pork'
-    //       ],
-    //       "description": "Mmmmmmmmm...Bacon!",
-    //       "image_url": "",
-    //       "active": true,
-    //       "alternatives": [
-    //         {
-    //           "active": true,
-    //           "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
-    //           "id": 2,
-    //           "image_url": "",
-    //           "name": "egg"
-    //         }, {
-    //           "active": true,
-    //           "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
-    //           "id": 3,
-    //           "image_url": "",
-    //           "name": "milk"
-    //         }
-    //       ]
-    //     }
-    //   ],
-    //   "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
-    //   "prep_time": null,
-    //   "tags": ['vegetarian'],
-    //   "active": true
-    // }, done);
   });
 
-  // test("POST /recipes/2/ratings", (done) => {
-  //     request(server).get("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).expect(200, {
-  //         "id": 2,
-  //         "name": "simple oatmeal",
-  //         "description": '',
-  //         "image_url": "",
-  //         "instructions": [],
-  //         "ingredients": [
-  //             {
-  //                 "id": 1,
-  //                 "name": "bacon",
-  //                 "description": "Mmmmmmmmm...Bacon!",
-  //                 "tags": ['meat', 'pork'],
-  //                 "image_url": "",
-  //                 "active": true
-  //             }
-  //         ],
-  //         "notes": "",
-  //         "active": true,
-  //         "tags": [],
-  //         "ratings": {"up_votes": 0, "down_votes": 0}
-  //     });
-  //
-  //     request(server).post("/api/v1/recipes/2/ratings").set("Accept", "application/json").set('token', authToken).send({
-  //         "recipe_id": 2,
-  //         "client_id": 1,
-  //         "vote": -1
-  //     }).expect("Content-Type", /json/).expect(200, {
-  //         "id": 2,
-  //         "name": "simple oatmeal",
-  //         "description": '',
-  //         "image_url": "",
-  //         "instructions": [],
-  //         "ingredients": [
-  //             {
-  //                 "id": 1,
-  //                 "name": "bacon",
-  //                 "description": "Mmmmmmmmm...Bacon!",
-  //                 "tags": ['meat', 'pork'],
-  //                 "image_url": "",
-  //                 "active": true
-  //             }
-  //         ],
-  //         "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
-  //         "tags": [],
-  //         "active": true,
-  //         "ratings": {"up_votes": 0, "down_votes": -1}
-  //     });
-  //
-  //     request(server).post("/api/v1/recipes/2/ratings").set("Accept", "application/json").set('token', authToken).send({
-  //         "recipe_id": 2,
-  //         "client_id": 1,
-  //         "vote": 1
-  //     }).expect("Content-Type", /json/).expect(200, {
-  //         "id": 2,
-  //         "name": "simple oatmeal",
-  //         "description": '',
-  //         "image_url": "",
-  //         "instructions": [],
-  //         "ingredients": [
-  //             {
-  //                 "id": 1,
-  //                 "name": "bacon",
-  //                 "description": "Mmmmmmmmm...Bacon!",
-  //                 "tags": ['meat', 'pork'],
-  //                 "image_url": "",
-  //                 "active": true
-  //             }
-  //         ],
-  //         "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
-  //         "tags": [],
-  //         "active": true,
-  //         "ratings": {"up_votes": 1, "down_votes": 0}
-  //     }, done);
-  // });
+  test("POST /recipes/2/ratings", (done) => {
+      request(server).get("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).expect(200, {
+          "id": 2,
+          "name": "simple oatmeal",
+          "description": "Pea horseradish azuki bean lettuce avocado asparagus okra. Kohlrabi radish okra azuki bean   corn fava bean mustard tigernut jÃ­cama green bean celtuce collard greens avocado quandong fennel gumbo black-eyed pea. Grape silver beet watercress potato tigernut corn groundnut. Chickweed okra pea winter purslane coriander yarrow sweet pepper radish garlic brussels sprout groundnut summer purslane earthnut pea tomato spring onion azuki bean gourd. Gumbo kakadu plum komatsuna black-eyed pea green bean zucchini gourd winter purslane silver beet rock melon radish asparagus spinach.",
+          "image_url": "",
+          "instructions": [],
+          "ingredients": [
+              {
+                  "id": 1,
+                  "name": "bacon",
+                  "description": "Mmmmmmmmm...Bacon!",
+                  "tags": ['meat', 'pork'],
+                  "image_url": "",
+                  "active": true
+              }
+          ],
+          "notes": "",
+          "active": true,
+          "tags": ["vegetarian"],
+          "ratings": { "up_votes": 0, "down_votes": 0 }
+      });
+
+      request(server).post("/api/v1/recipes/2/ratings").set("Accept", "application/json").set('token', authToken).send({
+          "recipe_id": 2,
+          "client_id": 1,
+          "vote": -1
+      }).expect("Content-Type", /json/).expect(200, {
+          "id": 2,
+          "name": "simple oatmeal",
+          "description": "Pea horseradish azuki bean lettuce avocado asparagus okra. Kohlrabi radish okra azuki bean corn fava bean mustard tigernut jÃ­cama green bean celtuce collard greens avocado quandong fennel gumbo black-eyed pea. Grape silver beet watercress potato tigernut corn groundnut. Chickweed okra pea winter purslane coriander yarrow sweet pepper radish garlic brussels sprout groundnut summer purslane earthnut pea tomato spring onion azuki bean gourd. Gumbo kakadu plum komatsuna black-eyed pea green bean zucchini gourd winter purslane silver beet rock melon radish asparagus spinach.",
+          "image_url": "",
+          "instructions": [],
+          "ingredients": [
+              {
+                  "id": 1,
+                  "name": "bacon",
+                  "description": "Mmmmmmmmm...Bacon!",
+                  "tags": ['meat', 'pork'],
+                  "image_url": "",
+                  "active": true
+              }
+          ],
+          "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
+          "tags": ["vegetarian"],
+          "active": true,
+          "ratings": {"up_votes": 0, "down_votes": -1}
+      });
+
+      request(server).post("/api/v1/recipes/2/ratings").set("Accept", "application/json").set('token', authToken).send({
+          "recipe_id": 2,
+          "client_id": 1,
+          "vote": 1
+      }).expect("Content-Type", /json/).expect(200, {
+          "id": 2,
+          "name": "simple oatmeal",
+          "description": "Pea horseradish azuki bean lettuce avocado asparagus okra. Kohlrabi radish okra azuki bean corn fava bean mustard tigernut jÃ­cama green bean celtuce collard greens avocado quandong fennel gumbo black-eyed pea. Grape silver beet watercress potato tigernut corn groundnut. Chickweed okra pea winter purslane coriander yarrow sweet pepper radish garlic brussels sprout groundnut summer purslane earthnut pea tomato spring onion azuki bean gourd. Gumbo kakadu plum komatsuna black-eyed pea green bean zucchini gourd winter purslane silver beet rock melon radish asparagus spinach.",
+          "image_url": "",
+          "instructions": [],
+          "ingredients": [
+              {
+                  "id": 1,
+                  "name": "bacon",
+                  "description": "Mmmmmmmmm...Bacon!",
+                  "tags": ['meat', 'pork'],
+                  "image_url": "",
+                  "active": true
+              }
+          ],
+          "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
+          "tags": ["vegetarian"],
+          "active": true,
+          "ratings": {"up_votes": 1, "down_votes": 0}
+      }, done);
+  });
 
   test("PUT /recipes:id", (done) => {
     request(server).get("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).expect(200, {
@@ -1035,8 +1049,7 @@ suite("recipes test", () => {
 
   test("GET /clients/1/recipes", (done) => {
     request(server).get("/api/v1/clients/1/recipes").set("Accept", "application/json").set('token', authToken).expect((res) => {
-      deleteRecipeTimestamps(res);
-      deleteIngredientTimestamps(res);
+      deleteRecipesTimestamps(res);
     }).expect(200, {
       "recipes": [
         {
@@ -1220,8 +1233,7 @@ suite("recipes test", () => {
       .set("Accept", "application/json")
       .set('token', authToken)
       .expect((res) => {
-        deleteRecipeTimestamps(res);
-        deleteIngredientTimestamps(res);
+        deleteRecipesTimestamps(res);
       }).expect(200, {
         "recipes": [
           {
@@ -1313,7 +1325,7 @@ suite("recipes test", () => {
     .set('Token', authToken)
     .expect('Content-Type', /json/)
     .expect((res) => {
-      deleteRecipeTimestamps(res);
+      deleteRecipesTimestamps(res);
     }).expect(200, {
       "recipes": [
         {
@@ -1481,7 +1493,7 @@ suite("recipes test", () => {
     .expect(404, JSON.stringify('Not Found'), done);
   });
 
-test("GET /recipes/one", (done) => {
+  test("GET /recipes/one", (done) => {
     request(server).get("/api/v1/recipes/one")
     .set("Accept", "application/json")
     // .set('Token', authToken)
