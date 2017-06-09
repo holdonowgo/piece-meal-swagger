@@ -5,4 +5,4 @@
 
 dependencies:
   pre:
-    - npm install -g n 7.8
+    - npm install -g n 7
