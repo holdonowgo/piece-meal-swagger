@@ -12,12 +12,12 @@ const should = require('should');
 const authToken = process.env.AUTH_TOKEN;
 const description = `Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.`;
 
-const deleteIngredientTimestamps = function(res) {
+export const deleteIngredientTimestamps = function(res) {
   delete res.body.created_at;
   delete res.body.updated_at;
 };
 
-const deleteIngredientsTimestamps = function(res) {
+export const deleteIngredientsTimestamps = function(res) {
     for (let ingredient of res.body.ingredients) {
       delete ingredient.created_at;
       delete ingredient.updated_at;
