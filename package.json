@@ -41,6 +41,7 @@
   "devDependencies": {
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2016": "^6.24.1",
+    "babel-register": "^6.24.1",
     "chai": "^3.5.0",
     "cookie-parser": "^1.4.3",
     "dotenv": "^4.0.0",
@@ -55,7 +56,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "nyc node_modules/mocha/bin/mocha",
+    "test": "nyc node_modules/mocha/bin/mocha --require babel-register",
     "heroku-postbuild": "knex migrate:rollback, knex migrate:latest, knex seed:run"
   }
 }
