@@ -54,7 +54,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "nyc node_modules/mocha/bin/mocha",
+    "test": "nyc node_modules/mocha/bin/mocha --compilers js:babel-core/register"
     "heroku-postbuild": "knex migrate:rollback, knex migrate:latest, knex seed:run"
   }
 }
