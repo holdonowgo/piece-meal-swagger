@@ -8,7 +8,7 @@ const knex = require("../../../knex");
 const server = require("../../../app");
 const authToken = process.env.AUTH_TOKEN;
 
-const deleteRecipesTimestamps = function(res) {
+export const deleteRecipesTimestamps = function(res) {
   for (let recipe of res.body.recipes) {
     delete recipe.created_at;
     delete recipe.updated_at;
@@ -20,7 +20,7 @@ const deleteRecipesTimestamps = function(res) {
   }
 };
 
-const deleteRecipeTimestamps = function(res) {
+export const deleteRecipeTimestamps = function(res) {
   delete res.body.created_at;
   delete res.body.updated_at;
 
