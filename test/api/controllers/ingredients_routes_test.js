@@ -498,19 +498,13 @@ suite('ingredients test', () => {
       request(server)
           .del('/api/v1/ingredients/1')
           .set('Accept', 'application/json')
-          .set('Token', authToken)
-          .expect('Content-Type', /json/)
+          .set('token', authToken)
+          // .expect('Content-Type', /json/)
           .expect((res) => {
               delete res.body.createdAt;
               delete res.body.updatedAt;
           })
-          .expect(200, {
-              id: 1,
-              name: 'bacon',
-              description: 'Mmmmmmmmm...Bacon!',
-              image_url: "",
-              active: false
-          }, done);
+          .expect(204, done);
 
       /* eslint-enable max-len */
   });

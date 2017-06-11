@@ -3,8 +3,8 @@ info:
   version: "0.0.1"
   title: Piece-Meal App
 # during dev, should point to your local machine
-host: piecemeal-api.herokuapp.com
-# host: localhost:10010
+# host: piecemeal-api.herokuapp.com
+host: localhost:10010
 # basePath prefixes all resource paths
 basePath: /api/v1
 #
@@ -530,7 +530,24 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GetIngredientResponse"
+            type: object
+            required:
+              - id
+              - name
+              - description
+              - image_url
+              - active
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              description:
+                type: string
+              image_url:
+                type: string
+              active:
+                type: boolean
         default:
           description: Error
           schema:
@@ -603,8 +620,8 @@ paths:
     get:
       description: get a recipe
       # define the type of response for Success "200" and Error
-      # operationId: getRecipeBookshelf
-      operationId: getRecipe
+      operationId: getRecipeBookshelf
+      # operationId: getRecipe
       parameters:
         # - name: token
         #   in: header
@@ -680,6 +697,32 @@ paths:
           description: Success
           schema:
             $ref: "#/definitions/Recipe"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /clients/{user_id}/recipes/favorites:
+    x-swagger-router-controller: recipes
+    get:
+      description: get client's favorite recipes
+      operationId: getFavoriteRecipes
+      parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
+        - name: user_id
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetRecipesListResponse"
         default:
           description: Error
           schema:
@@ -927,6 +970,25 @@ paths:
   #           schema:
   #             $ref: "#/definitions/ErrorResponse"
 
+  /pie_chart/ingredients:
+    x-swagger-router-controller: ingredients
+    get:
+      description: get auth token
+      operationId: getPieDataSet
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                category:
+                  type: string
+                count:
+                  type: integer
+
+
   /token:
     x-swagger-router-controller: token
     post:
@@ -965,6 +1027,44 @@ paths:
               email:
                 description: client's email address
                 type: string
+              token:
+                description: client's auth token
+                type: string
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /tokenOAuth:
+    x-swagger-router-controller: token
+    post:
+      description: get auth token
+      operationId: postTokenOAuth
+      parameters:
+        - name: credentials
+          description: Client credentials
+          in: body
+          required: true
+          schema:
+            type: object
+            required:
+              - idToken
+            properties:
+              idToken:
+                description: token from Auth0
+                type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: object
+            required:
+              - id
+              - token
+            properties:
+              id:
+                description: client's user id
+                type: number
               token:
                 description: client's auth token
                 type: string
@@ -1295,20 +1395,20 @@ definitions:
       ingredients:
         type: array
         items:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
-            description:
-              type: string
-            active:
-              type: boolean
-            tags:
-              type: array
-              items:
-                type: string
+          $ref: "#/definitions/Recipe"
+          # properties:
+          #   id:
+          #     type: integer
+          #   name:
+          #     type: string
+          #   description:
+          #     type: string
+          #   active:
+          #     type: boolean
+          #   tags:
+          #     type: array
+          #     items:
+          #       type: string
       instructions:
         type: array
         items:
@@ -1370,6 +1470,10 @@ definitions:
     properties:
       id:
         type: integer
+      ingredients:
+        type: array
+        items:
+          type: string
       name:
         type: string
       active:
@@ -1385,10 +1489,23 @@ definitions:
           properties:
             id:
               type: integer
+            ingredients:
+              type: array
+              items:
+                type: string
             name:
               type: string
-      calories:
-        type: integer
+            active:
+              type: boolean
+            tags:
+              type: array
+              items:
+                type: string
+            image_url:
+              type: string
+              description: link to image of ingredient
+      # calories:
+      #   type: integer
       image_url:
         type: string
         description: link to image of ingredient

@@ -68,38 +68,48 @@ function updateIngredient(req, res, next) {
 }
 
 function deleteIngredient(req, res) {
-  new Ingredient({id: req.swagger.params.id.value}).destroy().then(function(model) {
-    return res.status(200).json(model);
-  });
+    jwt.verify(req.headers['token'], process.env.JWT_KEY, (err, payload) => {
+      if (err) {
+          res.set('Content-Type', 'application/json');
+          res.status(401).send('Unauthorized');
+      }
 
-  // Ingredient.forge({
-  //   id: req.swagger.params.id.value
-  // }).destroy().then((model) => {
-  //   return res.status(200).json(model);
-  // })
-  // .catch((err) => {
-  //   console.error(err);
-  // });
+      const id = req.swagger.params.id.value;
 
-  // jwt.verify(req.headers['token'], process.env.JWT_KEY, (err, payload) => {
-  //     if (err) {
-  //         res.set('Content-Type', 'application/json');
-  //         res.status(401).send('Unauthorized');
-  //     }
-  //
-  //     knex('ingredients')
-  //         .where('id', req.swagger.params.id.value)
-  //         .update({
-  //             active: false
-  //         })
-  //         .returning('*')
-  //         .then((result) => {
-  //             let ingredient = result[0];
-  //             delete ingredient.created_at;
-  //             deleteingredient.updated_at;
-  //             return res.status(200).json(ingredient);
-  //         });
-  //   });
+      Ingredient.forge({id: id}).where('active', id).fetch()
+      .then((ingredient) => {
+        if (!ingredient) {
+          res.status(404).json('Not Found');
+        } else {
+            // new Ingredient({id: id}).destroy().then(function(model) {
+            //   return res.status(204).json(model);
+            // });
+
+            Ingredient.forge({
+              id: req.swagger.params.id.value
+            }).destroy().then((model) => {
+              res.set('Content-Type', 'application/json');
+              return res.sendStatus(204);
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        }
+
+//     knex('ingredients')
+//         .where('id', req.swagger.params.id.value)
+//         .update({
+//             active: false
+//         })
+//         .returning('*')
+//         .then((result) => {
+//             let ingredient = result[0];
+//             delete ingredient.created_at;
+//             deleteingredient.updated_at;
+//             return res.status(200).json(ingredient);
+//         });
+        });
+    });
 }
 
 function getIngredientsList(req, res) {

@@ -390,8 +390,6 @@ function fetchRecipe(id, res) {
 }
 
 function fetchRecipes(query, res) {
-  // Recipes.forge()
-  //     .fetchAll({
   query.fetch({
           // withRelated: ['steps', 'tags', 'ingredients']
           withRelated: [
