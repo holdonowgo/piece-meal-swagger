@@ -2,8 +2,8 @@ const bookshelf = require('../../bookshelf');
 const Recipe = require('../models/recipe.js').Recipe;
 const Recipes = require('../models/recipe.js').Recipes;
 
-let RecipeTag = bookshelf.Model.extend({
-    tableName: 'recipes_tags',
+let RecipeVote = bookshelf.Model.extend({
+    tableName: 'recipes_votes',
     hasTimestamps: false,
 
     recipe: function() {
@@ -11,11 +11,11 @@ let RecipeTag = bookshelf.Model.extend({
     }
 });
 
-let RecipeTags = bookshelf.Collection.extend({
-    model: RecipeTag
+let RecipeVotes = bookshelf.Collection.extend({
+    model: RecipeVote
 });
 
 module.exports = {
-    RecipeTag,
-    RecipeTags
+    RecipeVote,
+    RecipeVotes
 }

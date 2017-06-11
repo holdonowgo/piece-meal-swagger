@@ -1,7 +1,9 @@
 const bookshelf = require('../../bookshelf');
 
 let IngredientTag = bookshelf.Model.extend({
-    tableName: 'ingredient_tags',
+    tableName: 'ingredients_tags',
+    visible: ['tag_text'],
+    hidden: ['id', 'ingredient_id'],
     hasTimestamps: false,
 
     ingredient: function() {

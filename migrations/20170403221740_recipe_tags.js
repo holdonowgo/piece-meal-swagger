@@ -1,5 +1,5 @@
 exports.up = function(knex, Promise) {
-    return knex.schema.createTable('recipe_tags', (table) => {
+    return knex.schema.createTable('recipes_tags', (table) => {
         table.increments('id').primary();
         table.integer('recipe_id').references('recipes.id').onDelete('CASCADE').notNullable();
         table.string('tag_text').notNullable().defaultTo('');
@@ -7,5 +7,5 @@ exports.up = function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
-    return knex.schema.dropTableIfExists("recipe_tags");
+    return knex.schema.dropTableIfExists("recipes_tags");
 };

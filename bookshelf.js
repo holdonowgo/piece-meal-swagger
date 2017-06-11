@@ -8,5 +8,7 @@ const knexConfig = require('./knexfile')[environment];
 //requiring the actual knex module, passing knexConfig as an argument
 const knex = require('./knex');
 const bookshelf = require('bookshelf')(knex);
+bookshelf.plugin('visibility');
+bookshelf.plugin('virtuals')
 
 module.exports = bookshelf;

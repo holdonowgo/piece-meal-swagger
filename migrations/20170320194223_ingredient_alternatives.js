@@ -4,6 +4,7 @@ exports.up = function(knex, Promise) {
         // table.increments('id').primary();
         table.integer('ingredient_id').references('ingredients.id').onDelete('CASCADE').notNullable();
         table.integer('alt_ingredient_id').references('ingredients.id').onDelete('CASCADE').notNullable();
+        table.string('ratio');
         table.primary(['ingredient_id', 'alt_ingredient_id']);
     });
 };

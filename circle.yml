@@ -1,0 +1,8 @@
+# machine:
+#   node:
+#     version: 7.8
+#     commands:
+
+dependencies:
+  pre:
+    - npm install -g n 7

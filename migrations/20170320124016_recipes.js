@@ -3,6 +3,8 @@ exports.up = function(knex, Promise) {
     table.increments('id').primary();
     table.string('name').notNullable().defaultTo('');
     table.text('description').defaultTo('');
+    table.integer('prep_time');
+    table.integer('cook_time');
     table.string('notes').defaultTo('');
     table.string('image_url').defaultTo('');
     table.boolean('active').notNullable().defaultTo(true);

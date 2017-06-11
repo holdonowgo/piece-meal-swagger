@@ -8,12 +8,25 @@ const knex = require("../../../knex");
 const server = require("../../../app");
 const authToken = process.env.AUTH_TOKEN;
 
-const deleteIngredientTimestamps = function(res) {
+export const deleteRecipesTimestamps = function(res) {
   for (let recipe of res.body.recipes) {
+    delete recipe.created_at;
+    delete recipe.updated_at;
+
     for (let ingredient of recipe.ingredients) {
       delete ingredient.created_at;
       delete ingredient.updated_at;
     }
+  }
+};
+
+export const deleteRecipeTimestamps = function(res) {
+  delete res.body.created_at;
+  delete res.body.updated_at;
+
+  for (let ingredient of res.body.ingredients) {
+    delete ingredient.created_at;
+    delete ingredient.updated_at;
   }
 };
 
@@ -239,14 +252,18 @@ suite("recipes test", () => {
   //     }, done);
   // });
 
-  test("GET /recipes/1/favorites", (done) => {
-    request(server).get("/api/v1/recipes/1/favorites").set("Accept", "application/json").set('token', authToken).expect("Content-Type", /json/).expect((res) => {
-      deleteIngredientTimestamps(res);
+  test("GET /clients/1/recipes/favorites", (done) => {
+    request(server).get("/api/v1/clients/1/recipes/favorites")
+    .set("Accept", "application/json")
+    .set('token', authToken)
+    .expect("Content-Type", /json/)
+    .expect((res) => {
+      deleteRecipesTimestamps(res);
     }).expect(200, {
       "recipes": [
-
         {
           "active": true,
+          "cook_time": null,
           "id": 1,
           "image_url": "",
           "ingredients": [
@@ -287,9 +304,11 @@ suite("recipes test", () => {
               "step_number": 5
             }
           ],
-          "notes": notes
+          "notes": notes,
+          "prep_time": null
         }, {
           "active": true,
+          "cook_time": null,
           "id": 3,
           "name": "cheese omelette",
           "description": "Great when making breakfast for the family!  Can be eaten cold too!",
@@ -313,9 +332,11 @@ suite("recipes test", () => {
               "image_url": ""
             }
           ],
-          "notes": notes
+          "notes": notes,
+          "prep_time": null
         }, {
           "active": true,
+          "cook_time": null,
           "id": 5,
           "ingredients": [
             {
@@ -345,7 +366,8 @@ suite("recipes test", () => {
           "instructions": [],
           "name": "Recipe #5",
           "description": description_5,
-          "notes": notes
+          "notes": notes,
+          "prep_time": null
         }
       ]
     }, done);
@@ -354,29 +376,62 @@ suite("recipes test", () => {
   test("GET /recipes", (done) => {
     request(server).get("/api/v1/recipes").set("Accept", "application/json")
     //  .set('token', authToken)
-      .expect("Content-Type", /json/).expect((res) => {
-      deleteIngredientTimestamps(res);
+    .expect("Content-Type", /json/).expect((res) => {
+      deleteRecipesTimestamps(res);
     }).expect(200, {
       "recipes": [
         {
           "active": true,
+          "cook_time": null,
           "id": 1,
           "image_url": "",
           "ingredients": [
             {
               "active": true,
+              "alternatives": [
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 2,
+                  "image_url": "",
+                  "name": "egg"
+                },
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 3,
+                  "image_url": "",
+                  "name": "milk"
+                }
+              ],
               "id": 1,
               "name": "bacon",
-              // "tags": ['meat', 'pork'],
+              "tags": ['meat', 'pork'],
               "description": "Mmmmmmmmm...Bacon!",
               "image_url": ""
             }, {
               "active": true,
+              "alternatives": [
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 5,
+                  "image_url": "",
+                  "name": "almond milk"
+                },
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 6,
+                  "image_url": "",
+                  "name": "coconut milk"
+                }
+              ],
               "id": 3,
               "name": "milk",
               "description": description,
               "image_url": "",
-              // "tags": ['dairy', 'vegetarian']
+              "tags": ['dairy', 'vegetarian']
             }
           ],
           "name": "cauliflower buffalo bites",
@@ -400,9 +455,12 @@ suite("recipes test", () => {
               "step_number": 5
             }
           ],
-          "notes": notes
+          "notes": notes,
+          "prep_time": null,
+          "tags": ["vegan", "vegetarian"]
         }, {
           "active": true,
+          "cook_time": null,
           "id": 3,
           "name": "cheese omelette",
           "description": "Great when making breakfast for the family!  Can be eaten cold too!",
@@ -421,29 +479,58 @@ suite("recipes test", () => {
               "id": 1,
               "name": "bacon",
               "active": true,
-              // "tags": ['meat', 'pork'],
+              "alternatives": [
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 2,
+                  "image_url": "",
+                  "name": "egg"
+                },
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 3,
+                  "image_url": "",
+                  "name": "milk"
+                }
+              ],
+              "tags": ['meat', 'pork'],
               "description": "Mmmmmmmmm...Bacon!",
               "image_url": ""
             }
           ],
-          "notes": notes
+          "notes": notes,
+          "prep_time": null,
+          "tags": ["dairy", "vegetarian"]
         }, {
           "active": true,
+          "cook_time": null,
           "id": 4,
           "ingredients": [
             {
               "active": true,
+              "alternatives": [],
               "id": 17,
               "name": "lemon juice (fresh)",
               "description": description,
-              // "tags": [],
+              "tags": [],
               "image_url": ""
             }, {
               "active": true,
+              "alternatives": [
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 17,
+                  "image_url": "",
+                  "name": "lemon juice (fresh)"
+                }
+              ],
               "id": 18,
               "name": "salt",
               "description": description,
-              // "tags": [],
+              "tags": [],
               "image_url": ""
             }
           ],
@@ -451,31 +538,37 @@ suite("recipes test", () => {
           "instructions": [],
           "name": "Recipe #4",
           "description": description_4,
-          "notes": notes
+          "notes": notes,
+          "prep_time": null,
+          "tags": ["vegan", "vegetarian"]
         }, {
           "active": true,
+          "cook_time": null,
           "id": 5,
           "ingredients": [
             {
               "active": true,
+              "alternatives": [],
               "id": 21,
               "name": "garlic",
               "description": description,
-              // "tags": [],
+              "tags": [],
               "image_url": ""
             }, {
               "active": true,
+              "alternatives": [],
               "id": 22,
               "name": "onion",
               "description": description,
-              // "tags": [],
+              "tags": [],
               "image_url": ""
             }, {
               "active": true,
+              "alternatives": [],
               "id": 23,
               "name": "asafoetida (powder)",
               "description": description,
-              // "tags": [],
+              "tags": [],
               "image_url": ""
             }
           ],
@@ -483,36 +576,48 @@ suite("recipes test", () => {
           "instructions": [],
           "name": "Recipe #5",
           "description": description_5,
-          "notes": notes
+          "notes": notes,
+          "prep_time": null,
+          "tags": []
         }, {
           "active": true,
+          "cook_time": null,
           "id": 6,
           "image_url": "",
           "ingredients": [],
           "instructions": [],
           "name": "Recipe #6",
           "description": description,
-          "notes": notes
+          "notes": notes,
+          "prep_time": null,
+          "tags": []
         }, {
           "active": true,
+          "cook_time": null,
           "id": 7,
           "image_url": "",
           "ingredients": [],
           "instructions": [],
           "name": "Recipe #7",
           "description": description_7,
-          "notes": notes
+          "notes": notes,
+          "prep_time": null,
+          "tags": []
         }, {
           "active": true,
+          "cook_time": null,
           "id": 8,
           "image_url": "",
           "ingredients": [],
           "instructions": [],
           "name": "Recipe #8",
           "description": description_8,
-          "notes": notes
+          "notes": notes,
+          "prep_time": null,
+          "tags": []
         }, {
           "active": true,
+          "cook_time": null,
           "id": 2,
           "name": "simple oatmeal",
           "description": description_2,
@@ -523,12 +628,30 @@ suite("recipes test", () => {
               "id": 1,
               "name": "bacon",
               "active": true,
-              // "tags": ['meat', 'pork'],
+              "alternatives": [
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 2,
+                  "image_url": "",
+                  "name": "egg"
+                },
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 3,
+                  "image_url": "",
+                  "name": "milk"
+                }
+              ],
+              "tags": ['meat', 'pork'],
               "description": "Mmmmmmmmm...Bacon!",
               "image_url": ""
             }
           ],
-          "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!"
+          "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
+          "prep_time": null,
+          "tags": ["vegetarian"]
         }
       ]
     }, done);
@@ -552,7 +675,10 @@ suite("recipes test", () => {
         1, 3
       ],
       tags: ['no-cook', 'asian', 'vegetarian', 'vegan']
-    }).expect("Content-Type", /json/).expect(200, {
+    }).expect("Content-Type", /json/)
+      .expect((res) => {
+        deleteRecipeTimestamps(res);
+    }).expect(200, {
       id: 9,
       "ingredients": [
         {
@@ -563,7 +689,23 @@ suite("recipes test", () => {
             'meat', 'pork'
           ],
           "image_url": "",
-          "active": true
+          "active": true,
+          "alternatives": [
+            {
+              "active": true,
+              "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+              "id": 2,
+              "image_url": "",
+              "name": "egg"
+            },
+            {
+              "active": true,
+              "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+              "id": 3,
+              "image_url": "",
+              "name": "milk"
+            }
+          ]
         }, {
           "id": 3,
           "name": "milk",
@@ -572,10 +714,27 @@ suite("recipes test", () => {
             'dairy', 'vegetarian'
           ],
           "image_url": "",
-          "active": true
+          "active": true,
+          "alternatives": [
+            {
+              "active": true,
+              "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+              "id": 5,
+              "image_url": "",
+              "name": "almond milk"
+            },
+            {
+              "active": true,
+              "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+              "id": 6,
+              "image_url": "",
+              "name": "coconut milk"
+            }
+          ]
         }
       ],
       name: "seaweed salad",
+      "cook_time": null,
       description: 'A flavorful, spicy, quick and simple Asian salad.',
       image_url: "",
       instructions: [
@@ -588,6 +747,7 @@ suite("recipes test", () => {
         }
       ],
       "notes": '',
+      "prep_time": null,
       tags: [
         'asian', 'no-cook', 'vegan', 'vegetarian'
       ],
@@ -598,10 +758,14 @@ suite("recipes test", () => {
   test("GET /recipes/:id", (done) => {
     request(server).get("/api/v1/recipes/1").set("Accept", "application/json")
     //  .set('token', authToken)
+      .expect((res) => {
+        deleteRecipeTimestamps(res);
+      })
       .expect(200, {
       "id": 1,
       "name": "cauliflower buffalo bites",
-      "description": description,
+      "cook_time": null,
+      "description": description_1,
       "image_url": "",
       "instructions": [
         {
@@ -623,27 +787,70 @@ suite("recipes test", () => {
       ],
       "ingredients": [
         {
+          "active": true,
           "id": 1,
+          "image_url": "",
           "name": "bacon",
           "description": "Mmmmmmmmm...Bacon!",
-          "tags": ['meat', 'pork']
+          "tags": [
+            'meat', 'pork'
+          ],
+          "alternatives": [
+            {
+              "active": true,
+              "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+              "id": 2,
+              "image_url": "",
+              "name": "egg"
+            }, {
+              "active": true,
+              "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+              "id": 3,
+              "image_url": "",
+              "name": "milk"
+            }
+          ]
         }, {
+          "active": true,
+          "alternatives": [
+            {
+              "active": true,
+              "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+              "id": 5,
+              "image_url": "",
+              "name": "almond milk"
+            },
+            {
+              "active": true,
+              "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+              "id": 6,
+              "image_url": "",
+              "name": "coconut milk"
+            }
+          ],
           "id": 3,
+          "image_url": "",
           "name": "milk",
           "description": description,
           "tags": ['dairy', 'vegetarian']
         }
       ],
       "notes": notes,
-      "tags": [],
-      "active": true
+      "prep_time": null,
+      "tags": ['vegan', 'vegetarian'],
+      "active": true,
+      'lol': false
     });
 
     request(server).get("/api/v1/recipes/2").set("Accept", "application/json")
     //  .set('token', authToken)
+      .expect((res) => {
+        deleteRecipeTimestamps(res);
+      })
       .expect(200, {
       "id": 2,
       "name": "simple oatmeal",
+      "cook_time": null,
       "description": description_2,
       "image_url": "",
       "instructions": [],
@@ -656,90 +863,106 @@ suite("recipes test", () => {
           ],
           "description": "Mmmmmmmmm...Bacon!",
           "image_url": "",
-          "active": true
+          "active": true,
+          "alternatives": [
+            {
+              "active": true,
+              "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+              "id": 2,
+              "image_url": "",
+              "name": "egg"
+            }, {
+              "active": true,
+              "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+              "id": 3,
+              "image_url": "",
+              "name": "milk"
+            }
+          ]
         }
       ],
       "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
-      "tags": [],
+      "prep_time": null,
+      "tags": ['vegetarian'],
       "active": true
     }, done);
   });
 
-  // test("POST /recipes/2/ratings", (done) => {
-  //     request(server).get("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).expect(200, {
-  //         "id": 2,
-  //         "name": "simple oatmeal",
-  //         "description": '',
-  //         "image_url": "",
-  //         "instructions": [],
-  //         "ingredients": [
-  //             {
-  //                 "id": 1,
-  //                 "name": "bacon",
-  //                 "description": "Mmmmmmmmm...Bacon!",
-  //                 "tags": ['meat', 'pork'],
-  //                 "image_url": "",
-  //                 "active": true
-  //             }
-  //         ],
-  //         "notes": "",
-  //         "active": true,
-  //         "tags": [],
-  //         "ratings": {"up_votes": 0, "down_votes": 0}
-  //     });
-  //
-  //     request(server).post("/api/v1/recipes/2/ratings").set("Accept", "application/json").set('token', authToken).send({
-  //         "recipe_id": 2,
-  //         "client_id": 1,
-  //         "vote": -1
-  //     }).expect("Content-Type", /json/).expect(200, {
-  //         "id": 2,
-  //         "name": "simple oatmeal",
-  //         "description": '',
-  //         "image_url": "",
-  //         "instructions": [],
-  //         "ingredients": [
-  //             {
-  //                 "id": 1,
-  //                 "name": "bacon",
-  //                 "description": "Mmmmmmmmm...Bacon!",
-  //                 "tags": ['meat', 'pork'],
-  //                 "image_url": "",
-  //                 "active": true
-  //             }
-  //         ],
-  //         "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
-  //         "tags": [],
-  //         "active": true,
-  //         "ratings": {"up_votes": 0, "down_votes": -1}
-  //     });
-  //
-  //     request(server).post("/api/v1/recipes/2/ratings").set("Accept", "application/json").set('token', authToken).send({
-  //         "recipe_id": 2,
-  //         "client_id": 1,
-  //         "vote": 1
-  //     }).expect("Content-Type", /json/).expect(200, {
-  //         "id": 2,
-  //         "name": "simple oatmeal",
-  //         "description": '',
-  //         "image_url": "",
-  //         "instructions": [],
-  //         "ingredients": [
-  //             {
-  //                 "id": 1,
-  //                 "name": "bacon",
-  //                 "description": "Mmmmmmmmm...Bacon!",
-  //                 "tags": ['meat', 'pork'],
-  //                 "image_url": "",
-  //                 "active": true
-  //             }
-  //         ],
-  //         "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
-  //         "tags": [],
-  //         "active": true,
-  //         "ratings": {"up_votes": 1, "down_votes": 0}
-  //     }, done);
-  // });
+  test("POST /recipes/2/ratings", (done) => {
+      request(server).get("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).expect(200, {
+          "id": 2,
+          "name": "simple oatmeal",
+          "description": "Pea horseradish azuki bean lettuce avocado asparagus okra. Kohlrabi radish okra azuki bean   corn fava bean mustard tigernut jÃ­cama green bean celtuce collard greens avocado quandong fennel gumbo black-eyed pea. Grape silver beet watercress potato tigernut corn groundnut. Chickweed okra pea winter purslane coriander yarrow sweet pepper radish garlic brussels sprout groundnut summer purslane earthnut pea tomato spring onion azuki bean gourd. Gumbo kakadu plum komatsuna black-eyed pea green bean zucchini gourd winter purslane silver beet rock melon radish asparagus spinach.",
+          "image_url": "",
+          "instructions": [],
+          "ingredients": [
+              {
+                  "id": 1,
+                  "name": "bacon",
+                  "description": "Mmmmmmmmm...Bacon!",
+                  "tags": ['meat', 'pork'],
+                  "image_url": "",
+                  "active": true
+              }
+          ],
+          "notes": "",
+          "active": true,
+          "tags": ["vegetarian"],
+          "ratings": { "up_votes": 0, "down_votes": 0 }
+      });
+
+      request(server).post("/api/v1/recipes/2/ratings").set("Accept", "application/json").set('token', authToken).send({
+          "recipe_id": 2,
+          "client_id": 1,
+          "vote": -1
+      }).expect("Content-Type", /json/).expect(200, {
+          "id": 2,
+          "name": "simple oatmeal",
+          "description": "Pea horseradish azuki bean lettuce avocado asparagus okra. Kohlrabi radish okra azuki bean corn fava bean mustard tigernut jÃ­cama green bean celtuce collard greens avocado quandong fennel gumbo black-eyed pea. Grape silver beet watercress potato tigernut corn groundnut. Chickweed okra pea winter purslane coriander yarrow sweet pepper radish garlic brussels sprout groundnut summer purslane earthnut pea tomato spring onion azuki bean gourd. Gumbo kakadu plum komatsuna black-eyed pea green bean zucchini gourd winter purslane silver beet rock melon radish asparagus spinach.",
+          "image_url": "",
+          "instructions": [],
+          "ingredients": [
+              {
+                  "id": 1,
+                  "name": "bacon",
+                  "description": "Mmmmmmmmm...Bacon!",
+                  "tags": ['meat', 'pork'],
+                  "image_url": "",
+                  "active": true
+              }
+          ],
+          "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
+          "tags": ["vegetarian"],
+          "active": true,
+          "ratings": {"up_votes": 0, "down_votes": -1}
+      });
+
+      request(server).post("/api/v1/recipes/2/ratings").set("Accept", "application/json").set('token', authToken).send({
+          "recipe_id": 2,
+          "client_id": 1,
+          "vote": 1
+      }).expect("Content-Type", /json/).expect(200, {
+          "id": 2,
+          "name": "simple oatmeal",
+          "description": "Pea horseradish azuki bean lettuce avocado asparagus okra. Kohlrabi radish okra azuki bean corn fava bean mustard tigernut jÃ­cama green bean celtuce collard greens avocado quandong fennel gumbo black-eyed pea. Grape silver beet watercress potato tigernut corn groundnut. Chickweed okra pea winter purslane coriander yarrow sweet pepper radish garlic brussels sprout groundnut summer purslane earthnut pea tomato spring onion azuki bean gourd. Gumbo kakadu plum komatsuna black-eyed pea green bean zucchini gourd winter purslane silver beet rock melon radish asparagus spinach.",
+          "image_url": "",
+          "instructions": [],
+          "ingredients": [
+              {
+                  "id": 1,
+                  "name": "bacon",
+                  "description": "Mmmmmmmmm...Bacon!",
+                  "tags": ['meat', 'pork'],
+                  "image_url": "",
+                  "active": true
+              }
+          ],
+          "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
+          "tags": ["vegetarian"],
+          "active": true,
+          "ratings": {"up_votes": 1, "down_votes": 0}
+      }, done);
+  });
 
   test("PUT /recipes:id", (done) => {
     request(server).get("/api/v1/recipes/2").set("Accept", "application/json").set('token', authToken).expect(200, {
@@ -826,10 +1049,11 @@ suite("recipes test", () => {
 
   test("GET /clients/1/recipes", (done) => {
     request(server).get("/api/v1/clients/1/recipes").set("Accept", "application/json").set('token', authToken).expect((res) => {
-      deleteIngredientTimestamps(res);
+      deleteRecipesTimestamps(res);
     }).expect(200, {
       "recipes": [
         {
+          "cook_time": null,
           "id": 1,
           "name": "cauliflower buffalo bites",
           "description": description_1,
@@ -859,19 +1083,59 @@ suite("recipes test", () => {
               "active": true,
               // "tags": ['meat', 'pork'],
               "description": "Mmmmmmmmm...Bacon!",
-              "image_url": ""
+              "image_url": "",
+              "alternatives": [
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 2,
+                  "image_url": "",
+                  "name": "egg"
+                },
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 3,
+                  "image_url": "",
+                  "name": "milk"
+                },
+              ],
+              "tags": [
+                "meat",
+                "pork"
+              ]
             }, {
               "id": 3,
               "name": "milk",
               "active": true,
               // "tags": ['dairy', 'vegetarian'],
               "description": description,
-              "image_url": ""
+              "image_url": "",
+              "alternatives": [
+                 {
+                   "active": true,
+                   "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                   "id": 5,
+                   "image_url": "",
+                   "name": "almond milk"
+                 },
+                 {
+                   "active": true,
+                   "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                   "id": 6,
+                   "image_url": "",
+                   "name": "coconut milk"
+                 }
+               ],
+               "tags": ["dairy", "vegetarian"]
             }
           ],
           "notes": notes,
-          "active": true
+          "prep_time": null,
+          "active": true,
+          "tags": ["vegan", "vegetarian"]
         }, {
+          "cook_time": null,
           "id": 3,
           "name": "cheese omelette",
           "description": 'Great when making breakfast for the family!  Can be eaten cold too!',
@@ -892,12 +1156,32 @@ suite("recipes test", () => {
               "active": true,
               // "tags": ['meat', 'pork'],
               "description": "Mmmmmmmmm...Bacon!",
-              "image_url": ""
+              "image_url": "",
+              "alternatives": [
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 2,
+                  "image_url": "",
+                  "name": "egg"
+                },
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 3,
+                  "image_url": "",
+                  "name": "milk"
+                }
+              ],
+              "tags": ["meat", "pork"]
             }
           ],
           "notes": notes,
-          "active": true
+          "prep_time": null,
+          "active": true,
+          "tags": ["dairy", "vegetarian"]
         }, {
+          "cook_time": null,
           "id": 2,
           "name": "simple oatmeal",
           "description": description_2,
@@ -910,11 +1194,30 @@ suite("recipes test", () => {
               "active": true,
               // "tags": ['meat', 'pork'],
               "description": "Mmmmmmmmm...Bacon!",
-              "image_url": ""
+              "image_url": "",
+              "alternatives": [
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 2,
+                  "image_url": "",
+                  "name": "egg"
+                },
+                {
+                  "active": true,
+                  "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                  "id": 3,
+                  "image_url": "",
+                  "name": "milk"
+                }
+              ],
+              "tags": ["meat", "pork"]
             }
           ],
           "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
-          "active": true
+          "prep_time": null,
+          "active": true,
+          "tags": ["vegetarian"]
         }
       ]
     }, done);
@@ -926,16 +1229,20 @@ suite("recipes test", () => {
       description: "Added"
     }).then(() => {
       // check that it was actually added.
-      return request(server).get("/api/v1/clients/2/recipes").set("Accept", "application/json").set('token', authToken).expect((res) => {
-        deleteIngredientTimestamps(res);
+      return request(server).get("/api/v1/clients/2/recipes")
+      .set("Accept", "application/json")
+      .set('token', authToken)
+      .expect((res) => {
+        deleteRecipesTimestamps(res);
       }).expect(200, {
         "recipes": [
           {
+            "cook_time": null,
             "id": 1,
             "name": "cauliflower buffalo bites",
             "description": description_1,
             "image_url": "",
-            instructions: [
+            "instructions": [
               {
                 "instructions": "do step one",
                 "step_number": 1
@@ -958,20 +1265,53 @@ suite("recipes test", () => {
                 "id": 1,
                 "name": "bacon",
                 "active": true,
-                // "tags": ['meat', 'pork'],
+                "tags": ['meat', 'pork'],
                 "description": "Mmmmmmmmm...Bacon!",
-                "image_url": ""
+                "image_url": "",
+                "alternatives": [
+                  {
+                    "active": true,
+                    "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                    "id": 2,
+                    "image_url": "",
+                    "name": "egg"
+                  },
+                  {
+                    "active": true,
+                    "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                    "id": 3,
+                    "image_url": "",
+                    "name": "milk"
+                  }
+                ]
               }, {
                 "id": 3,
                 "name": "milk",
                 "active": true,
-                // "tags": ['dairy', 'vegetarian'],
+                "tags": ['dairy', 'vegetarian'],
                 "description": description,
-                "image_url": ""
+                "image_url": "",
+                "alternatives": [
+                  {
+                    "active": true,
+                    "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                    "id": 5,
+                    "image_url": "",
+                    "name": "almond milk"
+                  },
+                  {
+                    "active": true,
+                    "description": "Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.",
+                    "id": 6,
+                    "image_url": "",
+                    "name": "coconut milk"
+                  }
+                ]
               }
             ],
             "notes": notes,
-            // "tags": [],
+            "tags": ["vegan", "vegetarian"],
+            "prep_time": null,
             "active": true
           }
         ]
@@ -980,10 +1320,18 @@ suite("recipes test", () => {
   });
 
   test('GET /search/recipes/?text=mi', (done) => {
-    request(server).get('/api/v1/search/recipes?text=d').set('Accept', 'application/json').set('Token', authToken).expect('Content-Type', /json/).expect(200, {
+    request(server).get('/api/v1/search/recipes?text=d')
+    .set('Accept', 'application/json')
+    .set('Token', authToken)
+    .expect('Content-Type', /json/)
+    .expect((res) => {
+      deleteRecipesTimestamps(res);
+    }).expect(200, {
       "recipes": [
         {
           "active": true,
+          "cook_time": null,
+          "description": description_4,
           "id": 4,
           "ingredients": [
             {
@@ -1005,10 +1353,11 @@ suite("recipes test", () => {
           "image_url": "",
           "instructions": [],
           "name": "Recipe #4",
-          "description": description_4,
-          "notes": notes
+          "notes": notes,
+          "prep_time": null
         }, {
           "active": true,
+          "cook_time": null,
           "description": description_5,
           "id": 5,
           "image_url": "",
@@ -1035,9 +1384,11 @@ suite("recipes test", () => {
           ],
           "instructions": [],
           "name": "Recipe #5",
-          "notes": notes
+          "notes": notes,
+          "prep_time": null
         }, {
           "active": true,
+          "cook_time": null,
           "description": description_1,
           "id": 1,
           "image_url": "",
@@ -1075,9 +1426,11 @@ suite("recipes test", () => {
             }
           ],
           "name": "cauliflower buffalo bites",
-          "notes": notes
+          "notes": notes,
+          "prep_time": null
         }, {
           "active": true,
+          "cook_time": null,
           "description": "Great when making breakfast for the family!  Can be eaten cold too!",
           "id": 3,
           "image_url": "",
@@ -1100,12 +1453,13 @@ suite("recipes test", () => {
             }
           ],
           "name": "cheese omelette",
-          "notes": notes
+          "notes": notes,
+          "prep_time": null
         }, {
           "active": true,
-          "id": 2,
-          "name": "simple oatmeal",
+          "cook_time": null,
           "description": description_2,
+          "id": 2,
           "image_url": "",
           "instructions": [],
           "ingredients": [
@@ -1118,22 +1472,30 @@ suite("recipes test", () => {
               "image_url": ""
             }
           ],
-          "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!"
+          "name": "simple oatmeal",
+          "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
+          "prep_time": null
         }
       ]
     }, done);
   });
 
   test("GET /recipes/-1", (done) => {
-    request(server).get("/api/v1/recipes/-1").set("Accept", "application/json").expect(404, JSON.stringify('Not Found'), done);
+    request(server).get("/api/v1/recipes/-1")
+    .set("Accept", "application/json")
+    .expect(404, JSON.stringify('Not Found'), done);
   });
 
   test("GET /recipes/-1", (done) => {
-    request(server).get("/api/v1/recipes/-1").set("Accept", "application/json").set('Token', authToken).expect(404, JSON.stringify('Not Found'), done);
+    request(server).get("/api/v1/recipes/-1")
+    .set("Accept", "application/json")
+    .set('Token', authToken)
+    .expect(404, JSON.stringify('Not Found'), done);
   });
 
   test("GET /recipes/one", (done) => {
-    request(server).get("/api/v1/recipes/one").set("Accept", "application/json")
+    request(server).get("/api/v1/recipes/one")
+    .set("Accept", "application/json")
     // .set('Token', authToken)
       .expect(400, JSON.stringify({
       "message": "Request validation failed: Parameter (id) is not a valid integer: one",

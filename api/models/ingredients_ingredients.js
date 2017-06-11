@@ -3,10 +3,10 @@ const Ingredient = require('../models/ingredient.js').Ingredient;
 const Ingredients = require('../models/ingredient.js').Ingredients;
 
 
-let RecipeIngredient = bookshelf.Model.extend({
-  tableName: 'ingredients_recipes',
+let AlternativeIngredient = bookshelf.Model.extend({
+  tableName: 'ingredient_alternatives',
   hasTimestamps: false,
-  // idAttribute : ['recipe_id', 'ingredient_id']
+  idAttribute : ['alt_ingredient_id', 'ingredient_id']
 
   // recipe: function() {
   //     return this.belongsTo(Recipe);
@@ -25,11 +25,11 @@ let RecipeIngredient = bookshelf.Model.extend({
   // }
 })
 
-let RecipeIngredients = bookshelf.Collection.extend({
-    model: RecipeIngredient
+let AlternativeIngredients = bookshelf.Collection.extend({
+    model: AlternativeIngredient
 });
 
 module.exports = {
-    RecipeIngredient,
-    RecipeIngredients
+    AlternativeIngredient,
+    AlternativeIngredients
 }

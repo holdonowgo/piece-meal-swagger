@@ -19,8 +19,8 @@ module.exports = {
     searchRecipes: searchRecipes,
     rateRecipe: rateRecipe,
     getRandomRecipes: getRandomRecipes,
-    getFavoriteRecipes: getFavoriteRecipes
-    // getRecipeBookshelf: getRecipeBookshelf
+    getFavoriteRecipes: getFavoriteRecipes,
+    getRecipeBookshelf: getRecipeBookshelf
 };
 
 function doGetRecipes(query, res) {
@@ -35,8 +35,6 @@ function doGetRecipes(query, res) {
         // 'promiseResults' is an array of arrays of ingredients
         for (var i = 0; i < recipes.length; i++) {
             recipes[i].ingredients = promiseResults[i].map((ingredient) => {
-                delete ingredient.created_at;
-                delete ingredient.updated_at;
                 return ingredient;
             });
         }
@@ -84,11 +82,11 @@ function doGetRecipes(query, res) {
 
 // /recipes
 function getRecipesList(req, res) {
-    return doGetRecipes(knex("recipes").orderByRaw('LOWER(recipes.name)'), res);
+    // return doGetRecipes(knex("recipes").orderByRaw('LOWER(recipes.name)'), res);
+    return fetchRecipes(new Recipes().query('orderBy', 'name', 'asc'), res);
 }
 
 function getFavoriteRecipes(req, res) {
-  console.log('req.swagger.params.user_id.value:', req.swagger.params.user_id.value);
     return doGetRecipes(
       knex("recipes")
       .join("recipe_favorites", function () {
@@ -102,8 +100,15 @@ function getFavoriteRecipes(req, res) {
 }
 
 function getClientRecipes(req, res) {
-    const query = knex("recipes").join('client_recipes', 'client_recipes.recipe_id', 'recipes.id').select("recipes.*").where('client_recipes.client_id', req.swagger.params.user_id.value).orderByRaw('LOWER(recipes.name)');
-    return doGetRecipes(query, res);
+
+    const query = Recipes.query((qb) => {
+      qb.innerJoin('clients_recipes', 'recipes.id', 'clients_recipes.recipe_id');
+      qb.where('clients_recipes.client_id', req.swagger.params.user_id.value);
+    });
+    return fetchRecipes(query, res);
+
+    // const query = knex("recipes").join('clients_recipes', 'clients_recipes.recipe_id', 'recipes.id').select("recipes.*").where('clients_recipes.client_id', req.swagger.params.user_id.value).orderByRaw('LOWER(recipes.name)');
+    // return doGetRecipes(query, res);
 }
 
 function addClientRecipe(req, res) {
@@ -113,18 +118,18 @@ function addClientRecipe(req, res) {
             res.status(401).send('Unauthorized');
         }
 
-        return knex("client_recipes").insert({client_id: req.swagger.params.user_id.value, recipe_id: req.swagger.params.request.value.recipe_id}).then(() => {
+        return knex("clients_recipes").insert({client_id: req.swagger.params.user_id.value, recipe_id: req.swagger.params.request.value.recipe_id}).then(() => {
             res.status(200).json({success: 1, description: "Added"});
         });
   });
 }
 
 function getIngredientsQuery(recipeId) {
-    return knex("recipe_ingredients").join("ingredients", "ingredients.id", "recipe_ingredients.ingredient_id").select("ingredients.id", "ingredients.name", "ingredients.description", "ingredients.active", "ingredients.image_url").orderBy('id').where("recipe_ingredients.recipe_id", recipeId);
+    return knex("ingredients_recipes").join("ingredients", "ingredients.id", "ingredients_recipes.ingredient_id").select("ingredients.id", "ingredients.name", "ingredients.description", "ingredients.active", "ingredients.image_url").orderBy('id').where("ingredients_recipes.recipe_id", recipeId);
 }
 
 function getIngredientTagsQuery(ingredientId) {
-    return knex("ingredient_tags").where("ingredient_tags.ingredient_id", ingredientId).orderBy('tag_text');
+    return knex("ingredients_tags").where("ingredients_tags.ingredient_id", ingredientId).orderBy('tag_text');
 }
 
 function getRecipeStepsQuery(recipeId) {
@@ -132,7 +137,7 @@ function getRecipeStepsQuery(recipeId) {
 }
 
 function getRecipeTagsQuery(recipeId) {
-    return knex("recipe_tags").join("recipes", "recipes.id", "recipe_tags.recipe_id").select("recipe_tags.tag_text").orderBy('tag_text').where("recipe_tags.recipe_id", recipeId);
+    return knex("recipes_tags").join("recipes", "recipes.id", "recipes_tags.recipe_id").select("recipes_tags.tag_text").orderBy('tag_text').where("recipes_tags.recipe_id", recipeId);
 }
 
 function getRecipe(req, res) {
@@ -193,13 +198,13 @@ function rateRecipe(req, res) {
         let vote = req.swagger.params.vote.value.vote;
         let client_id = req.swagger.params.vote.value.client_id;
 
-        knex("recipe_votes").first().where("recipe_id", recipe_id).andWhere("client_id", client_id).then((result) => {
+        knex("recipes_votes").first().where("recipe_id", recipe_id).andWhere("client_id", client_id).then((result) => {
             if (result) {
-                return knex("recipe_votes")
+                return knex("recipes_votes")
                 .where("recipe_id", recipe_id).andWhere("client_id", client_id)
                 .update({vote: vote});
             } else {
-                return knex("recipe_votes")
+                return knex("recipes_votes")
                 .insert({"recipe_id": recipe_id, client_id: client_id, vote: vote});
             }
         })
@@ -225,7 +230,7 @@ function postRecipe(req, res) {
         // to insert into the recipe_steps table
         let instructions = req.swagger.params.recipe.value.instructions;
 
-        //to insert into recipe_ingredients table
+        //to insert into ingredients_recipes table
         let ingredients = req.swagger.params.recipe.value.ingredients;
         let tags = req.swagger.params.recipe.value.tags;
         knex("recipes").first().where("name", name).then((result) => {
@@ -239,7 +244,7 @@ function postRecipe(req, res) {
             let data = ingredients.map((value) => {
                 return {recipe_id: recipe.id, ingredient_id: value};
             });
-            return knex('recipe_ingredients').insert(data).returning("*");
+            return knex('ingredients_recipes').insert(data).returning("*");
         }).then(() => { // insert instructions
             let data = instructions.map((step) => {
                 return {recipe_id: recipe.id, step_number: step.step_number, instructions: step.instructions};
@@ -249,9 +254,10 @@ function postRecipe(req, res) {
             let data = tags.map((tag) => {
                 return { recipe_id: recipe.id, tag_text: tag.toLowerCase() };
             });
-            return knex('recipe_tags').insert(data).returning("*");
+            return knex('recipes_tags').insert(data).returning("*");
         }).then(() => { // return new recipe
-            return doGetRecipe(recipe.id, res);
+            // return doGetRecipe(recipe.id, res);
+            return fetchRecipe(recipe.id, res);
         });
   });
 }
@@ -275,13 +281,13 @@ function updateRecipe(req, res) {
                 return knex("recipes").insert({"id": id, "name": recipe.name, description: recipe.description, notes: recipe.notes}).returning("*");
             }
         }).then((recipes) => {
-            //to insert into recipe_ingredients table
+            //to insert into ingredients_recipes table
 
             let data = recipe.ingredients.map((value) => {
                 return {recipe_id: recipe.id, ingredient_id: value};
             });
 
-            return knex('recipe_ingredients').insert(data).returning("*");
+            return knex('ingredients_recipes').insert(data).returning("*");
         }).then(() => {
             // to insert into the recipe_steps table
 
@@ -297,7 +303,7 @@ function updateRecipe(req, res) {
                 return {recipe_id: recipe.id, tag_text: tag.toLowerCase()};
             });
 
-            return knex('recipe_tags').insert(data).returning("*");
+            return knex('recipes_tags').insert(data).returning("*");
         }).then(() => { // return updated recipe
             return doGetRecipe(recipe.id, res);
         }).catch((err) => {
@@ -333,39 +339,137 @@ function searchRecipes(req, res) {
     // To list clients
     // let text = req.swagger.params.text.value;
     return doGetRecipes(knex("recipes")
-    .join('recipe_ingredients', 'recipes.id', 'recipe_ingredients.recipe_id')
-    .leftJoin('ingredient_tags', 'recipe_ingredients.ingredient_id', 'ingredient_tags.ingredient_id')
-    .leftJoin('ingredients', 'recipe_ingredients.ingredient_id', 'ingredients.id')
+    .join('ingredients_recipes', 'recipes.id', 'ingredients_recipes.recipe_id')
+    .leftJoin('ingredients_tags', 'ingredients_recipes.ingredient_id', 'ingredients_tags.ingredient_id')
+    .leftJoin('ingredients', 'ingredients_recipes.ingredient_id', 'ingredients.id')
     .distinct('recipes.*')
     .where('recipes.name', 'ilike', `%${req.swagger.params.text.value}%`)
     .orWhere('recipes.description', 'ilike', `%${req.swagger.params.text.value}%`)
     .orWhere('ingredients.name', 'ilike', `%${req.swagger.params.text.value}%`)
-    .orWhere('ingredient_tags.tag_text', 'ilike', `%${req.swagger.params.text.value}%`)
+    .orWhere('ingredients_tags.tag_text', 'ilike', `%${req.swagger.params.text.value}%`)
     .orderBy('recipes.name'), res);
 }
 
-// function getRecipeBookshelf(req, res) {
-//   Recipe.forge({
-//            id: req.swagger.params.id.value
-//       })
-//       .fetch({
-//           // withRelated: ['steps', 'tags', 'ingredients']
-//           withRelated: ['instructions', 'tags']
-//       })
-//       .then((recipe) => {
-//           let recipeObj = recipe.serialize();
-//           recipeObj.tags = recipeObj.instructions.map((value) => {
-//               return value.instructions;
-//           }).sort();
-//
-//           delete recipeObj.created_at;
-//           delete recipeObj.updated_at;
-//
-//           return res.json(recipeObj);
-//       }).catch((err) => {
-//           res.status(500).json({message: err});
-//       });
-// }
+function fetchRecipe(id, res) {
+  Recipe.forge({
+           id: id
+      })
+      .fetch({
+          // withRelated: ['steps', 'tags', 'ingredients']
+          withRelated: [
+            // 'instructions',
+            { instructions: (query) => { query.orderBy('step_number'); }},
+            'tags',
+            // { tags: (query) => { query.column('tag_text'); }},
+            'ingredients',
+            'ingredients.alternatives',
+            'ingredients.tags',
+            // { 'ingredients.tags': (query) => { query.column('tag_text'); }}
+          ]
+      })
+      .then((recipe) => {
+        if(!recipe) {
+          res.status(404).json('Not Found');
+        } else {
+          let recipeObj = recipe.serialize();
+          // recipeObj.instructions = recipeObj.instructions.map((instruction) => {
+          //     return instruction.instructions;
+          // }).sort();
+          recipeObj.tags = recipeObj.tags.map((tag) => {
+              return tag.tag_text;
+          }).sort();
+          for(let ingredient of recipeObj.ingredients) {
+            ingredient.tags = ingredient.tags.map(tag => tag.tag_text).sort();
+          }
+
+          return res.json(recipeObj);
+        }
+      }).catch((err) => {
+          res.status(500).json({message: err});
+      });
+}
+
+function fetchRecipes(query, res) {
+  query.fetch({
+          // withRelated: ['steps', 'tags', 'ingredients']
+          withRelated: [
+            // 'instructions',
+            { instructions: (query) => { query.orderBy('step_number'); }},
+            'tags',
+            // { tags: (query) => { query.column('tag_text'); }},
+            'ingredients',
+            'ingredients.alternatives',
+            'ingredients.tags',
+            // { 'ingredients.tags': (query) => { query.column('tag_text'); }}
+          ]
+      })
+      .then((recipes) => {
+        if(!recipes) {
+          res.status(404).json('Not Found');
+        } else {
+          let recipeObjs = recipes.serialize();
+
+          recipeObjs.sort((a, b) => {
+            if(a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+            if(b.name.toLowerCase() > a.name.toLowerCase()) return -1;
+            return 0;
+          })
+
+          for(let recipeObj of recipeObjs) {
+            recipeObj.tags = recipeObj.tags.map((tag) => {
+                return tag.tag_text;
+            }).sort();
+
+            for(let ingredient of recipeObj.ingredients) {
+              ingredient.tags = ingredient.tags.map(tag => tag.tag_text).sort();
+            }
+          }
+
+          return res.json({ recipes: recipeObjs });
+        }
+      }).catch((err) => {
+          res.status(500).json({message: err});
+      });
+}
+
+function getRecipeBookshelf(req, res) {
+  Recipe.forge({
+           id: req.swagger.params.id.value
+      })
+      .fetch({
+          // withRelated: ['steps', 'tags', 'ingredients']
+          withRelated: [
+            // 'instructions',
+            { instructions: (query) => { query.orderBy('step_number'); }},
+            'tags',
+            // { tags: (query) => { query.column('tag_text'); }},
+            'ingredients',
+            'ingredients.alternatives',
+            'ingredients.tags',
+            // { 'ingredients.tags': (query) => { query.column('tag_text'); }}
+          ]
+      })
+      .then((recipe) => {
+        if(!recipe) {
+          res.status(404).json('Not Found');
+        } else {
+          let recipeObj = recipe.serialize();
+          // recipeObj.instructions = recipeObj.instructions.map((instruction) => {
+          //     return instruction.instructions;
+          // }).sort();
+          recipeObj.tags = recipeObj.tags.map((tag) => {
+              return tag.tag_text;
+          }).sort();
+          for(let ingredient of recipeObj.ingredients) {
+            ingredient.tags = ingredient.tags.map(tag => tag.tag_text).sort();
+          }
+
+          return res.json(recipeObj);
+        }
+      }).catch((err) => {
+          res.status(500).json({message: err});
+      });
+}
 
 function getRandomRecipes(req, res) {
   return knex.raw('select * from recipes tablesample bernoulli (100) order by random() limit 10')
