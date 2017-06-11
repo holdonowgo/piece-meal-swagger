@@ -504,7 +504,51 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GetIngredientResponse"
+            type: object
+            required:
+              - id
+              - name
+              - description
+              - image_url
+              - active
+              - alternatives
+              - tags
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              description:
+                type: string
+              image_url:
+                type: string
+              active:
+                type: boolean
+              alternatives:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - id
+                    - name
+                    - description
+                    - image_url
+                    - active
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    image_url:
+                      type: string
+                    active:
+                      type: boolean
+              tags:
+                type: array
+                items:
+                  type: string
         default:
           description: Error
           schema:
