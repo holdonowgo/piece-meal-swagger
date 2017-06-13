@@ -6,3 +6,11 @@
 dependencies:
   pre:
     - npm install -g n 7
+    - which psql
+
+## Customize database setup
+database:
+  override:
+    # replace CircleCI's generated database.yml
+    # - cp config/database.yml.ci config/database.yml
+    - bundle exec createdb piecemeal_test
