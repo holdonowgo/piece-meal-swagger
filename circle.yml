@@ -7,6 +7,7 @@ dependencies:
   pre:
     - npm install -g n 7
     - which psql
+    - createdb piecemeal_test
 
 ## Customize database setup
 database:
