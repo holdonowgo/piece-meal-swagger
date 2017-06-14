@@ -13,4 +13,4 @@ database:
   override:
     # replace CircleCI's generated database.yml
     # - cp config/database.yml.ci config/database.yml
-    - bundle exec createdb piecemeal_test
+    # - bundle exec createdb piecemeal_test
