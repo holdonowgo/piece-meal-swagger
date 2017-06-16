@@ -34,6 +34,36 @@ const data = [{
   // id: 9,
   recipe_id: 5,
   ingredient_id: 23
+}, {
+  recipe_id: 9,
+  ingredient_id: 28
+}, {
+  recipe_id: 9,
+  ingredient_id: 29
+}, {
+  recipe_id: 9,
+  ingredient_id: 30
+}, {
+  recipe_id: 9,
+  ingredient_id: 31
+}, {
+  recipe_id: 9,
+  ingredient_id: 32
+}, {
+  recipe_id: 9,
+  ingredient_id: 33
+}, {
+  recipe_id: 9,
+  ingredient_id: 34
+}, {
+  recipe_id: 9,
+  ingredient_id: 35
+}, {
+  recipe_id: 9,
+  ingredient_id: 36
+}, {
+  recipe_id: 9,
+  ingredient_id: 37
 }];
 
 exports.seed = function(knex, Promise) {

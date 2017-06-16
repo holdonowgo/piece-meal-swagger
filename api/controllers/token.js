@@ -52,35 +52,38 @@ const finishLogin = (client, res) => {
 
 function postTokenOAuth(req, res) {
   const idToken = req.swagger.params.credentials.value.idToken;
-  console.log("post token ouath", idToken);
-  //jwt.verify(idToken, process.env.AUTH0_JWT_KEY, (err, payload) => {
-  // if (err) {
-  //     res.set('Content-Type', 'application/json');
-  //     res.status(401).send('Unauthorized');
-  // }
-  const decoded = jwt.decode(idToken);
-  console.log("decoded", decoded.email);
-  knex('clients')
-      .where('email', decoded.email)
-      .first()
-      .then((client) => {
-        if (client === undefined) {
-          // no account yet, make an account
-          let client = {
-              first_name: "tmp first name",
-              last_name: "tmp last name",
-              email: decoded.email,
-              hashed_password: ""
-          };
-          console.log("inserting new client");
-          return knex('clients').insert(client, '*').returning('*');
-        }
-        return client;
-      }).then((client) => {
-        console.log("found client!", client)
-        return finishLogin(client, res);
-      })
+  const client_secret = 'e9XGt9Dwcgn-vJRs04UXsqWpbbzwWYS8NeFEZl5ADjnxXyEqOQ9-UzkuPaCckY--'
+  jwt.verify(idToken, client_secret, (err, payload) => {
+  if (err) {
+      res.set('Content-Type', 'application/json');
+      res.status(401).send('Unauthorized');
+  } else {
+    // console.log("decoded", decoded.email);
+    knex('clients')
+        .where('email', payload.email)
+        .first()
+        .then((client) => {
+          if (client === undefined) {
+            // no account yet, make an account
+            let client = {
+                first_name: "tmp first name",
+                last_name: "tmp last name",
+                email: payload.email,
+                hashed_password: ""
+            };
+            console.log("inserting new client");
+            return knex('clients').insert(client, '*').returning('*');
+          }
+          return client;
+        }).then((client) => {
+          console.log("found client!", client)
+          return finishLogin(client, res);
+        })
+  }
+  });
 }
+  // const decoded = jwt.decode(idToken);
+
 
 function postToken(req, res) {
     knex('clients')

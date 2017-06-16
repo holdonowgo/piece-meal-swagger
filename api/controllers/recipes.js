@@ -80,15 +80,16 @@ function doGetRecipes(query, res) {
     });
 }
 
-// /recipes
 function getRecipesList(req, res) {
-    // return doGetRecipes(knex("recipes").orderByRaw('LOWER(recipes.name)'), res);
-    return fetchRecipes(new Recipes().query('orderBy', 'name', 'asc'), res);
+    return fetchRecipes(new Recipes()
+        .query('where', 'active', true)
+        .query('orderBy', 'name', 'asc'), res);
 }
 
 function getFavoriteRecipes(req, res) {
     return doGetRecipes(
       knex("recipes")
+      .where('recipes.active', true)
       .join("recipe_favorites", function () {
         this
           .on('recipe_favorites.recipe_id', 'recipes.id')
@@ -226,6 +227,7 @@ function postRecipe(req, res) {
         let recipe;
         let name = req.swagger.params.recipe.value.name;
         let description = req.swagger.params.recipe.value.description;
+        let image_url = req.swagger.params.recipe.value.image_url;
 
         // to insert into the recipe_steps table
         let instructions = req.swagger.params.recipe.value.instructions;
@@ -237,7 +239,10 @@ function postRecipe(req, res) {
             if (result) {
                 return res.status(400).json("Recipe already exists!");
             } else {
-                return knex("recipes").insert({"name": name, description: description}).returning("*");
+                return knex("recipes").insert({"name": name,
+                                               "description": description,
+                                               "image_url": image_url})
+                                               .returning("*");
             }
         }).then((recipes) => { // insert ingredients
             recipe = recipes[0];
@@ -339,6 +344,7 @@ function searchRecipes(req, res) {
     // To list clients
     // let text = req.swagger.params.text.value;
     return doGetRecipes(knex("recipes")
+    .where('recipes.active', true)
     .join('ingredients_recipes', 'recipes.id', 'ingredients_recipes.recipe_id')
     .leftJoin('ingredients_tags', 'ingredients_recipes.ingredient_id', 'ingredients_tags.ingredient_id')
     .leftJoin('ingredients', 'ingredients_recipes.ingredient_id', 'ingredients.id')
