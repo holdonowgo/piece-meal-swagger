@@ -3,8 +3,8 @@ info:
   version: "0.0.1"
   title: Piece-Meal App
 # during dev, should point to your local machine
-# host: piecemeal-api.herokuapp.com
-host: localhost:10010
+host: piecemeal-api.herokuapp.com
+# host: localhost:10010
 # basePath prefixes all resource paths
 basePath: /api/v1
 #
@@ -447,7 +447,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Ingredient"
+            $ref: "#/definitions/PostIngredient"
       responses:
         "200":
           description: Success
@@ -1202,6 +1202,36 @@ definitions:
         type: string
         description: link to image of ingredient
 
+  PostIngredient:
+    type: object
+    properties:
+      name:
+        type: string
+        description: ingredient object name
+      description:
+        type: string
+        description: description of ingredient
+      tags:
+        type: array
+        items:
+          type: string
+      alternatives:
+        type: array
+        items:
+          type: object
+          properties:
+            alt_ingredient_id:
+              type: integer
+              description: alt ingredient id
+            ratio:
+              type: string
+              description: ratio or alt ingredient to orig
+      image_url:
+        type: string
+        description: link to image of ingredient
+    required:
+      - name
+
   Ingredient:
     type: object
     properties:
@@ -1469,8 +1499,6 @@ definitions:
   PostRecipe:
     type: object
     properties:
-      id:
-        type: integer
       name:
         type: string
       description:
