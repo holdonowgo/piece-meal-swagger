@@ -1218,7 +1218,15 @@ definitions:
       alternatives:
         type: array
         items:
-          type: integer
+          type: object
+          properties:
+            id:
+              type: number
+              description: ingredient id
+            ratio:
+              type: string
+              description: ratio of alt to orig ingredient
+
       image_url:
         type: string
         description: link to image of ingredient
