@@ -53,8 +53,8 @@ const data = [{
   id: 9,
   name: "pineapple fried rice",
   description: `Thai-style sweet and spicy pineapple fried rice with chicken and shrimp.`,
-  notes: notes,
-  image_url: "http://steamykitchen.com/wp-content/uploads/2016/05/pineapple-fried-rice-recipe-1268-2-640x960.jpg"
+  notes: 'Make sure you use a day-old rice to prevent sogginess. This recipe is passed down from my grand-mother. I loved having it for dinner as a little girl. My daughter now loves it too!',
+  image_url: "https://www.gimmesomeoven.com/wp-content/uploads/2010/05/pineapple-fried-rice-4.jpg"
 },
 
 ];

@@ -36,34 +36,44 @@ const data = [{
   ingredient_id: 23
 }, {
   recipe_id: 9,
-  ingredient_id: 28
+  ingredient_id: 28,
+  amount: '1 whole'
 }, {
   recipe_id: 9,
-  ingredient_id: 29
+  ingredient_id: 29,
+  amount: '5 whole peeled'
 }, {
   recipe_id: 9,
-  ingredient_id: 30
+  ingredient_id: 30,
+  amount: '2 whole'
 }, {
   recipe_id: 9,
-  ingredient_id: 31
+  ingredient_id: 31,
+  amount: '2 Tbsp'
 }, {
   recipe_id: 9,
-  ingredient_id: 32
+  ingredient_id: 32,
+  amount: '1 tsp grated'
 }, {
   recipe_id: 9,
-  ingredient_id: 33
+  ingredient_id: 33,
+  amount: '2 cups'
 }, {
   recipe_id: 9,
-  ingredient_id: 34
+  ingredient_id: 34,
+  amount: '1 Tbsp'
 }, {
   recipe_id: 9,
-  ingredient_id: 35
+  ingredient_id: 35,
+  amount: '1 tsp'
 }, {
   recipe_id: 9,
-  ingredient_id: 36
+  ingredient_id: 36,
+  amount: '1 cup'
 }, {
   recipe_id: 9,
-  ingredient_id: 37
+  ingredient_id: 37,
+  amount: '1/2 cup'
 }];
 
 exports.seed = function(knex, Promise) {
