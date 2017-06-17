@@ -661,7 +661,7 @@ suite("recipes test", () => {
     return request(server).post("/api/v1/recipes").set("Accept", "application/json").set('token', authToken).send({
       name: "seaweed salad",
       description: 'A flavorful, spicy, quick and simple Asian salad.',
-      image_url: "",
+      image_url: "https://www.splendidtable.org/sites/default/files/wakame.jpg",
       instructions: [
         {
           step_number: 1,
@@ -736,7 +736,7 @@ suite("recipes test", () => {
       name: "seaweed salad",
       "cook_time": null,
       description: 'A flavorful, spicy, quick and simple Asian salad.',
-      image_url: "",
+      image_url: "https://www.splendidtable.org/sites/default/files/wakame.jpg",
       instructions: [
         {
           step_number: 1,

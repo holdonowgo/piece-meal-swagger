@@ -26,6 +26,18 @@ const data = [{
     id: 7,
     recipe_id: 4,
     tag_text: 'vegan'
+}, {
+    id: 8,
+    recipe_id: 9,
+    tag_text: 'Thai food'
+}, {
+    id: 9,
+    recipe_id: 9,
+    tag_text: 'week-night dinner'
+}, {
+    id: 10,
+    recipe_id: 9,
+    tag_text: 'kids-friendly'
 }]
 
 exports.seed = function(knex, Promise) {

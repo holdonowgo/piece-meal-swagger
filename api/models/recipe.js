@@ -37,7 +37,7 @@ let Recipe = bookshelf.Model.extend({
         Ingredient,
         'ingredients_recipes',
         'recipe_id',
-        'ingredient_id');
+        'ingredient_id').withPivot(['amount']);
     },
 
     instructions: function() {

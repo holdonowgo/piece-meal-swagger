@@ -24,71 +24,24 @@ module.exports = {
 };
 
 function doGetRecipes(query, res) {
-    let recipes;
-    let ingredients;
-    query.then((rows) => {
-        recipes = rows;
-        let promises = rows.map((recipe) => getIngredientsQuery(recipe.id));
-        return Promise.all(promises);
-    }).then((promiseResults) => {
-        // 'recipes' is an array of the recipes
-        // 'promiseResults' is an array of arrays of ingredients
-        for (var i = 0; i < recipes.length; i++) {
-            recipes[i].ingredients = promiseResults[i].map((ingredient) => {
-                return ingredient;
-            });
-        }
-        return;
-    }).then(() => {
-    //   let promises = [];
-    //
-    //   for(let i = 0; i < recipes.length; i++){
-    //     for (let j = 0; j < recipes[i].ingredients.length; j++) {
-    //       let x = recipes[i].ingredients.map(
-    //         (ingredient) => {
-    //           console.log(ingredient.id);
-    //           getIngredientTagsQuery(ingredient.id)
-    //         }
-    //       );
-    //       promises.push(
-    //         Promise.all(x)
-    //       );
-    //     }
-    //   }
-    //   return Promise.all(promises);
-    // }).then((promiseResults) => {
-    //   // for(let [idx, promise] of promiseResults.entries()) {
-    //   //   console.log(idx, promise);
-    //   // }
-    //   for (var i = 0; i < recipes.length; i++) {
-    //     for(let j = 0; j < recipes[i].ingredients.length; j++) {
-    //       recipes[i].ingredients[j].tags = promiseResults[i][j].map((tag) => {
-    //           return tag.tag_text;
-    //       });
-    //     }
-    //   }
-    // }).then(() => {
-        let promises = recipes.map((recipe) => getRecipeStepsQuery(recipe.id));
-
-        return Promise.all(promises);
-    }).then((promiseResults) => {
-        for (var i = 0; i < recipes.length; i++) {
-            recipes[i].instructions = promiseResults[i];
-        }
-
-        return res.status(200).json({recipes: recipes});
-    });
+  return query.then((rows) => {
+    let recipe_ids = rows.map((r) => r.id);
+    return fetchRecipes(new Recipes()
+      .query('whereIn', 'id', recipe_ids)
+      .query('orderBy', 'name', 'asc'), res);
+  }).done();
 }
 
-// /recipes
 function getRecipesList(req, res) {
-    // return doGetRecipes(knex("recipes").orderByRaw('LOWER(recipes.name)'), res);
-    return fetchRecipes(new Recipes().query('orderBy', 'name', 'asc'), res);
+    return fetchRecipes(new Recipes()
+        .query('where', 'active', true)
+        .query('orderBy', 'name', 'asc'), res);
 }
 
 function getFavoriteRecipes(req, res) {
     return doGetRecipes(
       knex("recipes")
+      .where('recipes.active', true)
       .join("recipe_favorites", function () {
         this
           .on('recipe_favorites.recipe_id', 'recipes.id')
@@ -125,7 +78,16 @@ function addClientRecipe(req, res) {
 }
 
 function getIngredientsQuery(recipeId) {
-    return knex("ingredients_recipes").join("ingredients", "ingredients.id", "ingredients_recipes.ingredient_id").select("ingredients.id", "ingredients.name", "ingredients.description", "ingredients.active", "ingredients.image_url").orderBy('id').where("ingredients_recipes.recipe_id", recipeId);
+    return knex("ingredients_recipes")
+      .join("ingredients", "ingredients.id", "ingredients_recipes.ingredient_id")
+      .select("ingredients.id",
+              "ingredients.name",
+              "ingredients.description",
+              "ingredients.active",
+              "ingredients.image_url",
+              "ingredients_recipes.amount")
+      .orderBy('id')
+      .where("ingredients_recipes.recipe_id", recipeId);
 }
 
 function getIngredientTagsQuery(ingredientId) {
@@ -226,6 +188,7 @@ function postRecipe(req, res) {
         let recipe;
         let name = req.swagger.params.recipe.value.name;
         let description = req.swagger.params.recipe.value.description;
+        let image_url = req.swagger.params.recipe.value.image_url;
 
         // to insert into the recipe_steps table
         let instructions = req.swagger.params.recipe.value.instructions;
@@ -237,7 +200,10 @@ function postRecipe(req, res) {
             if (result) {
                 return res.status(400).json("Recipe already exists!");
             } else {
-                return knex("recipes").insert({"name": name, description: description}).returning("*");
+                return knex("recipes").insert({"name": name,
+                                               "description": description,
+                                               "image_url": image_url})
+                                               .returning("*");
             }
         }).then((recipes) => { // insert ingredients
             recipe = recipes[0];
@@ -339,6 +305,7 @@ function searchRecipes(req, res) {
     // To list clients
     // let text = req.swagger.params.text.value;
     return doGetRecipes(knex("recipes")
+    .where('recipes.active', true)
     .join('ingredients_recipes', 'recipes.id', 'ingredients_recipes.recipe_id')
     .leftJoin('ingredients_tags', 'ingredients_recipes.ingredient_id', 'ingredients_tags.ingredient_id')
     .leftJoin('ingredients', 'ingredients_recipes.ingredient_id', 'ingredients.id')
@@ -380,6 +347,8 @@ function fetchRecipe(id, res) {
           }).sort();
           for(let ingredient of recipeObj.ingredients) {
             ingredient.tags = ingredient.tags.map(tag => tag.tag_text).sort();
+            ingredient.amount = ingredient._pivot_amount;
+            delete ingredient._pivot_amount;
           }
 
           return res.json(recipeObj);
@@ -422,12 +391,15 @@ function fetchRecipes(query, res) {
 
             for(let ingredient of recipeObj.ingredients) {
               ingredient.tags = ingredient.tags.map(tag => tag.tag_text).sort();
+              ingredient.amount = ingredient._pivot_amount;
+              delete ingredient._pivot_amount;
             }
           }
 
           return res.json({ recipes: recipeObjs });
         }
       }).catch((err) => {
+        console.log("got error", err);
           res.status(500).json({message: err});
       });
 }
