@@ -447,7 +447,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Ingredient"
+            $ref: "#/definitions/PostIngredient"
       responses:
         "200":
           description: Success
@@ -1202,6 +1202,29 @@ definitions:
         type: string
         description: link to image of ingredient
 
+  PostIngredient:
+    type: object
+    properties:
+      name:
+        type: string
+        description: ingredient object name
+      description:
+        type: string
+        description: description of ingredient
+      tags:
+        type: array
+        items:
+          type: string
+      alternatives:
+        type: array
+        items:
+          type: integer
+      image_url:
+        type: string
+        description: link to image of ingredient
+    required:
+      - name
+
   Ingredient:
     type: object
     properties:
@@ -1469,8 +1492,6 @@ definitions:
   PostRecipe:
     type: object
     properties:
-      id:
-        type: integer
       name:
         type: string
       description:

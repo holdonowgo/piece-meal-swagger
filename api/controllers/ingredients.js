@@ -221,27 +221,31 @@ function addIngredient(req, res, next) {
 
         bookshelf.transaction((t) => {
           return new Ingredient({name: name, description: description, image_url: image_url}).save(null, {transacting: t}).tap(function(model) {
-            let newTags = tags.map((tag) => {
-              return {tag_text: tag}
-            })
-            return Promise.map(newTags, (info) => {
-              // Some validation could take place here.
-              return new IngredientTag(info).save({
-                'ingredient_id': model.id
-              }, {transacting: t});
-            });
+            if(tags) {
+              let newTags = tags.map((tag) => {
+                return {tag_text: tag}
+              })
+              return Promise.map(newTags, (info) => {
+                // Some validation could take place here.
+                return new IngredientTag(info).save({
+                  'ingredient_id': model.id
+                }, {transacting: t});
+              });
+            }
           }).tap(function(model) {
-            let newAlts = alternatives.map((altIngredient) => {
-              // console.log('altIngredient.alt_ingredient_id:', altIngredient.alt_ingredient_id);
-              return {'alt_ingredient_id': altIngredient.alt_ingredient_id, 'ratio': altIngredient.ratio}
-            })
-            return Promise.map(newAlts, (info) => {
-              // Some validation could take place here.
-              // console.log('model.id:', model.id);
-              return new AlternativeIngredient(info).save({
-                'ingredient_id': model.id
-              }, {transacting: t});
-            });
+            if(alternatives) {
+              let newAlts = alternatives.map((altIngredient) => {
+                // console.log('altIngredient.alt_ingredient_id:', altIngredient.alt_ingredient_id);
+                return {'alt_ingredient_id': altIngredient.alt_ingredient_id, 'ratio': altIngredient.ratio}
+              })
+              return Promise.map(newAlts, (info) => {
+                // Some validation could take place here.
+                // console.log('model.id:', model.id);
+                return new AlternativeIngredient(info).save({
+                  'ingredient_id': model.id
+                }, {transacting: t});
+              });
+            }
           });
         }).then((ingredient) => {
           // console.log(ingredient.related('tags').pluck('tag_text'));
