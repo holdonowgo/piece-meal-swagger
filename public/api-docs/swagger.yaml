@@ -1220,13 +1220,12 @@ definitions:
         items:
           type: object
           properties:
-            id:
-              type: number
-              description: ingredient id
+            alt_ingredient_id:
+              type: integer
+              description: alt ingredient id
             ratio:
               type: string
-              description: ratio of alt to orig ingredient
-
+              description: ratio or alt ingredient to orig
       image_url:
         type: string
         description: link to image of ingredient
