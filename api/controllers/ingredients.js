@@ -22,8 +22,40 @@ module.exports = {
   searchIngredients: searchIngredients,
   getIngredientAlternatives: getIngredientAlternatives,
   addIngredientAlternatives: addIngredientAlternatives,
-  getPieDataSet: getPieDataSet
+  getPieDataSet: getPieDataSet,
+  getSafeIngredients: getSafeIngredients
 };
+
+function getSafeIngredients(req, res) {
+  let id = req.swagger.params.user_id.value;
+  let promises = [];
+
+  promises.push(
+    knex('ingredients')
+    .whereNotExists(function() {
+    this.select('*').from('client_restrictions')
+        .whereRaw('ingredients.id = client_restrictions.ingredient_id')
+        .where('client_restrictions.client_id', id);
+  }).orderBy('ingredients.name'));
+
+  promises.push(knex("ingredients_tags").select("ingredient_id", "tag_text"));
+  Promise.all(promises).then((results) => {
+    let ingredients = results[0];
+    let tags = results[1];
+
+    for (let ingredient of ingredients) {
+      let t = tags.filter((tag) => {
+        return tag.ingredient_id === ingredient.id;
+      }).map((tag) => {
+        return tag.tag_text;
+      }).sort();
+
+      ingredient.tags = t;
+    }
+    console.log('count:', ingredients.length);
+    return res.status(200).json({ingredients: ingredients});
+  });
+}
 
 function updateIngredient(req, res, next) {
   jwt.verify(req.headers['token'], process.env.JWT_KEY, (err, payload) => {

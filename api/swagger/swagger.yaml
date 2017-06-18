@@ -141,6 +141,58 @@ paths:
     #       schema:
     #         $ref: "#/definitions/ErrorResponse"
 
+  /clients/{user_id}/safeIngredients:
+    x-swagger-router-controller: ingredients
+    get:
+      description: get ingredients that are safe for the client
+      operationId: getSafeIngredients
+      parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
+        - name: user_id
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetIngredientsListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /clients/{user_id}/saferecipes:
+    x-swagger-router-controller: recipes
+    get:
+      description: get recipes that are safe for the client
+      operationId: getSafeRecipes
+      parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
+        - name: user_id
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetRecipesListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /clients/{user_id}/recipes:
     x-swagger-router-controller: recipes
     get:
