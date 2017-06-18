@@ -216,8 +216,8 @@ function addIngredient(req, res, next) {
 
         let description = req.swagger.params.ingredient.value.description;
         let image_url = req.swagger.params.ingredient.value.image_url;
-        let alternatives = req.swagger.params.ingredient.value.alternatives;
-        let tags = req.swagger.params.ingredient.value.tags;
+        let alternatives = req.swagger.params.ingredient.value.alternatives || [];
+        let tags = req.swagger.params.ingredient.value.tags || [];
 
         bookshelf.transaction((t) => {
           return new Ingredient({name: name, description: description, image_url: image_url}).save(null, {transacting: t}).tap(function(model) {
@@ -232,8 +232,7 @@ function addIngredient(req, res, next) {
             });
           }).tap(function(model) {
             let newAlts = alternatives.map((altIngredient) => {
-              // console.log('altIngredient.alt_ingredient_id:', altIngredient.alt_ingredient_id);
-              return {'alt_ingredient_id': altIngredient.alt_ingredient_id, 'ratio': altIngredient.ratio}
+              return {'alt_ingredient_id': altIngredient.id, 'ratio': altIngredient.ratio}
             })
             return Promise.map(newAlts, (info) => {
               // Some validation could take place here.

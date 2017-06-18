@@ -164,7 +164,7 @@ const data = [{
   id: 33,
   name: 'cooked rice',
   description: 'Cooked rice refers to rice that has been cooked either by steaming or boiling. The terms steamed rice or boiled rice are also commonly used',
-  image_url: 'http://i.telegraph.co.uk/multimedia/archive/02699/how-to-make-the-fl_2699448b.jpg'
+  image_url: 'http://www.squarelady.com/wp-content/uploads/2015/10/image.png'
 }, {
   id: 34,
   name: 'soy sauce',
