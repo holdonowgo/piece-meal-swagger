@@ -108,7 +108,7 @@ function deleteIngredient(req, res) {
 
       const id = req.swagger.params.id.value;
 
-      Ingredient.forge({id: id}).where('active', id).fetch()
+      Ingredient.forge({id: id}).where('active', 1).fetch()
       .then((ingredient) => {
         if (!ingredient) {
           res.status(404).json('Not Found');
@@ -291,10 +291,26 @@ function searchIngredients(req, res) {
   promises.push(knex("ingredients")
   // .select("ingredients.id", "name", "active")
     .leftJoin('ingredients_tags', 'ingredients.id', 'ingredients_tags.ingredient_id').distinct("ingredients.id", "ingredients.name", "ingredients.image_url", "ingredients.active").where('active', 1).andWhere('name', 'ilike', `%${text}%`).orWhere('ingredients_tags.tag_text', 'ilike', `%${text}%`).orderBy('ingredients.name'));
+
   promises.push(knex("ingredients_tags").select("ingredient_id", "tag_text"));
+
+  promises.push(
+    knex("ingredients")
+    .join('ingredient_alternatives', 'ingredient_alternatives.alt_ingredient_id', 'ingredients.id')
+    .select(
+      'ingredient_alternatives.alt_ingredient_id',
+      'ingredient_alternatives.ingredient_id',
+      "ingredients.description",
+      "ingredients.image_url",
+      "ingredients.id",
+      "name"
+    )
+    .orderBy('ingredients.name'));
+
   Promise.all(promises).then((results) => {
     let ingredients = results[0];
     let tags = results[1];
+    let alternatives = results[2];
 
     for (let ingredient of ingredients) {
       let t = tags.filter((tag) => {
@@ -304,6 +320,16 @@ function searchIngredients(req, res) {
       }).sort();
 
       ingredient.tags = t;
+
+      let alts = alternatives.filter((alt) => {
+        return alt.ingredient_id === ingredient.id
+      }).map((alt) => {
+        return { description: alt.description, id: alt.id, image_url: alt.image_url, name: alt.name };
+      }).sort();
+
+      ingredient.alternatives = alts;
+
+      // console.log(alternatives);
     }
 
     return res.status(200).json({ingredients: ingredients});
