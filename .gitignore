@@ -36,3 +36,7 @@ config/runtime.yaml
 
 # Istanbul
 .nyc_output/
+
+.DS_Store
+api/.DS_Store
+public/.DS_Store

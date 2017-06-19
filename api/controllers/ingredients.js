@@ -145,25 +145,17 @@ function deleteIngredient(req, res) {
 }
 
 function getIngredientsList(req, res) {
-  // To list ingredients
-  let promises = [];
-  promises.push(knex("ingredients").select("id", "name", "description", "active", "image_url").where('active', 1).orderBy('ingredients.name'));
-  promises.push(knex("ingredients_tags").select("ingredient_id", "tag_text"));
-  Promise.all(promises).then((results) => {
-    let ingredients = results[0];
-    let tags = results[1];
+  new Ingredients().query((qb) => {
+    qb.orderBy('name','ASC');
+    })
+    .fetch({withRelated: ['tags', 'alternatives']}).then(function(ingredients) {
+    let ingredientObjs = ingredients.serialize();
 
-    for (let ingredient of ingredients) {
-      let t = tags.filter((tag) => {
-        return tag.ingredient_id === ingredient.id;
-      }).map((tag) => {
-        return tag.tag_text;
-      }).sort();
-
-      ingredient.tags = t;
+    for(let ingredientObj of ingredientObjs) {
+      ingredientObj.tags = mapTags(ingredientObj.tags);
     }
 
-    return res.status(200).json({ingredients: ingredients});
+    return res.status(200).json({ ingredients: ingredientObjs });
   });
 }
 
