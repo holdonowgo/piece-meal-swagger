@@ -3,8 +3,8 @@ info:
   version: "0.0.1"
   title: Piece-Meal App
 # during dev, should point to your local machine
-# host: piecemeal-api.herokuapp.com
-host: localhost:10010
+host: piecemeal-api.herokuapp.com
+# host: localhost:10010
 # basePath prefixes all resource paths
 basePath: /api/v1
 #
@@ -140,6 +140,58 @@ paths:
     #       description: Error
     #       schema:
     #         $ref: "#/definitions/ErrorResponse"
+
+  /clients/{user_id}/safeIngredients:
+    x-swagger-router-controller: ingredients
+    get:
+      description: get ingredients that are safe for the client
+      operationId: getSafeIngredients
+      parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
+        - name: user_id
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetIngredientsListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /clients/{user_id}/saferecipes:
+    x-swagger-router-controller: recipes
+    get:
+      description: get recipes that are safe for the client
+      operationId: getSafeRecipes
+      parameters:
+        - name: token
+          in: header
+          description: Users authentication token
+          required: true
+          type: string
+
+        - name: user_id
+          type: integer
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetRecipesListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 
   /clients/{user_id}/recipes:
     x-swagger-router-controller: recipes
@@ -447,7 +499,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Ingredient"
+            $ref: "#/definitions/PostIngredient"
       responses:
         "200":
           description: Success
@@ -1202,6 +1254,36 @@ definitions:
         type: string
         description: link to image of ingredient
 
+  PostIngredient:
+    type: object
+    properties:
+      name:
+        type: string
+        description: ingredient object name
+      description:
+        type: string
+        description: description of ingredient
+      tags:
+        type: array
+        items:
+          type: string
+      alternatives:
+        type: array
+        items:
+          type: object
+          properties:
+            alt_ingredient_id:
+              type: integer
+              description: alt ingredient id
+            ratio:
+              type: string
+              description: ratio or alt ingredient to orig
+      image_url:
+        type: string
+        description: link to image of ingredient
+    required:
+      - name
+
   Ingredient:
     type: object
     properties:
@@ -1469,8 +1551,6 @@ definitions:
   PostRecipe:
     type: object
     properties:
-      id:
-        type: integer
       name:
         type: string
       description:

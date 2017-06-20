@@ -908,7 +908,7 @@ suite("recipes test", () => {
           "notes": "",
           "active": true,
           "tags": ["vegetarian"],
-          "ratings": { "up_votes": 0, "down_votes": 0 }
+          // "ratings": { "up_votes": 0, "down_votes": 0 }
       });
 
       request(server).post("/api/v1/recipes/2/ratings").set("Accept", "application/json").set('token', authToken).send({
@@ -934,7 +934,7 @@ suite("recipes test", () => {
           "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
           "tags": ["vegetarian"],
           "active": true,
-          "ratings": {"up_votes": 0, "down_votes": -1}
+          // "ratings": {"up_votes": 0, "down_votes": -1}
       });
 
       request(server).post("/api/v1/recipes/2/ratings").set("Accept", "application/json").set('token', authToken).send({
@@ -960,7 +960,7 @@ suite("recipes test", () => {
           "notes": "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
           "tags": ["vegetarian"],
           "active": true,
-          "ratings": {"up_votes": 1, "down_votes": 0}
+          // "ratings": {"up_votes": 1, "down_votes": 0}
       }, done);
   });
 

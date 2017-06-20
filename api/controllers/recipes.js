@@ -20,7 +20,8 @@ module.exports = {
     rateRecipe: rateRecipe,
     getRandomRecipes: getRandomRecipes,
     getFavoriteRecipes: getFavoriteRecipes,
-    getRecipeBookshelf: getRecipeBookshelf
+    getRecipeBookshelf: getRecipeBookshelf,
+    getSafeRecipes: getSafeRecipes
 };
 
 function doGetRecipes(query, res) {
@@ -36,6 +37,84 @@ function getRecipesList(req, res) {
     return fetchRecipes(new Recipes()
         .query('where', 'active', true)
         .query('orderBy', 'name', 'asc'), res);
+}
+
+function getSafeRecipes(req, res) {
+  let promises = [];
+
+  promises.push(knex("ingredients_tags").select("ingredient_id", "tag_text"));
+
+  promises.push(knex('ingredients').select('ingredients.id', 'ingredients.name', 'ingredients.description').join('client_restrictions', 'ingredients.id', 'ingredient_id').where('client_id', req.swagger.params.user_id.value));
+
+  let recipePromise = new Recipes()
+      .query('where', 'active', true)
+      .query('orderBy', 'name', 'asc').fetch({
+          withRelated: [
+            { instructions: (query) => { query.orderBy('step_number'); }},
+            'tags',
+            'ingredients',
+            'ingredients.alternatives',
+            'ingredients.tags',
+          ]
+      });
+
+  promises.push(recipePromise);
+
+  Promise.all(promises).then((results) => {
+      let tags = results[0];
+      let ingredients = results[1];
+      let recipes = results[2];
+
+      for (let ingredient of ingredients) {
+          ingredient.tags = tags.filter((tag) => {
+              return tag.ingredient_id === ingredient.id;
+          }).map((tag) => {
+              return tag.tag_text;
+          }).sort();
+      }
+
+      let recipeObjs = recipes.serialize();
+
+      recipeObjs.sort((a, b) => {
+        if(a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+        if(b.name.toLowerCase() > a.name.toLowerCase()) return -1;
+        return 0;
+      })
+
+      for(let recipeObj of recipeObjs) {
+        recipeObj.tags = recipeObj.tags.map((tag) => {
+            return tag.tag_text;
+        }).sort();
+
+        for(let ingredient of recipeObj.ingredients) {
+          ingredient.tags = ingredient.tags.map(tag => tag.tag_text).sort();
+          ingredient.amount = ingredient._pivot_amount;
+          delete ingredient._pivot_amount;
+        }
+      }
+
+      let restrictionIds = ingredients.map((ingredient) => {
+        return ingredient.id;
+      })
+
+      recipeObjs = recipeObjs.filter((recipe) => {
+        let recipeIngredientIds = recipe.ingredients.map((ingredient) => {
+          return ingredient.id;
+        });
+
+        let intersection = recipeIngredientIds.filter(function(n) {
+            return restrictionIds.indexOf(n) !== -1;
+        });
+
+        return intersection.length === 0;
+      })
+
+      return res.json({ recipes: recipeObjs });
+
+    }).catch((err) => {
+      console.log("got error", err);
+        res.status(500).json({message: err});
+    });
 }
 
 function getFavoriteRecipes(req, res) {

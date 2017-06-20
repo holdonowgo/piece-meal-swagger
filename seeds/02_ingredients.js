@@ -195,6 +195,51 @@ const data = [{
   name: 'lychee',
   description: 'Sometimes known as "litchi" or a similar spelling variation, the exotic lychee fruit is from the soapberry family',
   image_url: 'https://www.fast-growing-trees.com/images/D/Emperor-Lychee-Tree-2-450w.jpg'
+}, {
+  id: 40,
+  name: 'salmon fillet',
+  description: 'wild salmon is less fatty than farmed salmon',
+  image_url: 'http://atmedia.imgix.net/bb2d554cde83f7440bbe92dc67705a968cb31d1c?w=800&fit=max'
+}, {
+  id: 41,
+  name: 'Japanese short-grain rice',
+  description: 'Japanese short-grain rice is soft and fluffy',
+  image_url: 'http://www.justonecookbook.com/wp-content/uploads/2012/09/Rice-II.jpg'
+}, {
+  id: 42,
+  name: 'water',
+  description: 'clean filtered water',
+  image_url: 'http://www.taylourwhite.com/wp-content/uploads/2012/03/Mason_Jar_and_Water-2-1024x680.jpg'
+}, {
+  id: 43,
+  name: 'nori',
+  description: 'pre-toasted nori seaweed sheets',
+  image_url: 'http://superhumancoach.com/wp-content/uploads/2013/08/nori-seaweed.jpg'
+}, {
+  id: 44,
+  name: 'pickle plums',
+  description: 'pitted removed and coursely chopped',
+  image_url: 'http://www.realfoodforlife.com/wp-content/uploads/2013/12/Umeboshi-plum.jpg'
+}, {
+  id: 45,
+  name: 'bonito flakes',
+  description: 'dried, fermented, and smoked skipjack tuna',
+  image_url: 'https://www.groxers.com/images/thumbnails/4/984/732/SSS-015.jpg'
+}, {
+  id: 46,
+  name: 'sesame seeds',
+  description: 'Sesame is a flowering plant in the genus Sesamum, also called benne',
+  image_url: 'https://www.organicfacts.net/wp-content/uploads/2013/08/sesameseeds.jpg'
+}, {
+  id: 47,
+  name: 'smoked cheddar',
+  description: 'treated by cold or hot smoke-curing',
+  image_url: 'http://www.amishfoods.com/media/catalog/product/cache/1/image/400x/9df78eab33525d08d6e5fb8d27136e95/s/m/smoked-cheddar-cheese.jpg'
+}, {
+  id: 48,
+  name: 'chicken skin',
+  description: 'chicken skin is good for rendering fat to use for cooking',
+  image_url: 'http://iamafoodblog.com/wp-content/uploads/2013/10/chickenarrones-1.jpg'
 }];
 
 exports.seed = function(knex, Promise) {

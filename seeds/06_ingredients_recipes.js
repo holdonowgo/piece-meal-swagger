@@ -7,33 +7,38 @@ const data = [{
   recipe_id: 3,
   ingredient_id: 1
 }, {
-  // id: 3,
   recipe_id: 1,
   ingredient_id: 1
 }, {
-  // id: 4,
   recipe_id: 1,
   ingredient_id: 3
 }, {
-  // id: 5,
   recipe_id: 4,
   ingredient_id: 17
 }, {
-  // id: 6,
   recipe_id: 4,
   ingredient_id: 18
 }, {
-  // id: 7,
   recipe_id: 5,
-  ingredient_id: 21
+  ingredient_id: 40
 }, {
-  // id: 8,
   recipe_id: 5,
-  ingredient_id: 22
+  ingredient_id: 41
 }, {
-  // id: 9,
   recipe_id: 5,
-  ingredient_id: 23
+  ingredient_id: 43
+}, {
+  recipe_id: 5,
+  ingredient_id: 44
+}, {
+  recipe_id: 5,
+  ingredient_id: 45
+}, {
+  recipe_id: 5,
+  ingredient_id: 46
+}, {
+  recipe_id: 5,
+  ingredient_id: 34
 }, {
   recipe_id: 9,
   ingredient_id: 28,
