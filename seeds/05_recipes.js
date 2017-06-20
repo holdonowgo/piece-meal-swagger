@@ -9,7 +9,6 @@ const data = [{
 }, {
   id: 2,
   name: "simple oatmeal",
-  notes: "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
   description: `Pea horseradish azuki bean lettuce avocado asparagus okra. Kohlrabi radish okra azuki bean corn fava bean mustard tigernut jÃ­cama green bean celtuce collard greens avocado quandong fennel gumbo black-eyed pea. Grape silver beet watercress potato tigernut corn groundnut. Chickweed okra pea winter purslane coriander yarrow sweet pepper radish garlic brussels sprout groundnut summer purslane earthnut pea tomato spring onion azuki bean gourd. Gumbo kakadu plum komatsuna black-eyed pea green bean zucchini gourd winter purslane silver beet rock melon radish asparagus spinach.`,
   notes: "There is a no-cook version of this known as 'Overnight Oats'.  Check it out!",
   image_url: "https://silk.com/sites/default/files/recipes/medium/Oatmeal_shutterstock_173846588_RT.gif"
@@ -28,8 +27,8 @@ const data = [{
 }, {
   id: 5,
   name: "nori rice onigiri",
-  description: `Nori grape silver beet broccoli kombu beet greens fava bean potato quandong celery. Bunya nuts black-eyed pea prairie turnip leek lentil turnip greens parsnip. Sea lettuce lettuce water chestnut eggplant winter purslane fennel azuki bean earthnut pea sierra leone bologi leek soko chicory celtuce parsley jÃ­cama salsify.`,
-  notes: notes,
+  description: `Japanese Comfort food`,
+  notes: "Onigiri is my little boy's favorite lunch to take to school",
   image_url: "http://food.fnr.sndimg.com/content/dam/images/food/fullset/2017/1/29/0/FN_Onigiri-Rice-Balls_s4x3.jpg.rend.hgtvcom.616.462.jpeg"
 }, {
   id: 6,

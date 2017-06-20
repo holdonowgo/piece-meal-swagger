@@ -1,9 +1,9 @@
 const data = [{
     ingredient_id: 1,
-    alt_ingredient_id: 2
+    alt_ingredient_id: 47
 }, {
     ingredient_id: 1,
-    alt_ingredient_id: 3
+    alt_ingredient_id: 48
 }, {
     ingredient_id: 3,
     alt_ingredient_id: 5
