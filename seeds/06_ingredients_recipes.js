@@ -20,25 +20,32 @@ const data = [{
   ingredient_id: 18
 }, {
   recipe_id: 5,
-  ingredient_id: 40
+  ingredient_id: 40,
+  amount: '1/2 pound'
 }, {
   recipe_id: 5,
-  ingredient_id: 41
+  ingredient_id: 41,
+  amount: '4 cups'
 }, {
   recipe_id: 5,
-  ingredient_id: 43
+  ingredient_id: 43,
+  amount: '2 sheets'
 }, {
   recipe_id: 5,
-  ingredient_id: 44
+  ingredient_id: 44,
+  amount: '2 large'
 }, {
   recipe_id: 5,
-  ingredient_id: 45
+  ingredient_id: 45,
+  amount: '1/4 cup'
 }, {
   recipe_id: 5,
-  ingredient_id: 46
+  ingredient_id: 46,
+  amount: '2 Tbsp'
 }, {
   recipe_id: 5,
-  ingredient_id: 34
+  ingredient_id: 34,
+  amount: '1 1/2 tsp'
 }, {
   recipe_id: 9,
   ingredient_id: 28,
