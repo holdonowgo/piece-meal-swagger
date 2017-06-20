@@ -288,9 +288,15 @@ function searchIngredients(req, res) {
   let text = req.swagger.params.text.value;
   let promises = [];
 
-  promises.push(knex("ingredients")
-  // .select("ingredients.id", "name", "active")
-    .leftJoin('ingredients_tags', 'ingredients.id', 'ingredients_tags.ingredient_id').distinct("ingredients.id", "ingredients.name", "ingredients.image_url", "ingredients.active").where('active', 1).andWhere('name', 'ilike', `%${text}%`).orWhere('ingredients_tags.tag_text', 'ilike', `%${text}%`).orderBy('ingredients.name'));
+  promises.push(
+    knex("ingredients")
+    // .select("ingredients.id", "name", "active")
+    .leftJoin('ingredients_tags', 'ingredients.id', 'ingredients_tags.ingredient_id')
+    .distinct("ingredients.id", "ingredients.name", "ingredients.description", "ingredients.image_url", "ingredients.active")
+    .where('active', 1)
+    .andWhere('name', 'ilike', `%${text}%`)
+    .orWhere('ingredients_tags.tag_text', 'ilike', `%${text}%`)
+    .orderBy('ingredients.name'));
 
   promises.push(knex("ingredients_tags").select("ingredient_id", "tag_text"));
 
