@@ -108,7 +108,7 @@ function deleteIngredient(req, res) {
 
       const id = req.swagger.params.id.value;
 
-      Ingredient.forge({id: id}).where('active', id).fetch()
+      Ingredient.forge({id: id}).where('active', 1).fetch()
       .then((ingredient) => {
         if (!ingredient) {
           res.status(404).json('Not Found');
@@ -145,25 +145,17 @@ function deleteIngredient(req, res) {
 }
 
 function getIngredientsList(req, res) {
-  // To list ingredients
-  let promises = [];
-  promises.push(knex("ingredients").select("id", "name", "description", "active", "image_url").where('active', 1).orderBy('ingredients.name'));
-  promises.push(knex("ingredients_tags").select("ingredient_id", "tag_text"));
-  Promise.all(promises).then((results) => {
-    let ingredients = results[0];
-    let tags = results[1];
+  new Ingredients().query((qb) => {
+    qb.orderBy('name','ASC');
+    })
+    .fetch({withRelated: ['tags', 'alternatives']}).then(function(ingredients) {
+    let ingredientObjs = ingredients.serialize();
 
-    for (let ingredient of ingredients) {
-      let t = tags.filter((tag) => {
-        return tag.ingredient_id === ingredient.id;
-      }).map((tag) => {
-        return tag.tag_text;
-      }).sort();
-
-      ingredient.tags = t;
+    for(let ingredientObj of ingredientObjs) {
+      ingredientObj.tags = mapTags(ingredientObj.tags);
     }
 
-    return res.status(200).json({ingredients: ingredients});
+    return res.status(200).json({ ingredients: ingredientObjs });
   });
 }
 
@@ -248,8 +240,8 @@ function addIngredient(req, res, next) {
 
         let description = req.swagger.params.ingredient.value.description;
         let image_url = req.swagger.params.ingredient.value.image_url;
-        let alternatives = req.swagger.params.ingredient.value.alternatives || [];
-        let tags = req.swagger.params.ingredient.value.tags || [];
+        let alternatives = req.swagger.params.ingredient.value.alternatives;
+        let tags = req.swagger.params.ingredient.value.tags;
 
         bookshelf.transaction((t) => {
           return new Ingredient({name: name, description: description, image_url: image_url}).save(null, {transacting: t}).tap(function(model) {
@@ -265,17 +257,19 @@ function addIngredient(req, res, next) {
               });
             }
           }).tap(function(model) {
-
-            let newAlts = alternatives.map((altIngredient) => {
-              return {'alt_ingredient_id': altIngredient.id, 'ratio': altIngredient.ratio}
-            })
-            return Promise.map(newAlts, (info) => {
-              // Some validation could take place here.
-              // console.log('model.id:', model.id);
-              return new AlternativeIngredient(info).save({
-                'ingredient_id': model.id
-              }, {transacting: t});
-            });
+            if(alternatives) {
+              let newAlts = alternatives.map((altIngredient) => {
+                // console.log('altIngredient.alt_ingredient_id:', altIngredient.alt_ingredient_id);
+                return {'alt_ingredient_id': altIngredient.alt_ingredient_id, 'ratio': altIngredient.ratio}
+              })
+              return Promise.map(newAlts, (info) => {
+                // Some validation could take place here.
+                // console.log('model.id:', model.id);
+                return new AlternativeIngredient(info).save({
+                  'ingredient_id': model.id
+                }, {transacting: t});
+              });
+            }
           });
         }).then((ingredient) => {
           // console.log(ingredient.related('tags').pluck('tag_text'));
@@ -297,10 +291,26 @@ function searchIngredients(req, res) {
   promises.push(knex("ingredients")
   // .select("ingredients.id", "name", "active")
     .leftJoin('ingredients_tags', 'ingredients.id', 'ingredients_tags.ingredient_id').distinct("ingredients.id", "ingredients.name", "ingredients.image_url", "ingredients.active").where('active', 1).andWhere('name', 'ilike', `%${text}%`).orWhere('ingredients_tags.tag_text', 'ilike', `%${text}%`).orderBy('ingredients.name'));
+
   promises.push(knex("ingredients_tags").select("ingredient_id", "tag_text"));
+
+  promises.push(
+    knex("ingredients")
+    .join('ingredient_alternatives', 'ingredient_alternatives.alt_ingredient_id', 'ingredients.id')
+    .select(
+      'ingredient_alternatives.alt_ingredient_id',
+      'ingredient_alternatives.ingredient_id',
+      "ingredients.description",
+      "ingredients.image_url",
+      "ingredients.id",
+      "name"
+    )
+    .orderBy('ingredients.name'));
+
   Promise.all(promises).then((results) => {
     let ingredients = results[0];
     let tags = results[1];
+    let alternatives = results[2];
 
     for (let ingredient of ingredients) {
       let t = tags.filter((tag) => {
@@ -310,6 +320,16 @@ function searchIngredients(req, res) {
       }).sort();
 
       ingredient.tags = t;
+
+      let alts = alternatives.filter((alt) => {
+        return alt.ingredient_id === ingredient.id
+      }).map((alt) => {
+        return { description: alt.description, id: alt.id, image_url: alt.image_url, name: alt.name };
+      }).sort();
+
+      ingredient.alternatives = alts;
+
+      // console.log(alternatives);
     }
 
     return res.status(200).json({ingredients: ingredients});
