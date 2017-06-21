@@ -342,7 +342,7 @@ function addRestriction(req, res) {
         let user_id = req.swagger.params.user_id.value;
         let ingredient_id = req.swagger.params.ingredient.value.ingredient_id;
         return knex.insert({'client_id': user_id, 'ingredient_id': ingredient_id}).into('client_restrictions').then(() => {
-            return res.json({success: 1, description: 'Restriction has been added'});
+            return res.json({success: 1, description: 'Restriction has been added', ingredient_id: ingredient_id});
         });
     });
 }
