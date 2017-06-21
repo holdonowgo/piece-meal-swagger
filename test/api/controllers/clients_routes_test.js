@@ -131,6 +131,7 @@ suite('clients tests', () => {
             "first_name": 'Marvin',
             "last_name": 'Gaye',
             "email": 'marvin.gaye@gmail.com',
+            "image_url": '',
             "is_super_user": false,
             "recipes": [
                 {
@@ -169,6 +170,7 @@ suite('clients tests', () => {
             "first_name": 'Aom',
             "last_name": 'Sithanant',
             "email": 'aom.sithanant@gmail.com',
+            "image_url": '',
             "is_super_user": true,
             "recipes": [
                 {
@@ -310,6 +312,7 @@ suite('clients tests', () => {
                     "first_name": 'Aom',
                     "last_name": 'Sithanant',
                     "email": 'aom.sithanant@gmail.com',
+                    "image_url": '',
                     "is_super_user": true,
                     "recipes": [
                         {
@@ -368,6 +371,7 @@ suite('clients tests', () => {
             first_name: 'John',
             last_name: 'Siracusa',
             email: 'john.siracusa@gmail.com',
+            "image_url": '',
             is_super_user: false
         }).expect('Content-Type', /json/).end((httpErr, _res) => {
             if (httpErr) {
@@ -386,6 +390,7 @@ suite('clients tests', () => {
                     first_name: 'John',
                     last_name: 'Siracusa',
                     email: 'john.siracusa@gmail.com',
+                    "image_url": '',
                     is_super_user: false
                 });
 

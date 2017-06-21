@@ -372,11 +372,25 @@ function getUsersSearchResponse(req, res) {
         let first_name = req.swagger.params.first_name.value;
         let last_name = req.swagger.params.last_name.value;
         let promises = [];
-        // promises.push(knex("clients").select("id"));
-        promises.push(knex("clients").select("id", "first_name", "last_name", "email", "is_super_user").where(`clients.first_name`, `like`, `%${first_name}%`).orWhere(`clients.last_name`, `like`, `%${last_name}%`).orWhere(`clients.email`, `like`, `%${email}%`));
-        promises.push(knex("clients_recipes").join('recipes', 'recipes.id', '=', 'clients_recipes.recipe_id').select("clients_recipes.client_id", "recipes.*")
-        .orderBy('name'));
-        promises.push(knex("recipe_steps").join('recipes', 'recipes.id', '=', 'recipe_steps.recipe_id').select("recipe_steps.*"));
+
+        promises.push(
+          knex("clients")
+          .select("id", "first_name", "last_name", "email", "image_url", "is_super_user")
+          .where(`clients.first_name`, `like`, `%${first_name}%`)
+          .orWhere(`clients.last_name`, `like`, `%${last_name}%`)
+          .orWhere(`clients.email`, `like`, `%${email}%`));
+
+        promises.push(
+          knex("clients_recipes")
+          .join('recipes', 'recipes.id', '=', 'clients_recipes.recipe_id')
+          .select("clients_recipes.client_id", "recipes.*")
+          .orderBy('name'));
+
+        promises.push(
+          knex("recipe_steps")
+          .join('recipes', 'recipes.id', '=', 'recipe_steps.recipe_id')
+          .select("recipe_steps.*"));
+
         Promise.all(promises).then((results) => {
             let clients = results[0];
             let recipes = results[1];
