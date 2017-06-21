@@ -4,6 +4,7 @@ exports.up = function(knex, Promise) {
         table.string('first_name').notNullable().defaultTo('');
         table.string('last_name').notNullable().defaultTo('');
         table.string('email').notNullable().unique();
+        table.string('image_url');
         table.boolean('is_super_user').notNullable().defaultTo(false);
         table.specificType('hashed_password', 'char(60)').notNullable();
         table.timestamp('created_at').notNullable().defaultTo(knex.raw('now()'));

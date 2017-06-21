@@ -1567,7 +1567,13 @@ definitions:
       ingredients:
         type: array
         items:
-          type: integer
+          # type: integer
+          type: object
+          properties:
+            id:
+              type: integer
+            amount:
+              type: string
       tags:
         type: array
         items:
