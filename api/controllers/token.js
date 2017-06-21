@@ -52,12 +52,15 @@ const finishLogin = (client, res) => {
 
 function postTokenOAuth(req, res) {
   const idToken = req.swagger.params.credentials.value.idToken;
-  const client_secret = 'e9XGt9Dwcgn-vJRs04UXsqWpbbzwWYS8NeFEZl5ADjnxXyEqOQ9-UzkuPaCckY--'
+  const client_secret = 'e9XGt9Dwcgn-vJRs04UXsqWpbbzwWYS8NeFEZl5ADjnxXyEqOQ9-UzkuPaCckY--';
   jwt.verify(idToken, client_secret, (err, payload) => {
   if (err) {
       res.set('Content-Type', 'application/json');
       res.status(401).send('Unauthorized');
   } else {
+    const full_name = payload.name || "John Doe";
+    const [first_name, ...last_name_parts] = full_name.split(" ");
+    let last_name = last_name_parts.join(" ");
     // console.log("decoded", decoded.email);
     knex('clients')
         .where('email', payload.email)
@@ -66,17 +69,18 @@ function postTokenOAuth(req, res) {
           if (client === undefined) {
             // no account yet, make an account
             let client = {
-                first_name: "tmp first name",
-                last_name: "tmp last name",
+                first_name: first_name,
+                last_name: last_name,
                 email: payload.email,
                 hashed_password: ""
             };
-            console.log("inserting new client");
-            return knex('clients').insert(client, '*').returning('*');
+            return knex('clients').insert(client, '*').returning('*')
+              .then((insertedRows) => {
+                return insertedRows[0];
+              });
           }
           return client;
         }).then((client) => {
-          console.log("found client!", client)
           return finishLogin(client, res);
         })
   }
