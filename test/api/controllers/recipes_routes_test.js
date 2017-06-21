@@ -672,7 +672,8 @@ suite("recipes test", () => {
         }
       ],
       ingredients: [
-        1, 3
+        { id: 1, amount: '1 cup' },
+        { id: 3, amount: '2 tsbp' }
       ],
       tags: ['no-cook', 'asian', 'vegetarian', 'vegan']
     }).expect("Content-Type", /json/)

@@ -267,6 +267,8 @@ function postRecipe(req, res) {
         let recipe;
         let name = req.swagger.params.recipe.value.name;
         let description = req.swagger.params.recipe.value.description;
+        let cook_time = req.swagger.params.recipe.value.cook_time;
+        let prep_time = req.swagger.params.recipe.value.prep_time;
         let image_url = req.swagger.params.recipe.value.image_url;
 
         // to insert into the recipe_steps table
@@ -281,13 +283,15 @@ function postRecipe(req, res) {
             } else {
                 return knex("recipes").insert({"name": name,
                                                "description": description,
+                                               "cook_time": cook_time,
+                                               "prep_time": prep_time,
                                                "image_url": image_url})
                                                .returning("*");
             }
         }).then((recipes) => { // insert ingredients
             recipe = recipes[0];
             let data = ingredients.map((value) => {
-                return {recipe_id: recipe.id, ingredient_id: value};
+                return {recipe_id: recipe.id, ingredient_id: value.id, amount: value.amount};
             });
             return knex('ingredients_recipes').insert(data).returning("*");
         }).then(() => { // insert instructions
@@ -329,7 +333,7 @@ function updateRecipe(req, res) {
             //to insert into ingredients_recipes table
 
             let data = recipe.ingredients.map((value) => {
-                return {recipe_id: recipe.id, ingredient_id: value};
+                return {recipe_id: recipe.id, ingredient_id: value.id, amount: value.amount};
             });
 
             return knex('ingredients_recipes').insert(data).returning("*");
