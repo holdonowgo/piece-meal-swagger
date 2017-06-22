@@ -55,10 +55,6 @@ const data = [{
     recipe_id: 9,
     tag_text: 'thai'
 }, {
-    id: 15,
-    recipe_id: 9,
-    tag_text: 'week-night dinner'
-}, {
     id: 16,
     recipe_id: 9,
     tag_text: 'seafood'
