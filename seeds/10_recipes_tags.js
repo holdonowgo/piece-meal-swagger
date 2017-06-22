@@ -63,10 +63,6 @@ const data = [{
     recipe_id: 9,
     tag_text: 'seafood'
 }, {
-    id: 17,
-    recipe_id: 9,
-    tag_text: 'shellfish'
-}, {
     id: 18,
     recipe_id: 9,
     tag_text: 'nuts'
@@ -82,10 +78,6 @@ const data = [{
     id: 21,
     recipe_id: 9,
     tag_text: 'legume'
-}, {
-    id: 22,
-    recipe_id: 9,
-    tag_text: 'kid-friendly'
 }, {
     id: 23,
     recipe_id: 6,

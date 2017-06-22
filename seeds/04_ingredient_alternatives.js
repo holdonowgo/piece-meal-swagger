@@ -25,6 +25,9 @@ const data = [{
 }, {
     ingredient_id: 31,
     alt_ingredient_id: 38
+}, {
+    ingredient_id: 21,
+    alt_ingredient_id: 23
 }]
 
 exports.seed = function(knex, Promise) {
