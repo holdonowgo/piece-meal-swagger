@@ -66,18 +66,11 @@ suite('part4 routes token', () => {
                 email: 'marvin.gaye@gmail.com',
                 password: 'youreawizard'
             })
-            // .expect('set-cookie', /token=[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+\.[a-zA-Z0-9\-_]+; Path=\/;.+HttpOnly/)
             .expect((res) => {
                 delete res.body.created_at;
                 delete res.body.updated_at;
+                delete res.body.last_login_at;
             })
-            // .expect(200, {
-            //     id: 1,
-            //     first_name: 'Marvin',
-            //     last_name: 'Gaye',
-            //     email: 'marvin.gaye@gmail.com',
-            //     token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTQ5MDIyNTYyNSwiZXhwIjoxNDkwODMwNDI1fQ.yE6nfHVcTHcqb1RVgy_rJic2YYEcskalB-tw2rzr9rk"
-            // })
             .expect(200)
             .expect(hasToken)
             .expect('Content-Type', /json/)

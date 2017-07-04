@@ -1,0 +1,41 @@
+version: "2"
+
+services:
+
+  my-counter-service:
+    # image: counter
+    build: .
+    depends_on:
+      - db-service
+    volumes:
+      # - pathOnHost:PathInContainer
+      - ./:/app
+
+  db-service:
+    # image: postgres:9.6.3-alpine
+    build: ./DockerfileDB
+    # this should become the location and name of the db image you create with docker build
+    environment:
+      - PG_DATABASE=whatever
+
+  users-db:
+    container_name: users-db
+    build: ./services/users/src/db
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+    healthcheck:
+      test: exit 0
+
+  locations-db:
+    container_name: locations-db
+    build: ./services/locations/src/db
+    ports:
+      - '5434:5432'
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+    healthcheck:
+      test: exit 0

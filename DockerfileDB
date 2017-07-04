@@ -1,0 +1,10 @@
+FROM postgres:9.6.3-alpine
+
+RUN mkdir /db/data
+WORKDIR /db/data
+
+# run create.sql on init
+ADD create.sql /docker-entrypoint-initdb.d
+ADD create.sql.sql /db/data
+
+RUN "knex migrate:latest"

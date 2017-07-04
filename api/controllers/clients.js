@@ -21,7 +21,7 @@ module.exports = {
     getUsersSearchResponse: getUsersSearchResponse
 }
 
-const bcrypt = require('bcrypt-as-promised');
+const bcrypt = require('bcrypt-nodejs-as-promised');
 const humps = require('humps');
 const ev = require('express-validation');
 // const validations = require("../validations/users");
@@ -351,7 +351,7 @@ function addRestriction(req, res) {
                          res.status(404).json('Not Found');
                        } else {
                          let ingredientObj = ingredient.serialize();
-                         
+
                          return res.json(
                            {
                              description: ingredientObj.description,
