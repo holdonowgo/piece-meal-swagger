@@ -112,7 +112,6 @@ function getSafeRecipes(req, res) {
       return res.json({ recipes: recipeObjs });
 
     }).catch((err) => {
-      console.log("got error", err);
         res.status(500).json({message: err});
     });
 }
@@ -270,6 +269,7 @@ function postRecipe(req, res) {
         let cook_time = req.swagger.params.recipe.value.cook_time;
         let prep_time = req.swagger.params.recipe.value.prep_time;
         let image_url = req.swagger.params.recipe.value.image_url;
+        let source_recipe_id = req.swagger.params.recipe.value.source_recipe_id;
 
         // to insert into the recipe_steps table
         let instructions = req.swagger.params.recipe.value.instructions;
@@ -281,12 +281,18 @@ function postRecipe(req, res) {
             if (result) {
                 return res.status(400).json("Recipe already exists!");
             } else {
-                return knex("recipes").insert({"name": name,
-                                               "description": description,
-                                               "cook_time": cook_time,
-                                               "prep_time": prep_time,
-                                               "image_url": image_url})
-                                               .returning("*");
+                return knex("recipes")
+                       .insert(
+                         {
+                           "name": name,
+                           "description": description,
+                           "cook_time": cook_time,
+                           "prep_time": prep_time,
+                           "image_url": image_url,
+                           "source_recipe_id": source_recipe_id,
+                           "created_by": payload.userId
+                         })
+                        .returning("*");
             }
         }).then((recipes) => { // insert ingredients
             recipe = recipes[0];
@@ -482,7 +488,6 @@ function fetchRecipes(query, res) {
           return res.json({ recipes: recipeObjs });
         }
       }).catch((err) => {
-        console.log("got error", err);
           res.status(500).json({message: err});
       });
 }

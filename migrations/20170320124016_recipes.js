@@ -8,6 +8,8 @@ exports.up = function(knex, Promise) {
     table.string('notes').defaultTo('');
     table.string('image_url').defaultTo('');
     table.boolean('active').notNullable().defaultTo(true);
+    table.integer('source_recipe_id').references('recipes.id');
+    table.integer('created_by').references('clients.id').onDelete('CASCADE');
     table.timestamp('created_at').notNullable().defaultTo(knex.raw('now()'));
     table.timestamp('updated_at').notNullable().defaultTo(knex.raw('now()'));
   });

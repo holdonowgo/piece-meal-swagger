@@ -8,7 +8,7 @@ const {
     test
 } = require('mocha');
 const request = require('supertest');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt-nodejs-as-promised');
 const knex = require('../../../knex');
 const server = require('../../../app');
 const assert = require('chai').assert;
