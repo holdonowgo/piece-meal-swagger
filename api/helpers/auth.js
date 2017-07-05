@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt-as-promised');
+const bcrypt = require('bcrypt-nodejs-as-promised');
 const jwt = require('jsonwebtoken');
 
 if (process.env.NODE_ENV !== 'production') {

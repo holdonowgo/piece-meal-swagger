@@ -21,7 +21,7 @@ module.exports = {
     getUsersSearchResponse: getUsersSearchResponse
 }
 
-const bcrypt = require('bcrypt-as-promised');
+const bcrypt = require('bcrypt-nodejs-as-promised');
 const humps = require('humps');
 const ev = require('express-validation');
 // const validations = require("../validations/users");
@@ -341,8 +341,24 @@ function addRestriction(req, res) {
         }
         let user_id = req.swagger.params.user_id.value;
         let ingredient_id = req.swagger.params.ingredient.value.ingredient_id;
-        return knex.insert({'client_id': user_id, 'ingredient_id': ingredient_id}).into('client_restrictions').then(() => {
-            return res.json({success: 1, description: 'Restriction has been added'});
+        return knex.insert({'client_id': user_id, 'ingredient_id': ingredient_id})
+                   .into('client_restrictions')
+                   .then(() => {
+                     return Ingredient.forge({id: id}).fetch();
+                   })
+                   .then((ingredient) => {
+                       if (!ingredient) {
+                         res.status(404).json('Not Found');
+                       } else {
+                         let ingredientObj = ingredient.serialize();
+
+                         return res.json(
+                           {
+                             description: ingredientObj.description,
+                             id: ingredientObj.id,
+                             name: ingredientObj.name
+                           });
+                         }
         });
     });
 }

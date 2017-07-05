@@ -9,6 +9,7 @@ exports.up = function(knex, Promise) {
         table.specificType('hashed_password', 'char(60)').notNullable();
         table.timestamp('created_at').notNullable().defaultTo(knex.raw('now()'));
         table.timestamp('updated_at').notNullable().defaultTo(knex.raw('now()'));
+        table.timestamp('last_login_at');
     });
 };
 

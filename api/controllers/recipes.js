@@ -1,7 +1,7 @@
 'use strict';
 const knex = require('../../knex');
 const bookshelf = require('../../bookshelf');
-const bcrypt = require('bcrypt-as-promised');
+const bcrypt = require('bcrypt-nodejs-as-promised');
 const jwt = require('jsonwebtoken');
 const Recipe = require('../models/recipe.js').Recipe;
 const Recipes = require('../models/recipe.js').Recipes;
