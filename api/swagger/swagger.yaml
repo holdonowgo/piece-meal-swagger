@@ -1582,6 +1582,42 @@ definitions:
         type: string
         description: link to image of ingredient
 
+  PutRecipe:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      description:
+        type: string
+      instructions:
+        type: array
+        items:
+          type: object
+          properties:
+            step_number:
+              type: integer
+            instructions:
+              type: string
+      ingredients:
+        type: array
+        items:
+          # type: integer
+          type: object
+          properties:
+            id:
+              type: integer
+            amount:
+              type: string
+      tags:
+        type: array
+        items:
+          type: string
+      image_url:
+        type: string
+        description: link to image of ingredient
+
   GetRecipesListResponse:
     required:
       - recipes

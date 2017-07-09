@@ -13,7 +13,7 @@ const Clients = require('../models/client.js').Clients;
 let Recipe = bookshelf.Model.extend({
     tableName: 'recipes',
     idAttribute: 'id',
-    visible: ['id', 'active', 'name', 'description', 'prep_time', 'cook_time', 'notes', 'image_url', 'ingredients', 'instructions', 'tags', 'votes'],
+    visible: ['id', 'active', 'name', 'description', 'prep_time', 'cook_time', 'notes', 'image_url', 'ingredients', 'instructions', 'tags', 'votes', 'created_at', 'created_by', 'updated_at'],
     hasTimestamps: true,
 
     clients: function() {
